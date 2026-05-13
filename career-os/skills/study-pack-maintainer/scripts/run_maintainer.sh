@@ -2,8 +2,6 @@
 set -euo pipefail
 # Executed via bash or direct exec from track_task.sh.
 
-source "$HOME/ai-nodes/_shared/bin/claude_lib.sh"
-
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
 SOURCE_DIR="$TASK_ROOT/sources/fos-study"
 TOPIC="${MAINTAINER_TOPIC:?MAINTAINER_TOPIC is required}"
@@ -73,7 +71,7 @@ run_once() {
     echo "maintainer claude CLI produced empty JSON envelope for ${TOPIC}" >&2
     return 1
   fi
-  claude_persist_usage "$RAW_RESULT_JSON"
+  bun run "$HOME/ai-nodes/_shared/lib/invoke_claude_skills.ts" persist-usage "$RAW_RESULT_JSON"
 }
 
 parse_result() {

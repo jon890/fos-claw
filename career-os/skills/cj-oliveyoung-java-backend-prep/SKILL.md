@@ -66,6 +66,6 @@ Prompts:
 ## External dependencies
 
 - `_shared/bin/track_task.sh` — all runners exec through this tracker; missing ⇒ every run fails.
-- `_shared/bin/extract_claude_result.py` — used by baseline/daily/smoke to pull `result` out of Claude CLI JSON and to feed usage metrics into the tracker.
+- `_shared/lib/invoke_claude_skills.ts` (`extract` command) — used by baseline/daily/smoke to pull `result` out of Claude CLI JSON and to feed usage metrics into the tracker.
 - `claude` CLI on PATH (uses `--permission-mode bypassPermissions --print --output-format json`).
 - Sub-skills invoked via dispatcher: `study-pack-writer`, `experience-question-bank-writer`, `interview-master-writer`.

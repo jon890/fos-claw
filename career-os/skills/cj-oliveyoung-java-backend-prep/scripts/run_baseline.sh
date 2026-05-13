@@ -16,8 +16,6 @@ STDERR_LOG="$OUTDIR/claude.stderr.log"
 CLAUDE_JSON="$OUTDIR/claude.result.json"
 FALLBACK_MD="$OUTDIR/report.fallback.md"
 CORE_LIST="$TASK_ROOT/config/baseline-core-files.json"
-EXTRACT="$HOME/ai-nodes/_shared/bin/extract_claude_result.py"
-
 mkdir -p "$OUTDIR"
 
 # --- Git sync ---
@@ -58,7 +56,8 @@ if timeout 420s claude --permission-mode bypassPermissions --print --output-form
   "Read $INPUT_NOTE and complete the requested analysis. Write only the final markdown report." \
   > "$CLAUDE_JSON" 2>> "$STDERR_LOG"; then
 
-  python3 "$EXTRACT" "$CLAUDE_JSON" "$REPORT_MD" "${TRACK_TASK_CLAUDE_USAGE_FILE:-}"
+  bun run "$HOME/ai-nodes/_shared/lib/invoke_claude_skills.ts" extract \
+    "$CLAUDE_JSON" "$REPORT_MD" "${TRACK_TASK_CLAUDE_USAGE_FILE:-}"
 
 else
   cat > "$FALLBACK_MD" <<EOF

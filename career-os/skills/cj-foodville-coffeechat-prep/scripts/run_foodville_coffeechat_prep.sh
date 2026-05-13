@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source "$HOME/ai-nodes/_shared/bin/claude_lib.sh"
-
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
 REPORT_DATE="${REPORT_DATE:-$(date +%F)}"
 SKILL_DIR="$TASK_ROOT/skills/cj-foodville-coffeechat-prep"
@@ -15,8 +13,6 @@ PROFILE="$TASK_ROOT/config/candidate-profile.md"
 RAW_RESULT_JSON="$OUTDIR/claude.result.json"
 INPUT_NOTE="$OUTDIR/input.md"
 REPORT_MD="$OUTDIR/report.md"
-EXTRACTOR="$HOME/ai-nodes/_shared/bin/extract_claude_result.py"
-
 mkdir -p "$OUTDIR" "$TASK_ROOT/data/runtime" "$SOURCE_DIR"
 
 set +e
@@ -62,21 +58,10 @@ timeout 900s claude --permission-mode bypassPermissions --print \
   "$(cat "$INPUT_NOTE")" \
   > "$RAW_RESULT_JSON"
 
-if [[ -x "$EXTRACTOR" ]]; then
-  python3 "$EXTRACTOR" "$RAW_RESULT_JSON" "$REPORT_MD"
-else
-  python3 - <<'PY' "$RAW_RESULT_JSON" "$REPORT_MD"
-import json, sys
-from pathlib import Path
-raw = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-text = raw.get('result') or raw.get('message') or raw.get('content') or ''
-if isinstance(text, list):
-    text = '\n'.join(str(x.get('text', x)) if isinstance(x, dict) else str(x) for x in text)
-Path(sys.argv[2]).write_text(str(text), encoding='utf-8')
-PY
-fi
+bun run "$HOME/ai-nodes/_shared/lib/invoke_claude_skills.ts" extract \
+  "$RAW_RESULT_JSON" "$REPORT_MD" "${TRACK_TASK_CLAUDE_USAGE_FILE:-}"
 
-claude_persist_usage "$RAW_RESULT_JSON"
+bun run "$HOME/ai-nodes/_shared/lib/invoke_claude_skills.ts" persist-usage "$RAW_RESULT_JSON"
 
 cp "$REPORT_MD" "$RUNTIME_OUT"
 cat "$RUNTIME_OUT"

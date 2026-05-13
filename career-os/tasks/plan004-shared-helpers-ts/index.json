@@ -2,9 +2,9 @@
   "name": "plan004-shared-helpers-ts",
   "description": "_shared/ 공용 헬퍼를 TS(Bun) 로 마이그레이션. notify_discord.ts + invoke_claude_skills.ts + format_cost_summary.ts 3개 + _shared/types/ 공통 타입. 8+ runner caller 일괄 갱신. claude_lib.sh + format_cost_summary.py + extract_claude_result.py + 워크스페이스별 notify_discord.sh 폐기.",
   "created_at": "2026-05-13T19:30:00+00:00",
-  "updated_at": "2026-05-13T16:13:13.776161+00:00",
-  "status": "running",
-  "current_phase": 3,
+  "updated_at": "2026-05-13T16:17:15.617956+00:00",
+  "status": "completed",
+  "current_phase": 5,
   "total_phases": 5,
   "error_message": null,
   "blocked_reason": null,
@@ -53,7 +53,7 @@
       "number": 3,
       "title": "_shared/lib/notify_discord.ts + format_cost_summary.ts 작성 + unit smoke",
       "file": "phase-03.md",
-      "status": "running",
+      "status": "completed",
       "allowedTools": [
         "Read",
         "Write",
@@ -62,13 +62,14 @@
         "Grep"
       ],
       "model": "sonnet",
-      "timeout": 600
+      "timeout": 600,
+      "commitSha": "cb1a05dcd859"
     },
     {
       "number": 4,
       "title": "_shared/lib/invoke_claude_skills.ts (claude_lib.sh + extract_claude_result.py 흡수)",
       "file": "phase-04.md",
-      "status": "pending",
+      "status": "completed",
       "allowedTools": [
         "Read",
         "Write",
@@ -77,13 +78,14 @@
         "Grep"
       ],
       "model": "sonnet",
-      "timeout": 1200
+      "timeout": 1200,
+      "commitSha": "ff1c8628b27a"
     },
     {
       "number": 5,
       "title": "8+ runner caller 갱신 + 옛 .sh/.py 폐기 + run_now.sh format_cost 호출 갱신 + 통합 smoke + index.json + push",
       "file": "phase-05.md",
-      "status": "pending",
+      "status": "completed",
       "allowedTools": [
         "Read",
         "Write",

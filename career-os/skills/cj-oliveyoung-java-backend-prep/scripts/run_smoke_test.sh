@@ -14,8 +14,6 @@ STDERR_LOG="$OUTDIR/claude.stderr.log"
 STDOUT_LOG="$OUTDIR/claude.stdout.log"
 CLAUDE_JSON="$OUTDIR/claude.result.json"
 FALLBACK_MD="$OUTDIR/report.fallback.md"
-EXTRACT="$HOME/ai-nodes/_shared/bin/extract_claude_result.py"
-
 mkdir -p "$OUTDIR"
 
 cat > "$TARGET_LIST" <<EOF
@@ -47,7 +45,8 @@ EOF
 
 if timeout 300s claude --permission-mode bypassPermissions --print --output-format json "Read $INPUT_NOTE and complete the requested analysis. Write only the final markdown report." > "$CLAUDE_JSON" 2> "$STDERR_LOG"; then
   cp "$CLAUDE_JSON" "$STDOUT_LOG"
-  python3 "$EXTRACT" "$CLAUDE_JSON" "$REPORT_MD" "${TRACK_TASK_CLAUDE_USAGE_FILE:-}"
+  bun run "$HOME/ai-nodes/_shared/lib/invoke_claude_skills.ts" extract \
+    "$CLAUDE_JSON" "$REPORT_MD" "${TRACK_TASK_CLAUDE_USAGE_FILE:-}"
 else
   cat > "$FALLBACK_MD" <<EOF
 # Kakao Healthcare CareChat Java Backend Prep Smoke Test Report

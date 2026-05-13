@@ -5,8 +5,8 @@ set -euo pipefail
 
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
 TRACKER="${TRACKER:-$HOME/ai-nodes/_shared/bin/track_task.sh}"
-NOTIFY_SCRIPT="$TASK_ROOT/skills/cj-oliveyoung-java-backend-prep/scripts/notify_discord.sh"
-FORMAT_COST="$HOME/ai-nodes/_shared/bin/format_cost_summary.py"
+NOTIFY_SCRIPT="bun run $HOME/ai-nodes/_shared/lib/notify_discord.ts"
+FORMAT_COST="$HOME/ai-nodes/_shared/lib/format_cost_summary.ts"
 LOCK_DIR="$TASK_ROOT/data/runtime/locks"
 MODE="${1:-baseline}"
 
@@ -16,7 +16,7 @@ mkdir -p "$LOCK_DIR"
 #
 # Wraps the runner with track_task.sh, captures the exit code, and sends a Discord
 # completion / failure notification with a one-line cost summary (from
-# `_shared/bin/format_cost_summary.py`) appended. Exits with the runner's code.
+# `_shared/lib/format_cost_summary.ts`) appended. Exits with the runner's code.
 #
 # `label` is the human-readable subject for the notification, e.g. "${TOPIC}
 # 스터디팩". The verb is auto-added: "[완료] ${label}" or "[실패] ${label} (exit N)".
@@ -30,12 +30,12 @@ run_tracked() {
   set -e
 
   local cost_line=""
-  cost_line="$(python3 "$FORMAT_COST" "$TASK_ROOT" "$task_name" 2>/dev/null || true)"
+  cost_line="$(bun run "$FORMAT_COST" "$TASK_ROOT" "$task_name" 2>/dev/null || true)"
 
   if (( code == 0 )); then
-    "$NOTIFY_SCRIPT" "[완료] ${label}${cost_line}" || true
+    $NOTIFY_SCRIPT "[완료] ${label}${cost_line}" || true
   else
-    "$NOTIFY_SCRIPT" "[실패] ${label} (exit ${code})${cost_line}" || true
+    $NOTIFY_SCRIPT "[실패] ${label} (exit ${code})${cost_line}" || true
   fi
 
   exit "$code"
@@ -69,7 +69,7 @@ case "$MODE" in
       exit 0
     fi
 
-    "$NOTIFY_SCRIPT" "[시작] ${TOPIC} 스터디팩 생성 시작"
+    $NOTIFY_SCRIPT "[시작] ${TOPIC} 스터디팩 생성 시작"
 
     MAINTAINER_CONFIG="$TASK_ROOT/config/topics.json"
     PRIMARY_TOPIC_CONFIG="${TOPIC_CONFIG_OVERRIDE:-$TASK_ROOT/config/topics.json}"

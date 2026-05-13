@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
-NOTIFY_SCRIPT="$TASK_ROOT/skills/cj-oliveyoung-java-backend-prep/scripts/notify_discord.sh"
+NOTIFY_SCRIPT="bun run $HOME/ai-nodes/_shared/lib/notify_discord.ts"
 SEED_CONFIG="$TASK_ROOT/config/live-coding-seed-pool.json"
 CANDIDATE_CONFIG="$TASK_ROOT/config/live-coding-seed-candidates.json"
 TEMP_CONFIG="$TASK_ROOT/data/runtime/live-coding-generated-topic.json"
@@ -40,7 +40,7 @@ PY
 )"
 
 if [[ "$SELECTION_JSON" == "{}" ]]; then
-  "$NOTIFY_SCRIPT" "[안내] 새 live-coding 주제가 없어 생성하지 않았습니다. primary/candidate seed pool 모두 보강이 필요합니다."
+  $NOTIFY_SCRIPT "[안내] 새 live-coding 주제가 없어 생성하지 않았습니다. primary/candidate seed pool 모두 보강이 필요합니다."
   exit 0
 fi
 
