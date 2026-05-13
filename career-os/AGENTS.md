@@ -41,9 +41,9 @@
 
 ## 워크플로 진입점 (요약)
 
-단일 디스패처: `skills/cj-oliveyoung-java-backend-prep/scripts/run_now.sh`. (디렉터리 이름의 `cj-oliveyoung`은 역사적 잔재. 분해·리네이밍 보류 — `docs/prd.md` "분해 대기 작업" 참조.)
+단일 디스패처: `skills/command-router/scripts/run_now.sh` (plan005 분해 이후, ADR-017). 본 plan005 실행 전까지는 `skills/cj-oliveyoung-java-backend-prep/scripts/run_now.sh`가 진입점.
 
-11개 명령: `baseline` · `daily [topic]` · `recommend-positions` · `recommend-topics` · `replenish-topics` · `study-pack <topic>` · `maintain-study-pack <topic>` · `question-bank <topic>` · `master [topic]` · `foodville-coffeechat` · `smoke`.
+14개 명령 (plan005 wire-up 포함): `baseline` · `daily [topic]` · `recommend-positions` · `recommend-topics` · `replenish-topics` · `study-pack <topic>` · `maintain-study-pack <topic>` · `question-bank <topic>` · `master [topic]` · `foodville-coffeechat` · `smoke` · `bootcamp-batch` · `live-coding-dispatch` · `auto-question-bank`.
 
 각 명령의 입력/산출물/git push 여부 상세는 `docs/prd.md` 기능 표, 데이터 흐름은 `docs/flow.md` 참조.
 

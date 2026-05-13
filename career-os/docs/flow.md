@@ -216,6 +216,52 @@ data/runtime/cj-foodville-coffeechat-prep.md (사본)
 
 최소 동작 점검. `_shared/bin/extract_claude_result.py` gold 경로를 따른다. baseline의 축소판.
 
+### `bootcamp-batch` (plan005 wire-up — ADR-017)
+
+```
+config/topics.json (bootcamp namespace, plan002 이후)
+  ↓
+skills/study-pack-batch/scripts/run_bootcamp_batch.sh:
+  - dailyRecommendCount 만큼 추천 큐 산출
+  - 미생성 토픽 우선, dailyGenerateCount 개만큼 study-pack-writer 위임
+  ↓
+study-pack-writer가 토픽별 study-pack 생성 + fos-study commit/push (기존 흐름)
+  ↓
+data/runtime/bootcamp-summary.md (사람용)
+data/reports/daily/YYYY-MM-DD/bootcamp/ (날짜별 사본)
+```
+
+### `live-coding-dispatch` (plan005 wire-up — ADR-017)
+
+```
+config/live-coding-seed-pool.json (primary)
+config/live-coding-seed-candidates.json (reservoir)
+data/generated-artifacts.json (이미 만든 outputPath 제외)
+  ↓
+skills/study-topic-recommender/scripts/run_live_coding_dispatch.sh:
+  - 미커버 seed 1개 선택 (primary → candidate 순)
+  - data/runtime/live-coding-generated-topic.json에 임시 topic 작성
+  - lock: data/runtime/locks/live-coding-dispatch.lock
+  ↓
+TOPIC_CONFIG_OVERRIDE 환경변수로 run_now.sh study-pack 위임
+  ↓
+기존 study-pack 흐름 (notify [시작] · writer · validator · commit · push)
+```
+
+### `auto-question-bank` (plan005 wire-up — ADR-017)
+
+```
+QUESTION_BANK_TOPIC_OVERRIDE 또는 기본값 experience-qbank-ai-service-team
+  ↓
+skills/experience-question-bank-writer/scripts/run_question_bank_auto.sh:
+  - Discord [시작] 알림
+  - run_now.sh question-bank <topic> 위임
+  ↓
+기존 question-bank 흐름 (Claude --json-schema · render · fos-study push)
+  ↓
+Discord [완료]/[실패] 알림 (cost summary는 run_tracked 경유로 부착)
+```
+
 ## 통과 시점에 항상 일어나는 일
 
 모든 명령 (`run_tracked()` 통과):
