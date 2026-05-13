@@ -7,13 +7,13 @@
 
 ## 목표
 
-ADR-017 (`docs/adr.md` 맨 아래, phase-01 산출물) 의 폐기 결정에 따라 legacy 디렉터리·파일을 일괄 삭제하고, 그 파일들을 가리키던 잔존 참조를 갱신한다.
+ADR-018 (`docs/adr.md` 맨 아래, phase-01 산출물) 의 폐기 결정에 따라 legacy 디렉터리·파일을 일괄 삭제하고, 그 파일들을 가리키던 잔존 참조를 갱신한다.
 
 범위 외: `docs/learn/008-docs-audit-quality-loop.md` (fos-study PR 후 별도 plan), `docs/hand-off/` 파일 자체 삭제 (해당 파일은 내용 가치 있으므로 보존하되 본문 안의 옛 참조만 갱신), `docs/prep/` (면접 종료 후 별도).
 
 ## 관련 docs (실행 전 읽기)
 
-- `career-os/docs/adr.md` 맨 아래 ADR-017 (phase-01 산출물). decisions/ + audit/ 폐기 + learn 흡수 흐름 명문화.
+- `career-os/docs/adr.md` 맨 아래 ADR-018 (phase-01 산출물). decisions/ + audit/ 폐기 + learn 흡수 흐름 명문화.
 - `career-os/docs/learn/README.md` (phase-01 재작성본). 학습 정책 가이드.
 
 ## 작업 항목
@@ -72,7 +72,7 @@ git rm career-os/docs/audit/*.md
 rmdir career-os/docs/audit 2>/dev/null
 ```
 
-ADR-017 의 정책상 audit 산출물은 docs 트리에 영구 보존하지 않는다. workspace-audit 이 만들 미래 산출물은 `/tmp/workspace-audit-<ws>/` 세션 한정 (ADR-015 정책).
+ADR-018 의 정책상 audit 산출물은 docs 트리에 영구 보존하지 않는다. workspace-audit 이 만들 미래 산출물은 `/tmp/workspace-audit-<ws>/` 세션 한정 (ADR-015 정책).
 
 ### 3. docs/learn/{001~007}.md 7 파일 git rm
 
@@ -119,9 +119,9 @@ grep -rln "docs/decisions/" career-os/ --include='*.md' --include='*.sh' --inclu
 
 각 잔존 참조 대응:
 
-1. `career-os/AGENTS.md` — phase-01 이 ADR 카운트 갱신했지만 본문 안에 `docs/decisions/` 디렉터리 자체를 prose 로 언급할 가능성. ADR-017 폐기 결정에 맞춰 해당 prose 를 삭제 또는 `docs/adr.md` 단일 출처로 짧게 교체.
+1. `career-os/AGENTS.md` — phase-01 이 ADR 카운트 갱신했지만 본문 안에 `docs/decisions/` 디렉터리 자체를 prose 로 언급할 가능성. ADR-018 폐기 결정에 맞춰 해당 prose 를 삭제 또는 `docs/adr.md` 단일 출처로 짧게 교체.
 
-2. `career-os/docs/adr.md` 자체에 "`docs/decisions/NNN-*.md` 14개를 통합" 같은 문장이 헤더 영역에 있을 수 있다. ADR-017 채택 시점에 사실상 이 문장은 historical 정보가 됐으므로 짧게 정리하거나 ADR-017 본문 안에서 한 번만 언급되도록.
+2. `career-os/docs/adr.md` 자체에 "`docs/decisions/NNN-*.md` 14개를 통합" 같은 문장이 헤더 영역에 있을 수 있다. ADR-018 채택 시점에 사실상 이 문장은 historical 정보가 됐으므로 짧게 정리하거나 ADR-018 본문 안에서 한 번만 언급되도록.
 
 3. `career-os/docs/hand-off/2026-04-25-morning-topic-recommendation-improvement-brief.md` — 본문 안에 옛 ADR 파일을 `docs/decisions/NNN-...md` 경로로 링크하는 곳이 있을 수 있다. 해당 링크를 `docs/adr.md` 의 해당 ADR-N 섹션 anchor 로 교체 (`docs/adr.md#adr-N-제목` 형태).
 
@@ -208,7 +208,7 @@ echo "phase-02 검증 통과"
 ```
 refactor(career-os): docs/ legacy 일괄 정리 (decisions 15 + audit 3 + learn 7)
 
-ADR-017 정책 적용.
+ADR-018 정책 적용.
 
 - docs/decisions/ 15 파일 삭제 — adr.md 통합본이 단일 출처. git history 로 추적.
 - docs/audit/ 3 파일 삭제 — 4월 일회성 docs-audit 산출물. 영구 보존 불요.
@@ -220,11 +220,13 @@ push 는 phase-03 에서.
 
 ## 의도 메모
 
-- ADR-017 이 *왜* 의 단일 출처. 본 phase 는 그 결정의 *실행*.
+- ADR-018 이 *왜* 의 단일 출처. 본 phase 는 그 결정의 *실행*.
 - 008 보존은 fos-study 측 docs-audit SKILL.md 와의 통합 후 별도 사이클 — 즉시 삭제하면 fos-study 측 PR 흡수 흐름이 끊긴다.
 
 ## Blocked 조건
 
-- legacy 파일 수가 기대치와 다름 (decisions 가 15 아님 / audit 가 3 아님 / learn 가 8 아님) → `PHASE_BLOCKED: 사전 상태 mismatch`.
-- 검증 3-4 에서 잔존 참조가 0이 안 됨 → `PHASE_FAILED: 잔존 참조 정리 누락`.
-- 008 이 실수로 삭제됐는지 검증 2에서 잡힘 → `PHASE_FAILED: 008 보존 실패`.
+**중요 — exit code 명시**: 아래 어느 마커든 출력만 하지 말고 반드시 `sys.exit(1)` (FAILED) 또는 `sys.exit(2)` (BLOCKED) — shell에서는 `exit 1` / `exit 2` — 비-0 exit code로 종료한다. 마커만 출력하고 정상 종료하면 `run-phases.py`가 success로 잘못 처리한다 (plan001-adr-cleanup 1차 실행 사례).
+
+- legacy 파일 수가 기대치와 다름 (decisions 가 15 아님 / audit 가 3 아님 / learn 가 8 아님) → `PHASE_BLOCKED: 사전 상태 mismatch` + `exit 2`.
+- 검증 3-4 에서 잔존 참조가 0이 안 됨 → `PHASE_FAILED: 잔존 참조 정리 누락` + `exit 1`.
+- 008 이 실수로 삭제됐는지 검증 2에서 잡힘 → `PHASE_FAILED: 008 보존 실패` + `exit 1`.

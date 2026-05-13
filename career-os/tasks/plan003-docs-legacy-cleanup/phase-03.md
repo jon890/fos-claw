@@ -13,7 +13,7 @@ phase-01 / phase-02 산출물을 통합 검증하고 `index.json` status=complet
 
 ## 관련 docs
 
-- `career-os/docs/adr.md` 맨 아래 ADR-017 (phase-01 산출물).
+- `career-os/docs/adr.md` 맨 아래 ADR-018 (phase-01 산출물).
 - `career-os/docs/learn/README.md` (phase-01 재작성본).
 - `career-os/tasks/plan003-docs-legacy-cleanup/index.json` — status 마킹 대상.
 
@@ -78,12 +78,12 @@ for f in career-os/docs/prd.md career-os/docs/data-schema.md career-os/docs/flow
   [[ "$first" == "# "* ]] || { echo "PHASE_FAILED: $f 첫 줄 헤더 아님"; exit 1; }
 done
 
-# adr.md 안 ADR 헤더 16-17개 (007 충돌은 plan003 범위 외라 17 또는 16 통과)
+# adr.md ADR 헤더 19개 (ADR-001~006 + 007a + 007b + 008~018 = 19). 007 충돌은 plan003 범위 외.
 count=$(grep -c "^## ADR-" career-os/docs/adr.md)
-[ "$count" -ge 16 ] || { echo "PHASE_FAILED: adr.md ADR 헤더 $count, expected 16+"; exit 1; }
+[ "$count" -ge 19 ] || { echo "PHASE_FAILED: adr.md ADR 헤더 $count, expected 19+"; exit 1; }
 
-# ADR-017 명시적 존재
-grep -c "^## ADR-017" career-os/docs/adr.md
+# ADR-018 명시적 존재
+[ "$(grep -c '^## ADR-018' career-os/docs/adr.md)" -ge 1 ] || { echo "PHASE_FAILED: ADR-018 누락"; exit 1; }
 ```
 
 ### 4. index.json status=completed 마킹
@@ -146,6 +146,8 @@ PY
 
 ## Blocked 조건
 
-- 디렉터리 트리 mismatch → `PHASE_FAILED: 디렉터리 N`.
-- 잔존 참조 0이 아님 → `PHASE_FAILED: 잔존 참조 N`.
-- push 권한 없음 → `PHASE_BLOCKED: push 권한`.
+**중요 — exit code 명시**: 아래 어느 마커든 출력만 하지 말고 반드시 `sys.exit(1)` (FAILED) 또는 `sys.exit(2)` (BLOCKED) — shell에서는 `exit 1` / `exit 2` — 비-0 exit code로 종료한다. 마커만 출력하고 정상 종료하면 `run-phases.py`가 success로 잘못 처리한다 (plan001-adr-cleanup 1차 실행 사례).
+
+- 디렉터리 트리 mismatch → `PHASE_FAILED: 디렉터리 N` + `exit 1`.
+- 잔존 참조 0이 아님 → `PHASE_FAILED: 잔존 참조 N` + `exit 1`.
+- push 권한 없음 → `PHASE_BLOCKED: push 권한` + `exit 2`.

@@ -1,4 +1,4 @@
-# Phase 01 — docs-first: ADR-017 + learn/README 재작성 + code-architecture 트리 + AGENTS.md
+# Phase 01 — docs-first: ADR-018 + learn/README 재작성 + code-architecture 트리 + AGENTS.md
 
 **Model**: sonnet
 **Status**: pending
@@ -13,21 +13,21 @@
 
 ## 관련 docs (실행 전 읽기)
 
-- `career-os/docs/adr.md` 끝부분 (ADR-015, ADR-016이 이미 누적된 상태). 본 phase가 ADR-017 추가.
+- `career-os/docs/adr.md` 끝부분 (ADR-015, ADR-016, ADR-017이 이미 누적된 상태 — ADR-017은 plan005가 cj-oliveyoung-java-backend-prep skill 분해로 추가). 본 phase가 ADR-018 추가.
 - `career-os/docs/code-architecture.md` 디렉터리 트리 영역 (docs/ 섹션).
 - `career-os/docs/learn/README.md` 기존 본문. 본 phase가 재작성.
 - `career-os/AGENTS.md` 5문서 라우팅 표.
 
 ## 작업 항목
 
-### 1. adr.md 맨 아래에 ADR-017 추가
+### 1. adr.md 맨 아래에 ADR-018 추가
 
 ADR 작성 원칙(planning/SKILL.md 7단계 "ADR 작성 원칙")에 따라 5섹션만:
 
 ```markdown
 ---
 
-## ADR-017 — docs/ 운영 정책: 휘발성 vs 영속, learn → ADR 흡수 흐름
+## ADR-018 — docs/ 운영 정책: 휘발성 vs 영속, learn → ADR 흡수 흐름
 
 - Status: Accepted
 - Date: 2026-05-13
@@ -108,7 +108,7 @@ learn 노트가 ADR 로 흡수될 때:
 2. learn 파일 삭제 — git rm. history 는 git log 로 추적 가능.
 3. 다른 곳(AGENTS.md / hand-off / 다른 learn) 에서 그 learn 파일을 참조하면 ADR 번호 링크로 교체.
 
-이 흐름은 ADR-017 에 명문화. 어기면 docs drift.
+이 흐름은 ADR-018 에 명문화. 어기면 docs drift.
 
 ## 현행 learn 노트
 
@@ -144,31 +144,31 @@ learn 노트가 ADR 로 흡수될 때:
 │   ├── flow.md           사용자/데이터 플로우
 │   ├── code-architecture.md  이 문서
 │   ├── adr.md            모든 아키텍처 결정 누적 (단일 출처, ADR-015/017)
-│   ├── learn/            짧은 회고. 결정 굳어지면 adr.md 로 흡수 후 삭제 (ADR-017)
+│   ├── learn/            짧은 회고. 결정 굳어지면 adr.md 로 흡수 후 삭제 (ADR-018)
 │   ├── hand-off/         외부 위임·인수인계 일회성 노트
 │   └── prep/             회사·이벤트별 운영 자산. 이벤트 종료 후 archive
 ```
 
-decisions/ + audit/ 항목은 트리에서 완전히 제거. ADR-015 가 이미 "legacy 보존만"이라 했으나 ADR-017 이 폐기로 더 명확하게.
+decisions/ + audit/ 항목은 트리에서 완전히 제거. ADR-015 가 이미 "legacy 보존만"이라 했으나 ADR-018 이 폐기로 더 명확하게.
 
 ### 4. AGENTS.md 5문서 라우팅 표 갱신
 
-기존 라우팅 표에 `ADR-001~016` 같은 카운트가 박혀 있을 수 있다. ADR-017 까지로 갱신:
+현 시점 AGENTS.md 5문서 라우팅 표에는 `ADR-001~015` (plan003 작성 시점 실측)가 박혀 있다 — plan002의 ADR-016, plan005의 ADR-017이 추가됐는데도 카운트는 갱신 누락. ADR-018 까지 한 번에 갱신:
 
 ```bash
 # 위치 확인
-grep -n "ADR-001\|ADR-015\|ADR-016" career-os/AGENTS.md
+grep -n "ADR-001\|ADR-015\|ADR-016\|ADR-017" career-os/AGENTS.md
 ```
 
-해당 줄들에서 "ADR-001~016" 또는 유사 표현을 "ADR-001~017" 로 교체.
+해당 줄들에서 "ADR-001~015" 또는 유사 표현을 "ADR-001~018" 로 교체.
 
-decisions/ 디렉터리 언급이 AGENTS.md 의 5문서 라우팅 또는 다른 섹션에 prose 로 들어 있으면, ADR-017 폐기 결정에 맞춰 그 prose 도 갱신 (또는 제거).
+decisions/ 디렉터리 언급이 AGENTS.md 의 5문서 라우팅 또는 다른 섹션에 prose 로 들어 있으면, ADR-018 폐기 결정에 맞춰 그 prose 도 갱신 (또는 제거).
 
 ## Critical Files
 
 | 파일 | 변경 |
 |---|---|
-| `career-os/docs/adr.md` | ADR-017 맨 아래 추가 |
+| `career-os/docs/adr.md` | ADR-018 맨 아래 추가 |
 | `career-os/docs/learn/README.md` | 학습 정책 가이드로 재작성 |
 | `career-os/docs/code-architecture.md` | docs/ 트리에서 decisions/ + audit/ 제거 |
 | `career-os/AGENTS.md` | ADR 카운트 갱신, decisions/ prose 정리 |
@@ -180,14 +180,15 @@ phase-01 은 위 4개 파일만 만진다. legacy 파일 삭제는 phase-02.
 ```bash
 cd /home/bifos/ai-nodes
 
-# 1. ADR-017 추가됐는지
-grep -c "^## ADR-017" career-os/docs/adr.md
+# 1. ADR-018 추가됐는지
+grep -c "^## ADR-018" career-os/docs/adr.md
 # 기대값: 1
 
-# 2. ADR 헤더 총 17개 (001~017, 단 007 충돌은 그대로 — 007a + 007b 2개)
-# 본 plan 범위 외라 17 또는 16 통과
+# 2. ADR 헤더 총 18 (plan003 시작 시점 ~ 19 (ADR-018 추가 후) 범위
+#    내역: ADR-001~006 (6) + ADR-007a + ADR-007b (2) + ADR-008~017 (10) = 18, + ADR-018 = 19.
+#    007 충돌은 plan003 범위 외라 그대로.
 count=$(grep -c "^## ADR-" career-os/docs/adr.md)
-[[ $count -ge 16 && $count -le 17 ]] || { echo "PHASE_FAILED: ADR 카운트 $count, expected 16-17"; exit 1; }
+[[ $count -ge 18 && $count -le 19 ]] || { echo "PHASE_FAILED: ADR 카운트 $count, expected 18-19"; exit 1; }
 
 # 3. learn/README.md 본문에 "흡수" / "삭제 흐름" 등장 (새 정책 가이드 형태인지)
 grep -c "흡수\|삭제 흐름" career-os/docs/learn/README.md
@@ -198,7 +199,7 @@ grep -c "├── audit/\|├── decisions/" career-os/docs/code-architectur
 # 기대값: 0
 
 # 5. AGENTS.md ADR 카운트 갱신
-grep -c "ADR-017\|ADR-001~017" career-os/AGENTS.md
+grep -c "ADR-018\|ADR-001~017" career-os/AGENTS.md
 # 기대값: 1 이상 (또는 본문 갱신 방식에 따라 갱신 확인 가능한 패턴)
 
 # 6. legacy 파일은 손대지 않음
@@ -211,11 +212,11 @@ git diff --stat career-os/docs/decisions/ career-os/docs/audit/ career-os/docs/l
 ## 커밋
 
 ```
-docs(career-os): plan003 docs/ 운영 정책 + ADR-017 + learn/README 재작성
+docs(career-os): plan003 docs/ 운영 정책 + ADR-018 + learn/README 재작성
 
 phase-02 가 따를 legacy cleanup 정책을 docs 에 먼저 박는다 (docs-first).
 
-- adr.md ADR-017: docs/ 운영 정책 명문화. legacy decisions/ + audit/ 폐기 확정. learn → ADR 흡수 + 삭제 흐름. prep / hand-off 의 이벤트·임무 종료 시 archive 정책.
+- adr.md ADR-018: docs/ 운영 정책 명문화. legacy decisions/ + audit/ 폐기 확정. learn → ADR 흡수 + 삭제 흐름. prep / hand-off 의 이벤트·임무 종료 시 archive 정책.
 - learn/README.md 재작성: 학습 정책 가이드. 어떤 게 learn 에 들어오고 어떤 게 ADR 로 가는지.
 - code-architecture.md 디렉터리 트리: decisions/ + audit/ 항목 제거.
 - AGENTS.md: ADR 카운트 갱신.
@@ -228,9 +229,11 @@ push 는 phase-03 에서.
 ## 의도 메모
 
 - docs-first 커밋 — phase-02 실패해도 docs 정책은 main 에 남아 다음 사이클이 재시도 가능.
-- ADR-017 이 phase-02 의 *근거* — phase-02 본문이 ADR-017 을 가리키면 자기완결.
+- ADR-018 이 phase-02 의 *근거* — phase-02 본문이 ADR-018 을 가리키면 자기완결.
 
 ## Blocked 조건
 
-- 위 4개 docs 중 하나라도 부재 시 `PHASE_BLOCKED: docs 누락 (path)`.
-- 검증 1-6 중 하나라도 실패 시 `PHASE_FAILED: 검증 N`.
+**중요 — exit code 명시**: 아래 어느 마커든 출력만 하지 말고 반드시 `sys.exit(1)` (FAILED) 또는 `sys.exit(2)` (BLOCKED) — shell에서는 `exit 1` / `exit 2` — 비-0 exit code로 종료한다. 마커만 출력하고 정상 종료하면 `run-phases.py`가 success로 잘못 처리한다 (plan001-adr-cleanup 1차 실행 사례).
+
+- 위 4개 docs 중 하나라도 부재 시 `PHASE_BLOCKED: docs 누락 (path)` + `exit 2`.
+- 검증 1-6 중 하나라도 실패 시 `PHASE_FAILED: 검증 N` + `exit 1`.
