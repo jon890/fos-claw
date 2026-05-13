@@ -4,22 +4,23 @@ task / phase 파일 작성 직후 self-check. critic 또는 verify 단계에서 
 
 축적 규칙:
 
-- 새 사고 타입 발견 시 해당 § 에 **패턴 한 줄 + 실측 명령 + self-check** 추가.
+- 새 사고 타입 발견 시 해당 섹션에 **패턴 한 줄 + 실측 명령 + self-check** 추가.
 - 같은 사고 재발 시 패턴 강화 (예시 / 체크 엄격화).
 - "왜 이 가드가 필요한지" 1줄 단서는 반드시 — 미래 AI 가 의도 모르고 우회하지 않도록.
 - 사고 사례는 1개로 충분, 복수 나열 금지.
 
-| § | 카테고리 | 호출 시점 |
+| # | 카테고리 | 호출 시점 |
 |---|---|---|
-| § 1 | plan 작성 (critic 회피) | task / phase 파일 작성 직후 self-check |
-| § 2 | ai-nodes 워크스페이스 규약 위반 | 같은 시점 |
-| § 3 | docs / data 라우팅 위반 | 같은 시점 |
-| § 4 | dispatcher / runner 경계 위반 | 같은 시점 |
-| § 5 | git 운영 위반 | 같은 시점 |
+| 1 | plan 작성 (critic 회피) | task / phase 파일 작성 직후 self-check |
+| 2 | ai-nodes 워크스페이스 규약 위반 | 같은 시점 |
+| 3 | docs / data 라우팅 위반 | 같은 시점 |
+| 4 | dispatcher / runner 경계 위반 | 같은 시점 |
+| 5 | git 운영 위반 | 같은 시점 |
+| 6 | run-phases.py 하네스 계약 | 같은 시점 |
 
 ---
 
-## § 1. plan 작성 (critic 회피)
+## 1. plan 작성 (critic 회피)
 
 ### 1-1. 수치 추측 (파일 수 / 줄 수)
 
@@ -55,9 +56,18 @@ git ls-files <pattern> | xargs wc -l
 - 각 phase-NN.md 첫 줄부터 읽어서 다른 phase 안 보고 실행 가능한가?
 - 이전 phase의 출력 파일을 사용한다면 정확한 경로를 phase 본문에 명시했나?
 
+### 1-4. 검증 기준이 다른 phase의 "범위 외" 명시와 충돌
+
+**증상**: phase-01에 "ADR-007a/007b 리넘버링은 범위 외"라고 적어두고, phase-02 검증식은 `ADR 헤더 == 15`를 강제 → 충돌이라 검증 항상 실패. 또는 phase-01이 "줄 수 ≤250까지 욕심내지 않는다"라고 했는데 phase-02 검증이 ≤250 강제.
+**왜**: phase 간 기대값 불일치는 자기모순. run-phases.py는 phase 간 일관성 검사 안 함. 작성 시점에 사람이 잡아야 한다. plan001-adr-cleanup 1차 실행에서 실제로 발생 — 결과 손상은 없었지만 1 사이클 낭비.
+
+**Self-check**:
+- phase-NN에 "범위 외" / "이번 phase에서 안 함" 명시 항목이 있다면, 그 항목이 다른 phase 검증식의 통과 조건으로 등장하지 않는가?
+- 줄 수·파일 수 같은 정량 검증 기준이 phase-N 작업의 실제 슬림화 깊이와 align되는가? (욕심 ≠ 실제 범위)
+
 ---
 
-## § 2. ai-nodes 워크스페이스 규약 위반
+## 2. ai-nodes 워크스페이스 규약 위반
 
 ### 2-1. 다른 워크스페이스 자산 참조
 
@@ -78,7 +88,7 @@ git ls-files <pattern> | xargs wc -l
 
 ---
 
-## § 3. docs / data 라우팅 위반
+## 3. docs / data 라우팅 위반
 
 ### 3-1. 데이터 파일을 docs/ 에 둠
 
@@ -108,7 +118,7 @@ git ls-files <pattern> | xargs wc -l
 
 ---
 
-## § 4. dispatcher / runner 경계 위반
+## 4. dispatcher / runner 경계 위반
 
 ### 4-1. dispatcher 우회 직접 호출
 
@@ -138,7 +148,7 @@ git ls-files <pattern> | xargs wc -l
 
 ---
 
-## § 5. git 운영 위반
+## 5. git 운영 위반
 
 ### 5-1. force push / hooks skip
 
@@ -167,6 +177,39 @@ git ls-files <pattern> | xargs wc -l
 
 ---
 
+## 6. run-phases.py 하네스 계약
+
+### 6-1. PHASE_FAILED / PHASE_BLOCKED 마커만 출력하고 정상 종료
+
+**증상**: phase prompt에 "검증 실패면 `PHASE_FAILED: <reason>` 출력 후 종료"라고만 적혀 있어, 실행 Claude가 마커 출력만 하고 exit 0으로 끝남.
+**왜**: run-phases.py는 phase의 **exit code**만으로 성공/실패를 판정한다. `sys.exit(1)` = failed, `sys.exit(2)` = blocked, 그 외 = success. stdout의 PHASE_FAILED 마커는 알림 메시지용일 뿐 하네스 로직에 영향 없음. plan001-adr-cleanup 1차 실행에서 실제 발생 — phase-02가 검증 실패를 보고했는데도 index.json이 `completed`로 잘못 마킹됨.
+
+**Self-check**:
+- phase 본문에 PHASE_FAILED / PHASE_BLOCKED 트리거가 있다면 그 직후에 **`sys.exit(1)` (failed) 또는 `sys.exit(2)` (blocked)** 명령이 같이 적혀 있는가?
+- "출력 후 종료"가 아닌 "출력 + 비-0 exit code"로 명시했나? (예: `print('PHASE_FAILED: ...'); sys.exit(1)`)
+- shell phase면 `echo 'PHASE_FAILED: ...' && exit 1` 형태인가?
+
+### 6-2. 마지막 phase 끝의 trailing working tree 변경
+
+**증상**: 모든 phase가 commit + push까지 마쳤는데 `git status --porcelain`이 1줄 남는다. diff를 보면 `commitSha`, `updated_at` 같은 metadata 변경.
+**왜**: run-phases.py는 phase의 자체 commit이 끝난 뒤 index.json에 그 commit의 SHA를 후기록한다 (워킹 트리에만, 자기가 commit하지 않음). 마지막 phase 입장에선 자기 commit 직전엔 SHA를 모르므로 누락이 정상. 따라서 plan 마지막에 trailing cleanup commit이 필요할 수 있다.
+
+**Self-check**:
+- 마지막 phase가 끝난 뒤 `git status --porcelain | wc -l`을 한 번 더 확인하고 0이 아니면 trailing cleanup commit + push 처리하는 사후 단계가 plan 실행 회수에 포함됐나?
+- 또는 마지막 phase 본문 자체에 "run-phases.py 후기록은 다음 plan 시작 전 정리"를 명시해 두었나?
+
+### 6-3. JSON 산출물에 trailing newline 누락
+
+**증상**: phase가 `Path(...).write_text(json.dumps(data, indent=2, ensure_ascii=False))`로 저장 → git이 `\ No newline at end of file` 표시 → 다음 commit diff가 noisy.
+**왜**: POSIX text file 관례. trailing newline 한 글자만 추가하면 future diff가 깨끗.
+
+**Self-check**:
+- JSON write 시 `json.dumps(...) + "\n"`로 trailing newline을 명시했나?
+- 기존 JSON 파일을 수정한다면 원본의 trailing newline 유무를 보존하는가?
+
+---
+
 ## 변경 이력
 
-- 2026-05-13: 초안 — fos-blog `_shared/common-pitfalls.md`의 §1 패턴을 베이스로, ai-nodes 워크스페이스 규약(§2~§5)을 추가.
+- 2026-05-13: 초안 — fos-blog `_shared/common-pitfalls.md`의 1 패턴을 베이스로, ai-nodes 워크스페이스 규약(2~5)을 추가.
+- 2026-05-13: plan001-adr-cleanup 1 사이클 회고 누적 — 1-4 (phase 간 범위/검증 align), 6 신설 (run-phases.py 하네스 계약: exit code 규약 / trailing working tree / JSON trailing newline).
