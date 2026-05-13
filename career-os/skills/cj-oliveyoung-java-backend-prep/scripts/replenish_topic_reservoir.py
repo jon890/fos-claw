@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import os
 import re
 import subprocess
 from collections import Counter
@@ -141,6 +142,12 @@ def call_claude(prompt: str) -> dict:
     )
     if proc.returncode != 0:
         raise RuntimeError(f"claude failed ({proc.returncode}): {proc.stderr.strip() or proc.stdout.strip()}")
+    usage_file = os.environ.get("TRACK_TASK_CLAUDE_USAGE_FILE")
+    if usage_file:
+        try:
+            Path(usage_file).write_text(proc.stdout, encoding="utf-8")
+        except OSError:
+            pass
     outer = json.loads(proc.stdout)
     raw = (outer.get("result") or "").strip()
     raw = re.sub(r"^```json\s*|^```\s*|\s*```$", "", raw, flags=re.DOTALL).strip()

@@ -2,7 +2,7 @@
 
 ## 상태
 
-채택됨 (2026-04-14)
+채택됨 (2026-04-14). 이후 study-pack runner는 `--output-format json`을 다시 채택했으므로(현 `run_study_pack.sh` 참조), 본 ADR의 *출력 포맷 폐기* 결정 부분은 사실상 무효화되었다. 핵심 결정(Claude에게 Write 도구로 파일 쓰기를 시키지 않는다)은 유지된다. 토큰 회계 누락의 진짜 원인 및 처방은 [ADR-014](014-restore-claude-usage-with-stdout-capture.md) 참조.
 
 ## 맥락
 

@@ -2,6 +2,8 @@
 # run_master.sh — generate a senior-backend interview master playbook and publish it to fos-study.
 set -euo pipefail
 
+source "$HOME/ai-nodes/_shared/bin/claude_lib.sh"
+
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
 SOURCE_DIR="$TASK_ROOT/sources/fos-study"
 TOPIC="${MASTER_TOPIC:?MASTER_TOPIC is required}"
@@ -79,6 +81,7 @@ extract_and_validate() {
 
 attempt() {
   run_once || return 1
+  claude_persist_usage "$RAW_RESULT_JSON"
   extract_and_validate || return 1
 }
 

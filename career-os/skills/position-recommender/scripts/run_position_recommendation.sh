@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+source "$HOME/ai-nodes/_shared/bin/claude_lib.sh"
+
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
 REPORT_DATE="${REPORT_DATE:-$(date +%F)}"
 OUTDIR="$TASK_ROOT/data/reports/daily/$REPORT_DATE/position-recommendation"
@@ -71,5 +73,6 @@ timeout 900s claude --permission-mode bypassPermissions --print \
   > "$RAW_RESULT_JSON"
 
 python3 "$EXTRACTOR" "$RAW_RESULT_JSON" "$REPORT_MD"
+claude_persist_usage "$RAW_RESULT_JSON"
 cp "$REPORT_MD" "$RUNTIME_OUT"
 cat "$RUNTIME_OUT"
