@@ -74,7 +74,7 @@ Domain-specific extensions:
 
 ## Invocation
 
-This skill is normally invoked via the `cj-oliveyoung-java-backend-prep` skill runner:
+This skill is normally invoked via the `command-router` dispatcher:
 
 ```bash
 skills/command-router/scripts/run_now.sh study-pack <topic>
