@@ -105,7 +105,7 @@ def build_context(primary_cfg, candidates_doc, artifacts):
 
 
 def build_prompt(request_count: int, context: dict) -> str:
-    template = (TASK_ROOT / "skills" / "cj-oliveyoung-java-backend-prep" / "references" / "topic-replenishment-prompt.md").read_text(encoding="utf-8")
+    template = (TASK_ROOT / "skills" / "topic-pool-replenisher" / "references" / "topic-replenishment-prompt.md").read_text(encoding="utf-8")
     return "\n\n".join([
         template,
         f"이번에 생성할 후보 topic 개수: {request_count}",
@@ -341,7 +341,7 @@ def promote_live_coding_candidates(live_primary_doc, live_candidate_doc, artifac
 
 
 def refresh_inventory():
-    script = TASK_ROOT / "skills" / "cj-oliveyoung-java-backend-prep" / "scripts" / "refresh_topic_inventory.py"
+    script = TASK_ROOT / "skills" / "study-topic-recommender" / "scripts" / "refresh_topic_inventory.py"
     subprocess.run(["python3", str(script)], check=True, cwd=TASK_ROOT)
 
 

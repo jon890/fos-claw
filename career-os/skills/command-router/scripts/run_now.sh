@@ -81,7 +81,7 @@ ns = cfg.get('study-pack', {})
 sys.exit(0 if sys.argv[2] in ns else 1)
 PY
     then
-      CANDIDATE_PROMOTER="$TASK_ROOT/skills/cj-oliveyoung-java-backend-prep/scripts/promote_candidate_topics.py"
+      CANDIDATE_PROMOTER="$TASK_ROOT/skills/topic-pool-replenisher/scripts/promote_candidate_topics.py"
       if python3 "$CANDIDATE_PROMOTER" study "$TOPIC" >/dev/null 2>&1; then
         echo "[run_now] promoted study candidate into primary config: ${TOPIC}" >&2
       fi
@@ -142,7 +142,7 @@ PY
     ;;
   replenish-topics)
     run_tracked "career-os:replenish-topics" "topic reservoir 보충" \
-      "$TASK_ROOT/skills/cj-oliveyoung-java-backend-prep/scripts/run_replenish_topic_reservoir.sh"
+      "$TASK_ROOT/skills/topic-pool-replenisher/scripts/run_topic_replenishment.sh"
     ;;
   maintain-study-pack)
     TOPIC="${2:-}"
