@@ -38,7 +38,7 @@ POSITION_CONTEXT="AI 서비스 백엔드 위주" run_now.sh recommend-positions
   - role title / search keywords
   - posting link: exact individual posting URL when available
   - discovery link: official career/search page only when exact posting URL is not available
-  - link evidence level: exact active posting / official career needs search / external signal only
+  - link evidence level: exact active posting / official career needs search / external signal only. For Wanted, exact active requires API `status=active`; web_fetch/page 200 is not enough.
   - why it fits
   - evidence from candidate experience
   - likely JD keywords

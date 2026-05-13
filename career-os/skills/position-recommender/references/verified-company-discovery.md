@@ -18,7 +18,7 @@
 
 ## 탐색 순서
 
-1. Wanted API/공고로 active 서버/백엔드 공고를 수집한다.
+1. Wanted 공고는 반드시 Wanted API `status=active`로 active 여부를 확인한다. URL 직접 접근/web_fetch 200만으로 active라고 판단하지 않는다.
 2. 회사 공식 career 페이지를 web_search/web_fetch로 교차 확인한다.
 3. LinkedIn/JobKorea/Jumpit 등은 보조 증거로만 사용한다. 공식 페이지와 충돌하면 공식 페이지를 우선한다.
 4. 기술블로그/엔지니어링 블로그를 확인해 다음 시그널을 본다.
@@ -71,9 +71,10 @@
 
 각 후보마다 아래를 포함한다.
 
-- 공고 링크: 개별 공고 URL이 있으면 직접 첨부
+- 공고 링크: 개별 공고 URL이 있으면 직접 첨부. Wanted는 API `status=active` 확인이 된 경우만 첨부
 - 탐색 링크: 개별 공고 URL이 없으면 공식 career/search 페이지를 분리 첨부
 - 링크 근거 수준: 개별 공고 active 확인 / 공식 career 내 탐색 필요 / 외부 검색 시그널만 있음
+- 만료 공고: Wanted API `status=close` 또는 공식 마감 확인 시 추천에서 제외하고, 필요하면 “만료로 제외”에만 짧게 언급
 - JD fit
 - 회사/규모 업사이드
 - 기술블로그/엔지니어링 시그널
