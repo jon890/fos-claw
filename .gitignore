@@ -33,3 +33,7 @@ __pycache__/
 # OS/editor noise
 .DS_Store
 Thumbs.db
+
+# Bun / Node
+node_modules/
+bun.lockb
