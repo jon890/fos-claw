@@ -2,8 +2,8 @@
   "name": "plan002-config-consolidation",
   "description": "career-os/config/ 정리: 5 topic configs → 단일 topics.json, 3 source configs → 단일 sources.json, baseline-core-files.txt → JSON, position 4개 자산 → position-recommender/references/로 이동",
   "created_at": "2026-05-13T18:30:00+00:00",
-  "updated_at": "2026-05-13T18:30:00+00:00",
-  "status": "pending",
+  "updated_at": "2026-05-13T10:08:57.053885+00:00",
+  "status": "running",
   "current_phase": 1,
   "total_phases": 5,
   "error_message": null,
@@ -20,8 +20,14 @@
       "number": 1,
       "title": "docs-first 갱신: 새 스키마 + ADR + 디렉터리 트리 + 흐름",
       "file": "phase-01.md",
-      "status": "pending",
-      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "status": "completed",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash",
+        "Grep"
+      ],
       "model": "sonnet",
       "timeout": 600
     },
@@ -30,7 +36,14 @@
       "title": "topics.json 통합 (5→1) + resolver 4개 + caller 8+ 갱신",
       "file": "phase-02.md",
       "status": "pending",
-      "allowedTools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep"],
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash",
+        "Glob",
+        "Grep"
+      ],
       "model": "sonnet",
       "timeout": 1200
     },
@@ -39,7 +52,13 @@
       "title": "sources.json 통합 (3→1) + refresh_topic_inventory.py 갱신",
       "file": "phase-03.md",
       "status": "pending",
-      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash",
+        "Grep"
+      ],
       "model": "sonnet",
       "timeout": 600
     },
@@ -48,7 +67,13 @@
       "title": "baseline-core-files.txt → JSON 전환 + run_baseline.sh / build_target_file_list.py",
       "file": "phase-04.md",
       "status": "pending",
-      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash",
+        "Grep"
+      ],
       "model": "sonnet",
       "timeout": 600
     },
@@ -57,7 +82,13 @@
       "title": "position 4개 자산 → skills/position-recommender/references/ + 통합 smoke + cleanup + push",
       "file": "phase-05.md",
       "status": "pending",
-      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash",
+        "Grep"
+      ],
       "model": "haiku",
       "timeout": 600
     }

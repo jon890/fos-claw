@@ -72,21 +72,16 @@ career-os/
 │       └── phase-NN.md                   각 phase의 자기완결 프롬프트
 │   ↑ skills/planning이 생성, skills/plan-and-build가 실행. 완료된 plan도 history 보존 위해 삭제 X.
 │
-├── config/                                ← 사람이 큐레이션한 입력
-│   ├── mvp-target.json           현재 active 타깃 단일 출처
-│   ├── candidate-profile.md      이력 (prose, 의도적으로 JSON 아님)
-│   ├── baseline-core-files.txt   baseline 분석 대상 파일 목록
-│   ├── study-pack-topics.json    primary 토픽
-│   ├── study-topic-candidates.json reservoir
-│   ├── study-pack-maintainer-topics.json
-│   ├── experience-question-bank-topics.json
-│   ├── interview-master-topics.json
-│   ├── topic-file-map.json       daily용 토픽 → 파일
-│   ├── tech-blog-sources.json    보조 카테고리 1
-│   ├── ai-topic-sources.json     보조 카테고리 2
-│   ├── geek-news-sources.json    보조 카테고리 3
-│   ├── cj-foodville-bootcamp-topics.json  (deferred)
-│   └── .env                      비밀 (GITHUB_TOKEN, DISCORD_WEBHOOK_URL 등)
+├── config/                                ← 사람이 큐레이션한 입력 (ADR-016 통합 후)
+│   ├── mvp-target.json                현재 active 타깃 단일 출처
+│   ├── candidate-profile.md           이력 (prose, 의도적으로 JSON 아님)
+│   ├── topics.json                    5 topic configs 통합 (plan002)
+│   ├── sources.json                   3 source configs 통합 (plan002)
+│   ├── baseline-core-files.json       baseline 분석 대상 파일 목록 (txt → JSON, plan002)
+│   ├── topic-file-map.json            daily용 토픽 → 파일
+│   ├── live-coding-seed-pool.json
+│   ├── live-coding-seed-candidates.json
+│   └── .env                           비밀 (GITHUB_TOKEN, DISCORD_WEBHOOK_URL 등)
 │
 ├── data/
 │   ├── study-progress.json       후보자 학습 진도 (ADR-002)
@@ -145,6 +140,9 @@ career-os/
 │   ├── interview-master-writer/
 │   │   └── scripts/{run_master.sh, resolve_master_topic.py}
 │   ├── position-recommender/
+│   │   ├── references/               company-upside-reference.md, position-context-index.md,
+│   │   │                             position-decision-criteria.md, verified-company-research-targets.json
+│   │   │                             (plan002 이후 config/에서 이동)
 │   │   └── scripts/{run_position_recommendation.sh, extract_position_report.py,
 │   │                collect_live_postings.py (deferred), publish_job_analysis.sh (deferred)}
 │   ├── cj-foodville-coffeechat-prep/
