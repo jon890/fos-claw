@@ -66,6 +66,12 @@ career-os/
 │   ├── learn/            세션·실험 회고
 │   └── audit/            (legacy) 과거 docs-audit 출력
 │
+├── tasks/                                 ← planning 산출물 (실행 대기 또는 실행 중)
+│   └── plan{N}-<kebab-slug>/
+│       ├── index.json                    task 메타데이터 + phase 목록 (run-phases.py가 검증)
+│       └── phase-NN.md                   각 phase의 자기완결 프롬프트
+│   ↑ skills/planning이 생성, skills/plan-and-build가 실행. 완료된 plan도 history 보존 위해 삭제 X.
+│
 ├── config/                                ← 사람이 큐레이션한 입력
 │   ├── mvp-target.json           현재 active 타깃 단일 출처
 │   ├── candidate-profile.md      이력 (prose, 의도적으로 JSON 아님)
