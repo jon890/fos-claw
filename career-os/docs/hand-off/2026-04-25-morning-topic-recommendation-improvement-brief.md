@@ -33,7 +33,7 @@ Improve the `career-os` morning recommendation / live-coding pipeline so it stay
 - `skills/cj-oliveyoung-java-backend-prep/scripts/refresh_topic_inventory.py`
 - `skills/cj-oliveyoung-java-backend-prep/scripts/run_morning_topic_recommendation.sh`
 - `skills/cj-oliveyoung-java-backend-prep/scripts/promote_candidate_topics.py`
-- `docs/decisions/009-morning-topic-reservoir-and-recommendation-pipeline.md`
+- `docs/adr.md` (ADR-009: Morning topic reservoir + recommendation pipeline)
 
 ### Behavior changes
 
