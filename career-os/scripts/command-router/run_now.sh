@@ -44,7 +44,7 @@ run_tracked() {
 case "$MODE" in
   baseline)
     run_tracked "career-os:baseline" "baseline gap analysis" \
-      "$TASK_ROOT/skills/knowledge-gap-analyzer/scripts/run_baseline.sh"
+      "$TASK_ROOT/scripts/knowledge-gap-analyzer/run_baseline.sh"
     ;;
   daily)
     # Optional second arg: topic key from config/topic-file-map.json
@@ -52,7 +52,7 @@ case "$MODE" in
     # Omit to auto-select the most overdue weak spot from data/study-progress.json
     export DAILY_TOPIC="${2:-}"
     run_tracked "career-os:daily" "daily focus report" \
-      "$TASK_ROOT/skills/knowledge-gap-analyzer/scripts/run_daily.sh"
+      "$TASK_ROOT/scripts/knowledge-gap-analyzer/run_daily.sh"
     ;;
   study-pack)
     TOPIC="${2:-}"
@@ -81,7 +81,7 @@ ns = cfg.get('study-pack', {})
 sys.exit(0 if sys.argv[2] in ns else 1)
 PY
     then
-      CANDIDATE_PROMOTER="$TASK_ROOT/skills/topic-pool-replenisher/scripts/promote_candidate_topics.py"
+      CANDIDATE_PROMOTER="$TASK_ROOT/scripts/topic-pool-replenisher/promote_candidate_topics.py"
       if python3 "$CANDIDATE_PROMOTER" study "$TOPIC" >/dev/null 2>&1; then
         echo "[run_now] promoted study candidate into primary config: ${TOPIC}" >&2
       fi
@@ -126,11 +126,11 @@ PY
     ;;
   recommend-topics)
     run_tracked "career-os:recommend-topics" "morning topic 추천" \
-      "$TASK_ROOT/skills/study-topic-recommender/scripts/run_topic_recommendation.sh"
+      "$TASK_ROOT/scripts/study-topic-recommender/run_topic_recommendation.sh"
     ;;
   live-coding-dispatch)
     run_tracked "career-os:live-coding-dispatch" "live-coding dispatch" \
-      "$TASK_ROOT/skills/study-topic-recommender/scripts/run_live_coding_dispatch.sh"
+      "$TASK_ROOT/scripts/study-topic-recommender/run_live_coding_dispatch.sh"
     ;;
   recommend-positions)
     run_tracked "career-os:position-recommendation" "position 추천" \
@@ -142,7 +142,7 @@ PY
     ;;
   bootcamp-batch)
     run_tracked "career-os:bootcamp-batch" "부트캠프 일괄 study-pack" \
-      "$TASK_ROOT/skills/study-pack-batch/scripts/run_bootcamp_batch.sh"
+      "$TASK_ROOT/scripts/study-pack-batch/run_bootcamp_batch.sh"
     ;;
   auto-question-bank)
     run_tracked "career-os:auto-question-bank" "auto question-bank refresh" \
@@ -150,7 +150,7 @@ PY
     ;;
   replenish-topics)
     run_tracked "career-os:replenish-topics" "topic reservoir 보충" \
-      "$TASK_ROOT/skills/topic-pool-replenisher/scripts/run_topic_replenishment.sh"
+      "$TASK_ROOT/scripts/topic-pool-replenisher/run_topic_replenishment.sh"
     ;;
   maintain-study-pack)
     TOPIC="${2:-}"
@@ -179,7 +179,7 @@ PY
     ;;
   smoke)
     run_tracked "career-os:smoke" "smoke test" \
-      "$TASK_ROOT/skills/knowledge-gap-analyzer/scripts/run_smoke_test.sh"
+      "$TASK_ROOT/scripts/knowledge-gap-analyzer/run_smoke_test.sh"
     ;;
   *)
     echo "usage: run_now.sh [baseline | daily [topic] | study-pack <topic> | question-bank <topic> | auto-question-bank | recommend-topics | live-coding-dispatch | recommend-positions | foodville-coffeechat | bootcamp-batch | replenish-topics | maintain-study-pack <topic> | master [topic] | smoke]" >&2

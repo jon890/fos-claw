@@ -341,7 +341,7 @@ def promote_live_coding_candidates(live_primary_doc, live_candidate_doc, artifac
 
 
 def refresh_inventory():
-    script = TASK_ROOT / "skills" / "study-topic-recommender" / "scripts" / "refresh_topic_inventory.py"
+    script = TASK_ROOT / "scripts" / "study-topic-recommender" / "refresh_topic_inventory.py"
     subprocess.run(["python3", str(script)], check=True, cwd=TASK_ROOT)
 
 

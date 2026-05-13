@@ -15,8 +15,8 @@ INPUT_NOTE="$OUTDIR/analysis-input.md"
 REPORT_MD="$OUTDIR/report.md"
 CLAUDE_JSON="$OUTDIR/claude.result.json"
 FALLBACK_MD="$OUTDIR/report.fallback.md"
-TARGET_BUILDER="$TASK_ROOT/skills/knowledge-gap-analyzer/scripts/build_target_file_list.py"
-TOPIC_SELECTOR="$TASK_ROOT/skills/knowledge-gap-analyzer/scripts/select_topic.py"
+TARGET_BUILDER="$TASK_ROOT/scripts/knowledge-gap-analyzer/build_target_file_list.py"
+TOPIC_SELECTOR="$TASK_ROOT/scripts/knowledge-gap-analyzer/select_topic.py"
 mkdir -p "$OUTDIR"
 
 # --- Git sync ---
@@ -69,7 +69,7 @@ if timeout 420s claude --permission-mode bypassPermissions --print --output-form
     "$CLAUDE_JSON" "$REPORT_MD" "${TRACK_TASK_CLAUDE_USAGE_FILE:-}"
 
   # --- Update study-progress.json ---
-  python3 "$TASK_ROOT/skills/knowledge-gap-analyzer/scripts/update_study_progress.py" \
+  python3 "$TASK_ROOT/scripts/knowledge-gap-analyzer/update_study_progress.py" \
     "$PROGRESS_FILE" "$TOPIC" "$TARGET_LIST"
 
 else
