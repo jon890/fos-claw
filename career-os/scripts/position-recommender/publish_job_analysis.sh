@@ -3,6 +3,7 @@ set -euo pipefail
 
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
 SOURCE_DIR="$TASK_ROOT/sources/fos-study"
+FOG_GIT="$HOME/ai-nodes/_shared/lib/fos_study_git.ts"
 SLUG="${1:?usage: publish_job_analysis.sh <slug> <title> <analysis-md> [service-landscape-md]}"
 TITLE="${2:?usage: publish_job_analysis.sh <slug> <title> <analysis-md> [service-landscape-md]}"
 ANALYSIS_MD="${3:?usage: publish_job_analysis.sh <slug> <title> <analysis-md> [service-landscape-md]}"
@@ -19,11 +20,7 @@ if [[ -n "$SERVICE_MD" && ! -f "$SERVICE_MD" ]]; then
   exit 1
 fi
 
-if [[ ! -d "$SOURCE_DIR/.git" ]]; then
-  git clone --depth=1 https://github.com/jon890/fos-study.git "$SOURCE_DIR"
-else
-  git -C "$SOURCE_DIR" pull --ff-only
-fi
+bun run "$FOG_GIT" ensure-repo --source-dir "$SOURCE_DIR"
 
 mkdir -p "$(dirname "$OUT_MD")"
 python3 - <<'PY' "$TITLE" "$ANALYSIS_MD" "$SERVICE_MD" "$OUT_MD"
@@ -94,18 +91,20 @@ Path(out_path).write_text(content, encoding='utf-8')
 print(out_path)
 PY
 
-if git -C "$SOURCE_DIR" ls-files --error-unmatch "$OUT_REL" >/dev/null 2>&1; then
-  ACTION="update"
-  if git -C "$SOURCE_DIR" diff --quiet -- "$OUT_REL"; then
-    echo "No content change detected for $OUT_REL"
-    exit 0
-  fi
-else
-  ACTION="add"
+commit_status=0
+bun run "$FOG_GIT" commit-file \
+  --source-dir "$SOURCE_DIR" \
+  --rel-path "$OUT_REL" \
+  --prefix "docs(interview):" \
+  --message "${SLUG} job analysis" \
+  || commit_status=$?
+if [ "$commit_status" -eq 42 ]; then
+  echo "No content change detected for $OUT_REL"
+  exit 0
+elif [ "$commit_status" -ne 0 ]; then
+  echo "commit-file failed (exit ${commit_status})" >&2
+  exit "$commit_status"
 fi
-
-git -C "$SOURCE_DIR" add "$OUT_REL"
-git -C "$SOURCE_DIR" commit -m "docs(interview): ${ACTION} ${SLUG} job analysis"
-git -C "$SOURCE_DIR" push origin HEAD
+bun run "$FOG_GIT" push --source-dir "$SOURCE_DIR"
 HASH="$(git -C "$SOURCE_DIR" rev-parse --short HEAD)"
 echo "Published job analysis: $OUT_REL ($HASH)"

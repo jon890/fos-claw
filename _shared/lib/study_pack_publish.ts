@@ -29,6 +29,7 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { persistUsage } from "./invoke_claude_skills.ts";
+import { commitFile, ensureRepo, push } from "./fos_study_git.ts";
 
 export interface StudyPackPublishOptions {
   topicKey: string;
@@ -105,16 +106,13 @@ export function studyPackPublish(opts: StudyPackPublishOptions): void {
     opts.outdir ??
     join(taskRoot, "data/reports/daily", reportDate, `study-pack-${opts.topicKey}`);
   const SOURCE_DIR = join(taskRoot, "sources/fos-study");
-  const LOCK_DIR = join(taskRoot, "data/runtime/locks");
   const RAW_JSON = join(OUTDIR, "claude.result.json");
   const GENERATED_MD = join(OUTDIR, "generated.md");
   const INPUT_NOTE = join(OUTDIR, "analysis-input.md");
-  const OUTPUT_MD = join(SOURCE_DIR, opts.outputPath);
   const ARTIFACTS_JSON = join(taskRoot, "data/generated-artifacts.json");
   const UPDATE_ARTIFACTS_PY = join(HOME, "ai-nodes/_shared/bin/update_artifacts.py");
 
   mkdirSync(OUTDIR, { recursive: true });
-  mkdirSync(LOCK_DIR, { recursive: true });
 
   // Build and write prompt (always overwrite to pick up config changes)
   const promptText =
@@ -190,37 +188,31 @@ export function studyPackPublish(opts: StudyPackPublishOptions): void {
     }
   }
 
-  // Git publish under flock
-  const gitScript = `#!/usr/bin/env bash
-set -euo pipefail
-exec 9>"${LOCK_DIR}/fos-study-write.lock"
-flock 9
-if [[ ! -d "${SOURCE_DIR}/.git" ]]; then
-  git clone --depth=1 https://github.com/jon890/fos-study.git "${SOURCE_DIR}"
-else
-  git -C "${SOURCE_DIR}" pull --ff-only
-fi
-mkdir -p "$(dirname "${OUTPUT_MD}")"
-cp "${GENERATED_MD}" "${OUTPUT_MD}"
-if git -C "${SOURCE_DIR}" ls-files --error-unmatch "${opts.outputPath}" >/dev/null 2>&1; then
-  EFFECTIVE_ACTION=update
-  if git -C "${SOURCE_DIR}" diff --quiet -- "${opts.outputPath}"; then
-    echo "No content change detected for ${opts.outputPath}"
-    exit 0
-  fi
-else
-  EFFECTIVE_ACTION=add
-fi
-COMMIT_MSG="docs(${opts.commitDomain}): \${EFFECTIVE_ACTION} draft ${commitTopic} study pack"
-git -C "${SOURCE_DIR}" add "${opts.outputPath}"
-git -C "${SOURCE_DIR}" commit -m "\${COMMIT_MSG}"
-git -C "${SOURCE_DIR}" push origin HEAD
-COMMIT_HASH="\$(git -C "${SOURCE_DIR}" rev-parse HEAD)"
-python3 "${UPDATE_ARTIFACTS_PY}" \\
-  "${ARTIFACTS_JSON}" "${opts.topicKey}" "${opts.outputPath}" "\${COMMIT_HASH}"
-echo "Committed and pushed: \${COMMIT_MSG} (\${COMMIT_HASH})"
-`;
-  execSync(gitScript, { shell: "/bin/bash", stdio: "inherit" });
+  // Git publish
+  ensureRepo({ sourceDir: SOURCE_DIR });
+  const generatedContent = readFileSync(GENERATED_MD, "utf-8");
+  const gitAction = commitFile({
+    sourceDir: SOURCE_DIR,
+    relativePath: opts.outputPath,
+    contents: generatedContent,
+    message: `draft ${commitTopic} study pack`,
+    prefix: `docs(${opts.commitDomain}):`,
+  });
+  if (gitAction === "skipped") {
+    process.stdout.write(`No content change for ${opts.outputPath}\n`);
+    return;
+  }
+  push({ sourceDir: SOURCE_DIR });
+  const commitHash = execSync(`git -C "${SOURCE_DIR}" rev-parse HEAD`, {
+    encoding: "utf-8",
+  }).trim();
+  execSync(
+    `python3 "${UPDATE_ARTIFACTS_PY}" "${ARTIFACTS_JSON}" "${opts.topicKey}" "${opts.outputPath}" "${commitHash}"`,
+    { shell: "/bin/bash", stdio: "inherit" },
+  );
+  process.stdout.write(
+    `Committed and pushed: docs(${opts.commitDomain}): ${gitAction} draft ${commitTopic} study pack (${commitHash})\n`,
+  );
 }
 
 // CLI entry point

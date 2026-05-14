@@ -4,6 +4,7 @@ set -euo pipefail
 
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
 SOURCE_DIR="$TASK_ROOT/sources/fos-study"
+FOG_GIT="$HOME/ai-nodes/_shared/lib/fos_study_git.ts"
 TOPIC="${MASTER_TOPIC:?MASTER_TOPIC is required}"
 OUTPUT_REL_PATH="${OUTPUT_REL_PATH:?OUTPUT_REL_PATH is required}"
 INPUT_FILES_JSON="${INPUT_FILES_JSON:?INPUT_FILES_JSON is required}"
@@ -19,11 +20,7 @@ EXTRACTOR="$TASK_ROOT/scripts/study-pack-writer/extract_and_validate_study_pack.
 mkdir -p "$OUTDIR"
 mkdir -p "$(dirname "$OUTPUT_MD")"
 
-if [[ ! -d "$SOURCE_DIR/.git" ]]; then
-  git clone --depth=1 https://github.com/jon890/fos-study.git "$SOURCE_DIR"
-else
-  git -C "$SOURCE_DIR" pull --ff-only
-fi
+bun run "$FOG_GIT" ensure-repo --source-dir "$SOURCE_DIR"
 
 python3 - "$TASK_ROOT" "$INPUT_FILES_JSON" "$INPUT_NOTE" "$PROMPT_FILE" "$TOPIC" "$OUTPUT_REL_PATH" "$PROMPT_APPEND" <<'PY'
 import json
@@ -100,22 +97,22 @@ EOF
   fi
 fi
 
-if git -C "$SOURCE_DIR" ls-files --error-unmatch "$OUTPUT_REL_PATH" >/dev/null 2>&1; then
-  EFFECTIVE_ACTION="update"
-  if git -C "$SOURCE_DIR" diff --quiet -- "$OUTPUT_REL_PATH"; then
-    echo "No content change detected for $OUTPUT_REL_PATH"
-    exit 0
-  fi
-else
-  EFFECTIVE_ACTION="add"
-fi
-
 BASENAME="$(basename "$OUTPUT_REL_PATH" .md)"
-COMMIT_MSG="docs(interview): ${EFFECTIVE_ACTION} draft ${BASENAME}"
 
-git -C "$SOURCE_DIR" add "$OUTPUT_REL_PATH"
-git -C "$SOURCE_DIR" commit -m "$COMMIT_MSG"
-git -C "$SOURCE_DIR" push origin HEAD
+commit_status=0
+bun run "$FOG_GIT" commit-file \
+  --source-dir "$SOURCE_DIR" \
+  --rel-path "$OUTPUT_REL_PATH" \
+  --prefix "docs(interview):" \
+  --message "draft ${BASENAME}" \
+  || commit_status=$?
+if [ "$commit_status" -eq 42 ]; then
+  exit 0
+elif [ "$commit_status" -ne 0 ]; then
+  echo "commit-file failed (exit ${commit_status})" >&2
+  exit "$commit_status"
+fi
+bun run "$FOG_GIT" push --source-dir "$SOURCE_DIR"
 
 COMMIT_HASH="$(git -C "$SOURCE_DIR" rev-parse HEAD)"
 python3 "$HOME/ai-nodes/_shared/bin/update_artifacts.py" \
@@ -123,4 +120,4 @@ python3 "$HOME/ai-nodes/_shared/bin/update_artifacts.py" \
   "$TOPIC" "$OUTPUT_REL_PATH" "$COMMIT_HASH" \
   --kind interview-master
 
-echo "Committed and pushed: $COMMIT_MSG ($COMMIT_HASH)"
+echo "Committed and pushed: interview-master ${BASENAME} (${COMMIT_HASH})"
