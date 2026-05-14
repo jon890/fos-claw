@@ -1,0 +1,87 @@
+{
+  "name": "plan011-runner-ts-migration",
+  "description": "career-os의 모든 .sh runner를 TS(Bun)로 마이그레이션. 단일 진입점 career-os/bin/run-now(shebang TS) + lib/dispatcher.ts(14 case 라우팅) + 14 runner를 scripts/<skill>/<command>.ts로. _shared/bin/track_task.sh → _shared/bin/track_task.ts + cross-workspace caller(apartment 등) 일괄 갱신. 프롬프트는 skills/<skill>/references/*-prompt.md + {{placeholder}} 형식 유지. 관심사 분리: .sh=0개(또는 thin wrapper) / .ts=비즈니스 / .md=프롬프트(편집 가능) / config=데이터 / .env=비밀.",
+  "created_at": "2026-05-14T12:30:00+00:00",
+  "updated_at": "2026-05-14T12:30:00+00:00",
+  "status": "pending",
+  "current_phase": 0,
+  "total_phases": 7,
+  "error_message": null,
+  "blocked_reason": null,
+  "related_docs": [
+    "career-os/docs/adr.md",
+    "career-os/docs/code-architecture.md",
+    "career-os/docs/flow.md",
+    "career-os/AGENTS.md",
+    "AGENTS.md"
+  ],
+  "depends_on": [
+    "plan008-extractor-renderer-ts",
+    "plan010-abstraction-audit"
+  ],
+  "phases": [
+    {
+      "number": 1,
+      "title": "docs-first: ADR-024 추가 + code-architecture/flow/AGENTS 갱신",
+      "file": "phase-01.md",
+      "status": "pending",
+      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "model": "sonnet",
+      "timeout": 1200
+    },
+    {
+      "number": 2,
+      "title": "career-os/bin/run-now + lib/dispatcher.ts 신설 (14 case 라우팅, .sh dispatcher와 공존)",
+      "file": "phase-02.md",
+      "status": "pending",
+      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "model": "sonnet",
+      "timeout": 1200
+    },
+    {
+      "number": 3,
+      "title": "가벼운 4 runner TS 마이그 (smoke / baseline / daily / recommend-positions)",
+      "file": "phase-03.md",
+      "status": "pending",
+      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "model": "sonnet",
+      "timeout": 1200
+    },
+    {
+      "number": 4,
+      "title": "중간 5 runner TS 마이그 (recommend-topics / replenish-topics / foodville-coffeechat / master / question-bank)",
+      "file": "phase-04.md",
+      "status": "pending",
+      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "model": "sonnet",
+      "timeout": 1200
+    },
+    {
+      "number": 5,
+      "title": "무거운 5 runner TS 마이그 (study-pack / maintain-study-pack / bootcamp-batch / live-coding-dispatch / auto-question-bank)",
+      "file": "phase-05.md",
+      "status": "pending",
+      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "model": "sonnet",
+      "timeout": 1200
+    },
+    {
+      "number": 6,
+      "title": "_shared/bin/track_task.ts 신설 + cross-workspace caller(career-os + apartment + stock-investment + travel) 일괄 갱신",
+      "file": "phase-06.md",
+      "status": "pending",
+      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "model": "sonnet",
+      "timeout": 1800
+    },
+    {
+      "number": 7,
+      "title": "통합 smoke + .sh 잔재 grep + .sh git rm + push + trailing cleanup",
+      "file": "phase-07.md",
+      "status": "pending",
+      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "model": "sonnet",
+      "timeout": 1200
+    }
+  ]
+}
