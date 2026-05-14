@@ -54,61 +54,6 @@ case "$MODE" in
     run_tracked "career-os:daily" "daily focus report" \
       "$TASK_ROOT/scripts/knowledge-gap-analyzer/run_daily.sh"
     ;;
-  study-pack)
-    TOPIC="${2:-}"
-    if [[ -z "$TOPIC" ]]; then
-      echo "usage: run_now.sh study-pack <topic>" >&2
-      echo "  topic keys: see config/topics.json (study-pack namespace)" >&2
-      exit 1
-    fi
-
-    TOPIC_LOCK_FILE="$LOCK_DIR/study-pack-${TOPIC}.lock"
-    exec 9>"$TOPIC_LOCK_FILE"
-    if ! flock -n 9; then
-      echo "[run_now] study-pack topic already active; skipping duplicate run for ${TOPIC}" >&2
-      exit 0
-    fi
-
-    $NOTIFY_SCRIPT "[시작] ${TOPIC} 스터디팩 생성 시작"
-
-    MAINTAINER_CONFIG="$TASK_ROOT/config/topics.json"
-    PRIMARY_TOPIC_CONFIG="${TOPIC_CONFIG_OVERRIDE:-$TASK_ROOT/config/topics.json}"
-    if [[ -z "${TOPIC_CONFIG_OVERRIDE:-}" ]] && ! python3 - <<'PY' "$PRIMARY_TOPIC_CONFIG" "$TOPIC"
-import json, sys
-from pathlib import Path
-cfg = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-ns = cfg.get('study-pack', {})
-sys.exit(0 if sys.argv[2] in ns else 1)
-PY
-    then
-      CANDIDATE_PROMOTER="$TASK_ROOT/scripts/topic-pool-replenisher/promote_candidate_topics.py"
-      if python3 "$CANDIDATE_PROMOTER" study "$TOPIC" >/dev/null 2>&1; then
-        echo "[run_now] promoted study candidate into primary config: ${TOPIC}" >&2
-      fi
-    fi
-
-    if [[ -z "${TOPIC_CONFIG_OVERRIDE:-}" ]] && python3 - <<'PY' "$TASK_ROOT/config/topics.json" "$TOPIC"
-import json, sys
-from pathlib import Path
-cfg = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
-ns = cfg.get('study-pack-maintainer', {})
-sys.exit(0 if sys.argv[2] in ns else 1)
-PY
-    then
-      RESOLVER="$TASK_ROOT/scripts/study-pack-maintainer/resolve_maintainer_topic.ts"
-      eval "$("$RESOLVER" "$MAINTAINER_CONFIG" "$TOPIC")"
-
-      run_tracked "career-os:study-pack:$TOPIC" "${TOPIC} 스터디팩 (maintainer)" \
-        "$TASK_ROOT/scripts/study-pack-maintainer/run_maintainer.sh"
-    fi
-
-    RESOLVER="$TASK_ROOT/scripts/study-pack-writer/resolve_study_pack_topic.ts"
-    TOPIC_CONFIG="${TOPIC_CONFIG_OVERRIDE:-$TASK_ROOT/config/topics.json}"
-    eval "$("$RESOLVER" "$TOPIC_CONFIG" "$TOPIC")"
-
-    run_tracked "career-os:study-pack:$TOPIC" "${TOPIC} 스터디팩" \
-      "$TASK_ROOT/scripts/study-pack-writer/run_study_pack.sh"
-    ;;
   question-bank)
     TOPIC="${2:-}"
     if [[ -z "$TOPIC" ]]; then
@@ -182,9 +127,8 @@ PY
       "$TASK_ROOT/scripts/knowledge-gap-analyzer/run_smoke_test.sh"
     ;;
   *)
-    echo "usage: run_now.sh [baseline | daily [topic] | study-pack <topic> | question-bank <topic> | auto-question-bank | recommend-topics | live-coding-dispatch | recommend-positions | foodville-coffeechat | bootcamp-batch | replenish-topics | maintain-study-pack <topic> | master [topic] | smoke]" >&2
+    echo "usage: run_now.sh [baseline | daily [topic] | question-bank <topic> | auto-question-bank | recommend-topics | live-coding-dispatch | recommend-positions | foodville-coffeechat | bootcamp-batch | replenish-topics | maintain-study-pack <topic> | master [topic] | smoke]" >&2
     echo "  daily topic keys: see config/topic-file-map.json" >&2
-    echo "  study-pack topic keys: see config/topics.json (study-pack namespace)" >&2
     echo "  question-bank topic keys: see config/topics.json (question-bank namespace)" >&2
     echo "  maintain-study-pack topic keys: see config/topics.json (study-pack-maintainer namespace)" >&2
     echo "  master topic keys: see config/topics.json (master namespace, default: senior-backend-master-playbook)" >&2

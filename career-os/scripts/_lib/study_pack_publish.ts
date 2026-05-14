@@ -70,11 +70,11 @@ const RETRY_PROMPT = `
 function buildStudyPackPrompt(opts: StudyPackPublishOptions, taskRoot: string): string {
   const promptFilePath = join(
     taskRoot,
-    "skills/study-pack-writer/references/study-pack-prompt.md",
+    ".claude/skills/study-pack-writer/references/study-pack-prompt.md",
   );
   const rulesFilePath = join(
     taskRoot,
-    "skills/study-pack-writer/references/fos-study-writing-rules.md",
+    ".claude/skills/study-pack-writer/references/fos-study-writing-rules.md",
   );
   const profileFilePath = join(taskRoot, "config/candidate-profile.md");
   const topic = opts.studyTopic ?? opts.topicKey;
@@ -162,7 +162,7 @@ export function studyPackPublish(opts: StudyPackPublishOptions): void {
     // study_pack: delegate to extract_and_validate_study_pack.ts
     const extractor = join(
       taskRoot,
-      "scripts/study-pack-writer/extract_and_validate_study_pack.ts",
+      "scripts/_lib/extract_and_validate_study_pack.ts",
     );
     const result = spawnSync("bun", ["run", extractor, RAW_JSON, GENERATED_MD], {
       stdio: "inherit",

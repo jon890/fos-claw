@@ -6,7 +6,7 @@ NOTIFY_SCRIPT="bun --env-file=$TASK_ROOT/.env run $HOME/ai-nodes/_shared/lib/not
 SEED_CONFIG="$TASK_ROOT/config/live-coding-seed-pool.json"
 CANDIDATE_CONFIG="$TASK_ROOT/config/live-coding-seed-candidates.json"
 TEMP_CONFIG="$TASK_ROOT/data/runtime/live-coding-generated-topic.json"
-RESOLVER="$TASK_ROOT/scripts/study-pack-writer/resolve_study_pack_topic.ts"
+RESOLVER="$TASK_ROOT/scripts/_lib/resolve_study_pack_topic.ts"
 LOCK_FILE="$TASK_ROOT/data/runtime/locks/morning-live-coding.lock"
 mkdir -p "$(dirname "$TEMP_CONFIG")" "$(dirname "$LOCK_FILE")"
 

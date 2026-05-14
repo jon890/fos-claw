@@ -4,7 +4,7 @@ set -euo pipefail
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
 SOURCE_DIR="$TASK_ROOT/sources/fos-study"
 TOPIC_CONFIG="$TASK_ROOT/config/topics.json"
-RESOLVER="$TASK_ROOT/scripts/study-pack-writer/resolve_study_pack_topic.ts"
+RESOLVER="$TASK_ROOT/scripts/_lib/resolve_study_pack_topic.ts"
 OUTDIR_BASE="$TASK_ROOT/data/reports/daily/${REPORT_DATE:-$(date +%F)}/bootcamp"
 SUMMARY="$TASK_ROOT/data/runtime/bootcamp-summary.md"
 mkdir -p "$OUTDIR_BASE" "$TASK_ROOT/data/runtime"

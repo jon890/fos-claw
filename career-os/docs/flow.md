@@ -130,36 +130,13 @@ refresh_topic_inventory.py 재실행 (inventory 갱신)
 data/runtime/topic-replenishment.json (실행 요약)
 ```
 
-### `study-pack <topic>` (외부 publish)
+### `study-pack <topic>` (native skill — ai-nodes ADR-002, plan013)
 
-```
-config/topics.json (study-pack 또는 study-pack-maintainer namespace)에서 topic 정보 조회
-  - study-pack-maintainer namespace에 있으면: maintainer 경로 (기존 갱신, ADR 미정 — 라우팅 결정)
-  - study-pack namespace에 있으면: writer 경로 (신규 생성)
-  - 둘 다 없으면: candidate auto-promotion 시도 (ADR-011)
-  ↓
-data/runtime/locks/study-pack-<topic>.lock 잠금 (중복 실행 방지)
-  ↓
-Discord [시작] 알림
-  ↓
-sources/fos-study git pull (또는 clone)
-  ↓
-references/study-pack-prompt.md + writing-rules + candidate-profile + topic-specific append
-  ↓
-claude --print --output-format json (재시도 1회 — strict prompt 추가)
-  ↓
-extract_and_validate_study_pack.py (검증: '#' 시작, ≥80줄, 금지 prefix, 코드 펜스 언어 명시)
-  ↓
-claude_persist_usage (ADR-014)
-  ↓
-sources/fos-study/<outputPath>에 copy
-  ↓
-git commit (ADR-005 메시지 규칙) + push
-  ↓
-data/generated-artifacts.json upsert
-  ↓
-Discord [완료] 알림 + cost summary
-```
+native skill 패턴: `claude -p "/study-pack <topic>"` → SKILL.md 자동 로드 → Claude가 도구로 직접 처리.
+
+상세 동작: `career-os/.claude/skills/study-pack-writer/SKILL.md` Workflow 섹션 참조.
+
+이전 외부 subprocess 흐름 (dispatcher → run_study_pack.sh → claude --print → extractor → publish)은 plan013 phase-03에서 폐기됨.
 
 ### `maintain-study-pack <topic>`
 
