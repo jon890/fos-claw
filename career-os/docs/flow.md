@@ -190,7 +190,7 @@ claude_persist_usage
   ↓
 sources/fos-study/interview/experience-based/<topic>.md
   ↓
-commit + push (ADR-007a)
+commit + push (ADR-007)
 ```
 
 ### `master [topic]`
