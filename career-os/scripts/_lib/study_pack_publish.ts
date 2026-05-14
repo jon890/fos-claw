@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * _shared/lib/study_pack_publish.ts
+ * career-os/scripts/_lib/study_pack_publish.ts
  * Common fos-study publish pipeline: Claude call → validate → git commit/push → artifacts upsert.
  *
  * CLI env vars:
@@ -28,7 +28,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
-import { persistUsage } from "./invoke_claude_skills.ts";
+import { persistUsage } from "@shared/lib/invoke_claude_skills.ts";
 import { commitFile, ensureRepo, push } from "./fos_study_git.ts";
 
 export interface StudyPackPublishOptions {

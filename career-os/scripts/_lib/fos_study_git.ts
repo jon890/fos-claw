@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * _shared/lib/fos_study_git.ts
+ * career-os/scripts/_lib/fos_study_git.ts
  * Git operations for sources/fos-study.
  * API: ensureRepo · commitFile · push
  * CLI: ensure-repo | commit-file | push
