@@ -48,16 +48,6 @@ export interface TaskRunEntry {
 }
 
 /**
- * `notify_discord.ts` 가 전송하는 Discord webhook payload.
- * Discord 공식 webhook 스펙 부분집합.
- */
-export interface NotificationPayload {
-  content: string;
-  username?: string;
-  avatar_url?: string;
-}
-
-/**
  * `config/topics.json` 의 단일 토픽 entry (plan002 이후 스키마).
  * namespace 별로 같은 형태.
  */

@@ -1,54 +1,77 @@
 #!/usr/bin/env bun
 // _shared/lib/notify_discord.ts
-// Discord webhook 알림. ADR-019.
+// Discord 알림 — openclaw CLI subprocess 경유. ADR-021.
+//
 // Usage:
-//   bun run _shared/lib/notify_discord.ts "메시지"
-//   또는 from-import: await notifyDiscord("메시지")
+//   bun --env-file=<ws>/.env _shared/lib/notify_discord.ts [--media <path>] "<message>"
+//   또는 import { notifyDiscord } from "@shared/lib/notify_discord.ts"
+//
+// 환경 변수:
+//   DISCORD_CHANNEL_ID (필수) — 누락 시 exit 1.
 
-import type { NotificationPayload } from "../types/index.ts";
+const OPENCLAW_TIMEOUT_MS = 10_000;
 
-const DEFAULT_USERNAME = "ai-nodes";
-const TIMEOUT_MS = 10_000;
+export interface NotifyOptions {
+  media?: string;
+}
 
-export async function notifyDiscord(content: string, opts?: { username?: string }): Promise<void> {
-  const url = process.env.DISCORD_WEBHOOK_URL;
-  if (!url) {
-    // webhook 없음 — silent. 워크스페이스 격리 원칙.
-    return;
+export async function notifyDiscord(message: string, opts?: NotifyOptions): Promise<void> {
+  const channelId = process.env.DISCORD_CHANNEL_ID;
+  if (!channelId) {
+    console.error("[notify_discord] DISCORD_CHANNEL_ID env 누락 — 알림 발송 불가 (ADR-021)");
+    process.exit(1);
   }
 
-  const payload: NotificationPayload = {
-    content,
-    username: opts?.username ?? DEFAULT_USERNAME,
-  };
+  const args = [
+    "message", "send",
+    "--channel", "discord",
+    "--target", `channel:${channelId}`,
+    "--message", message,
+    "--json",
+  ];
+  if (opts?.media) {
+    args.splice(args.indexOf("--message"), 0, "--media", opts.media);
+  }
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const proc = Bun.spawn(["openclaw", ...args], {
+    stdout: "pipe",
+    stderr: "pipe",
+  });
 
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    });
-    if (!res.ok) {
-      // 비치명적 — phase 진행 막지 X.
-      console.error(`[notify_discord] webhook returned ${res.status}`);
-    }
-  } catch (err) {
-    console.error(`[notify_discord] failed: ${err instanceof Error ? err.message : String(err)}`);
-  } finally {
-    clearTimeout(timeout);
+  const timeoutId = setTimeout(() => {
+    proc.kill();
+    console.error(`[notify_discord] openclaw timeout after ${OPENCLAW_TIMEOUT_MS}ms`);
+  }, OPENCLAW_TIMEOUT_MS);
+
+  const exitCode = await proc.exited;
+  clearTimeout(timeoutId);
+
+  if (exitCode !== 0) {
+    const stderr = await new Response(proc.stderr).text();
+    console.error(`[notify_discord] openclaw exit ${exitCode}: ${stderr.trim()}`);
+    process.exit(1);
   }
 }
 
-// CLI 진입점 — bash 에서 직접 호출용.
+// CLI 진입점
 if (import.meta.main) {
-  const message = process.argv[2];
+  const argv = process.argv.slice(2);
+  let media: string | undefined;
+  const positional: string[] = [];
+
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === "--media") {
+      media = argv[++i];
+    } else {
+      positional.push(argv[i]);
+    }
+  }
+
+  const message = positional[0];
   if (!message) {
-    console.error("usage: notify_discord.ts <message>");
+    console.error("usage: notify_discord.ts [--media <path>] <message>");
     process.exit(1);
   }
-  await notifyDiscord(message);
+
+  await notifyDiscord(message, media ? { media } : undefined);
 }
