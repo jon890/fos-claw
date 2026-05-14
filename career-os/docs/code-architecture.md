@@ -133,8 +133,7 @@ career-os/
 │   ├── interview-master-writer/{run_master.sh, resolve_master_topic.py}
 │   ├── position-recommender/{run_position_recommendation.sh, extract_position_report.py,
 │   │                          collect_live_postings.py (deferred), publish_job_analysis.sh (deferred)}
-│   ├── cj-foodville-coffeechat-prep/{run_foodville_coffeechat_prep.sh, collect_foodville_sites.py}
-│   └── fos-study-pack/run_from_request.sh   (deferred — dispatcher 미연결)
+│   └── cj-foodville-coffeechat-prep/{run_foodville_coffeechat_prep.sh, collect_foodville_sites.py}
 │
 ├── skills/                               ← Claude 컨텍스트 자산만 (plan006 후, ADR-019)
 │   ├── command-router/SKILL.md
@@ -146,7 +145,7 @@ career-os/
 │   │   ├── SKILL.md
 │   │   └── references/topic-replenishment-prompt.md
 │   ├── study-pack-batch/SKILL.md
-│   ├── study-pack-writer/{SKILL.md, references/}
+│   ├── study-pack-writer/{SKILL.md, references/}   (자연어 요청 라우팅 흡수 — 옛 fos-study-pack, plan012)
 │   ├── study-pack-maintainer/{SKILL.md, references/}
 │   ├── experience-question-bank-writer/
 │   │   ├── SKILL.md
@@ -158,7 +157,6 @@ career-os/
 │   │                     position-decision-criteria.md, verified-company-research-targets.json
 │   │                     (plan002 이후 config/에서 이동)
 │   ├── cj-foodville-coffeechat-prep/{SKILL.md, references/}
-│   ├── fos-study-pack/{SKILL.md, references/}   (deferred dispatcher 미연결)
 │   └── docs-audit/
 │       ├── SKILL.md → sources/fos-study/.claude/skills/docs-audit/SKILL.md (심링크)
 │       └── references/{audit-rubric, report-template}.md   (사용처 없음 — fos-study 측 PR 흡수 대상)
