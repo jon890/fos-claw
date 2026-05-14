@@ -79,5 +79,7 @@
       "timeout": 600,
       "commitSha": "d2ed962f0280"
     }
-  ]
+  ],
+  "audit_note": "1차 실행 false success 회복: phase-02 commitSha (850dcb18179b)는 plan011 폐기 commit이며 phase-02가 실제로 만든 commit이 아니다. phase-04 commitSha (d2ed962f0280)도 phase-03 commit과 동일 — phase-04도 자기 commit을 만들지 않음. 실제 SKILL.md 재작성은 plan013-2-skill-rewrite-redo에서 수행. common-pitfalls 6-6 참조.",
+  "audit_added_at": "2026-05-14"
 }
