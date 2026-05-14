@@ -1050,88 +1050,6 @@
       }
     ]
   },
-  "study-pack-maintainer": {
-    "gap-lock-next-key-lock": {
-      "requestedTopic": "InnoDB의 gap lock과 next-key lock을 더 깊게 공부하고 싶다. 기존 MySQL 문서들과의 중복을 피하면서, 가장 자연스러운 문서 전략(update vs new-file)을 선택해 최종 문서를 작성한다.",
-      "candidateFiles": [
-        "database/mysql/innodb-mvcc.md",
-        "database/mysql/deadlock-analysis.md"
-      ],
-      "preferredDomain": "mysql"
-    },
-    "jvm-tuning-with-slot-oom-case": {
-      "requestedTopic": "기존 JVM GC / JVM 튜닝 문서에 슬롯 시뮬레이터 OOM 실제 사례를 매핑해 보강한다. 새 문서를 무조건 만들기보다, create/update/augment/bridge 중 가장 자연스러운 전략을 선택한다. 특히 OOM 발생 시 어떻게 대처했는지, 임시 대응과 근본 해결이 어떻게 구분되는지, JVM/GC 관점에서 설명이 충분한지도 함께 반영한다.",
-      "candidateFiles": [
-        "java/jvm-tuning.md",
-        "task/nsc-slot/slot-simulator-oom.md"
-      ],
-      "preferredDomain": "java"
-    },
-    "redo-log-with-undo-log": {
-      "requestedTopic": "기존 MySQL redo log 문서에 undo log 내용과 redo/undo 상호작용을 보강한다. 새 문서를 만들기보다 기존 redo log 문서를 중심으로 update 또는 augment가 자연스러운지 판단하고, crash recovery, rollback, MVCC 관점에서 redo와 undo를 함께 이해할 수 있게 최종 문서를 작성한다.",
-      "candidateFiles": [
-        "database/mysql/redo-log.md",
-        "database/mysql/innodb-mvcc.md"
-      ],
-      "preferredDomain": "mysql"
-    },
-    "outbox-pattern-cdc-vs-scheduler": {
-      "requestedTopic": "기존 분산 트랜잭션과 Outbox 패턴 문서를 고도화한다. 특히 Outbox를 CDC 방식으로 구현하는 경우와 스케줄러/폴링 방식으로 구현하는 경우를 비교하고, 각 방식의 장단점, 운영 복잡도, 지연 시간, 장애 복구, 중복 처리, 도입 난이도, 어떤 상황에서 어떤 방식을 선택할지까지 포함해 기존 문서를 update 또는 augment한다.",
-      "candidateFiles": [
-        "architecture/distributed-transaction-outbox-pattern.md"
-      ],
-      "preferredDomain": "architecture"
-    },
-    "mysql-index-comprehensive-upgrade": {
-      "requestedTopic": "기존 MySQL 인덱스 문서를 종합 문서로 업그레이드한다. 새 문서를 만들기보다 기존 인덱스 문서(특히 B-Tree 인덱스 문서)를 중심으로 update 또는 augment하는 것이 자연스러운지 판단한다. 최종 문서에는 MySQL/InnoDB 인덱스의 구조, 클러스터드/세컨더리 인덱스, 커버링 인덱스, 복합 인덱스, EXPLAIN으로 인덱스를 검증하는 방법, 그리고 특히 '인덱스를 타지 않는 경우'를 깊게 다뤄야 한다. 함수 적용, 암묵적 형변환, leading wildcard, OR 조건, 낮은 카디널리티, 좌측 접두사 규칙 위반, range 이후 컬럼, 정렬/그룹핑 미스매치, 옵티마이저가 풀스캔을 고르는 경우 등을 정리하고, 그런 쿼리를 실무에서 어떻게 진단하고 처리했는지까지 포함한다. 단순한 개념 허브가 아니라 '왜 인덱스를 안 타는가 / 어떻게 개선하는가'까지 설명하는 종합 문서가 되어야 한다.",
-      "candidateFiles": [
-        "database/mysql/b-tree-index.md",
-        "database/mysql/composite-index.md",
-        "database/mysql/explain-plan.md"
-      ],
-      "preferredDomain": "mysql"
-    },
-    "mysql-docs-dedup-and-linking": {
-      "requestedTopic": "database/mysql 문서군의 중복을 줄이고 문서 간 링크 구조를 정리한다. 핵심 목표는 내용을 삭제하는 것보다 각 문서의 역할을 분명히 나누고, 허브 문서와 상세 문서가 링크로 자연스럽게 연결되게 만드는 것이다. 특히 innodb-storage-architecture.md, b-tree-index.md, composite-index.md, explain-plan.md 사이의 중복을 줄여야 한다. 예를 들어 architecture 문서는 InnoDB 큰 그림과 저장 구조 허브에 가깝게, index 문서는 인덱스 종합 허브에 가깝게, composite-index 문서는 복합 인덱스 심화에 가깝게, explain-plan 문서는 실행 계획 진단 실전에 가깝게 역할을 분리한다. 같은 설명을 여러 문서에서 길게 반복하지 말고, 한 문서에서 짧게 소개한 뒤 관련 상세 문서로 링크를 건다. 최종 결과는 독자가 mysql 폴더 안에서 허브 -> 상세 -> 실전 문서로 자연스럽게 내려갈 수 있는 구조여야 한다.",
-      "candidateFiles": [
-        "database/mysql/innodb-storage-architecture.md",
-        "database/mysql/b-tree-index.md",
-        "database/mysql/composite-index.md",
-        "database/mysql/explain-plan.md"
-      ],
-      "preferredDomain": "mysql"
-    },
-    "redis-docs-dedup-and-linking": {
-      "requestedTopic": "database/redis 문서군을 함께 읽고 역할을 정리한다. 핵심 목표는 Redis 기본, cache-aside, distributed-lock, rate-limiting, pub-sub, session, leaderboard, lua-script, operations 문서의 중복을 줄이고 링크 구조를 강화하는 것이다. 새로 만든 redis-advanced-patterns 문서가 단독으로 붕 뜨지 않게, 허브 또는 브리지 성격으로 자연스럽게 연결되도록 판단한다. create/update/augment/bridge 중 가장 적절한 전략을 선택하고, 기존 문서 설명을 길게 반복하기보다 각 문서의 역할을 분명히 나누고 관련 문서로 링크를 건다. 예를 들어 basic은 Redis 큰 그림과 자료구조 입문, cache-aside는 캐시 정합성과 스탬피드 중심, distributed-lock과 rate-limiting은 분산 제어 패턴 심화, pub-sub은 메시징 패턴, session은 인증/상태 저장, redis-advanced-patterns는 여러 실전 패턴을 연결하는 허브/브리지 문서가 되도록 유도한다. 최종 결과는 독자가 redis 폴더 안에서 허브 -> 상세 패턴 -> 운영/사례 문서로 자연스럽게 내려갈 수 있는 구조여야 한다.",
-      "candidateFiles": [
-        "database/redis/README.md",
-        "database/redis/basic.md",
-        "database/redis/cache-aside.md",
-        "database/redis/distributed-lock.md",
-        "database/redis/rate-limiting.md",
-        "database/redis/pub-sub.md",
-        "database/redis/session.md",
-        "database/redis/leaderboard.md",
-        "database/redis/lua-script.md",
-        "database/redis/operations.md",
-        "database/redis/redis-advanced-patterns.md"
-      ],
-      "preferredDomain": "redis"
-    },
-    "kakao-healthcare-carechat-company-analysis": {
-      "requestedTopic": "카카오헬스케어 케어챗 AI Agent 개발자 포지션 분석 문서를 고도화한다. 공고의 주요 업무(OPEN LLM 기반 AI Agent, 의도 분석, Tool 호출, 멀티턴 메모리, 케어챗 챗봇 엔진/마이데이터, LLM 서빙 아키텍처, Python AI 서비스, 기존 Java Spring Boot 백엔드 연동, 클라우드 모니터링/성능/장애 대응, 프롬프트/Agent Workflow 개선)를 후보자 실제 경험과 연결한다. 특히 AI 서비스팀 RAG 파이프라인, AI 웹툰 제작 MVP의 LLM workflow/fallback/rate limit/context caching, AI 에이전트 기반 슬롯 개발, Kafka Outbox/비동기/관측성 경험을 케어챗 지원 전략으로 매핑한다. 의료 도메인 직접 경험 부족은 개인정보/KYC/마이데이터 인접 경험과 학습 계획으로 정직하게 보완한다.",
-      "candidateFiles": [
-        "interview/kakao-healthcare-carechat-ai-agent.md",
-        "resume/2603_김병태_이력서_v4.md",
-        "task/ai-service-team/README.md",
-        "task/ai-service-team/rag-vector-search-batch.md",
-        "task/ai-service-team/webtoon-maker-ai-pipeline.md",
-        "task/nsc-slot/ai-tool-adoption.md",
-        "task/sb-dev-team/kyc-system.md"
-      ],
-      "preferredDomain": "interview"
-    }
-  },
   "question-bank": {
     "experience-qbank-ai-service-team": {
       "track": "ai-service-team",
@@ -1178,35 +1096,5 @@
       ],
       "promptAppend": "AI Agent/헬스케어 서비스 백엔드 역할을 위한 마스터 플레이북을 작성한다. 현재 타깃은 카카오헬스케어 케어챗 AI Agent 개발자 포지션이다. 이력서와 task 문서의 실제 근거만 사용하고 일반론은 피한다. 다음 경험 축이 전반에 드러나야 한다: (a) Spring Batch 기반 Confluence→OpenSearch RAG 파이프라인(AI 서비스팀), (b) 12일 단독 풀스택으로 만든 AI 웹툰 제작 도구 MVP — 199 plan / 760 커밋 / Gemini + Claude Code 하네스 에이전트 팀 조율 · Rate Limit Tracking · Context Caching · Promise.allSettled 부분 성공 생성 · Grounding 재주입, (c) AI 에이전트 기반 슬롯 개발 — Cursor Rules 20종 이상과 에이전트 단독 구현 3종, (d) Kafka Transactional Outbox · StampedLock 기반 다중 서버 캐시 정합성 같은 운영형 백엔드 안정성. '왜 이 회사/역할인가' 섹션은 케어챗의 병원 여정 연결, 의료 마이데이터, AI Agent 실서비스화와 후보자 경험을 연결한다. Python 주력 경험과 의료 도메인 직접 경험 부족은 정직하게 인정하되, AI 서비스 아키텍처와 운영형 백엔드 강점으로 보완 전략을 제시한다."
     }
-  },
-  "bootcamp": {
-    "description": "CJ푸드빌 디지털 채널 Back-end 지원 대비 morning bootcamp queue. Pick 10 recommendations and generate first 5 ungenerated study packs daily.",
-    "dailyRecommendCount": 10,
-    "dailyGenerateCount": 5,
-    "topics": [
-      "cj-foodville-commerce-domain-design-interview",
-      "commerce-interview-answer-slot-experience-mapping",
-      "commerce-order-state-consistency-fundamentals",
-      "spring-transaction-propagation-commerce",
-      "mysql-index-explain-commerce-api",
-      "jpa-n-plus-one-commerce-read-model",
-      "payment-idempotency-transaction-basics",
-      "coupon-promotion-concurrency-basics",
-      "java-concurrency-locks-commerce-cache",
-      "redis-cache-invalidation-commerce",
-      "http-session-cookie-api-auth-basics",
-      "mybatis-dynamic-sql-resultmap-basics",
-      "commerce-observability-first-five-minutes",
-      "clean-architecture-pragmatic-spring-commerce",
-      "rest-api-versioning-mobile-compatibility",
-      "fnb-ecommerce-domain-overview",
-      "fnb-order-store-pickup-state-machine",
-      "fnb-coupon-promotion-membership-design",
-      "fnb-payment-refund-settlement-operations",
-      "fnb-ecommerce-operations-monitoring-interview",
-      "hexagonal-clean-architecture-spring",
-      "mybatis-jpa-tradeoffs",
-      "legacy-jsp-jquery-api-coexistence"
-    ]
   }
 }

@@ -13,7 +13,7 @@ career-os 워크스페이스의 단일 dispatch 진입점.
 career-os/scripts/command-router/run_now.sh <command> [args...]
 ```
 
-14개 명령: `baseline` · `daily [topic]` · `study-pack <topic>` · `question-bank <topic>` · `master [topic]` · `recommend-topics` · `recommend-positions` · `replenish-topics` · `maintain-study-pack <topic>` · `foodville-coffeechat` · `smoke` · `bootcamp-batch` · `live-coding-dispatch` · `auto-question-bank`.
+12개 명령 (plan014에서 maintain-study-pack + bootcamp-batch 폐기): `baseline` · `daily [topic]` · `study-pack <topic>` · `question-bank <topic>` · `master [topic]` · `recommend-topics` · `recommend-positions` · `replenish-topics` · `foodville-coffeechat` · `smoke` · `live-coding-dispatch` · `auto-question-bank`.
 
 실행 파일: `career-os/scripts/command-router/`(ADR-019).
 

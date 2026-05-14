@@ -85,10 +85,6 @@ case "$MODE" in
     run_tracked "career-os:foodville-coffeechat" "Foodville coffeechat 준비" \
       "$TASK_ROOT/scripts/cj-foodville-coffeechat-prep/run_foodville_coffeechat_prep.sh"
     ;;
-  bootcamp-batch)
-    run_tracked "career-os:bootcamp-batch" "부트캠프 일괄 study-pack" \
-      "$TASK_ROOT/scripts/study-pack-batch/run_bootcamp_batch.sh"
-    ;;
   auto-question-bank)
     run_tracked "career-os:auto-question-bank" "auto question-bank refresh" \
       "$TASK_ROOT/scripts/experience-question-bank-writer/run_question_bank_auto.sh"
@@ -96,21 +92,6 @@ case "$MODE" in
   replenish-topics)
     run_tracked "career-os:replenish-topics" "topic reservoir 보충" \
       "$TASK_ROOT/scripts/topic-pool-replenisher/run_topic_replenishment.sh"
-    ;;
-  maintain-study-pack)
-    TOPIC="${2:-}"
-    if [[ -z "$TOPIC" ]]; then
-      echo "usage: run_now.sh maintain-study-pack <topic>" >&2
-      echo "  topic keys: see config/topics.json (study-pack-maintainer namespace)" >&2
-      exit 1
-    fi
-
-    RESOLVER="$TASK_ROOT/scripts/study-pack-maintainer/resolve_maintainer_topic.ts"
-    TOPIC_CONFIG="$TASK_ROOT/config/topics.json"
-    eval "$("$RESOLVER" "$TOPIC_CONFIG" "$TOPIC")"
-
-    run_tracked "career-os:maintain-study-pack:$TOPIC" "${TOPIC} 스터디팩 유지보수" \
-      "$TASK_ROOT/scripts/study-pack-maintainer/run_maintainer.sh"
     ;;
   master)
     TOPIC="${2:-senior-backend-master-playbook}"
@@ -127,10 +108,9 @@ case "$MODE" in
       "$TASK_ROOT/scripts/knowledge-gap-analyzer/run_smoke_test.sh"
     ;;
   *)
-    echo "usage: run_now.sh [baseline | daily [topic] | question-bank <topic> | auto-question-bank | recommend-topics | live-coding-dispatch | recommend-positions | foodville-coffeechat | bootcamp-batch | replenish-topics | maintain-study-pack <topic> | master [topic] | smoke]" >&2
+    echo "usage: run_now.sh [baseline | daily [topic] | question-bank <topic> | auto-question-bank | recommend-topics | live-coding-dispatch | recommend-positions | foodville-coffeechat | replenish-topics | master [topic] | smoke]" >&2
     echo "  daily topic keys: see config/topic-file-map.json" >&2
     echo "  question-bank topic keys: see config/topics.json (question-bank namespace)" >&2
-    echo "  maintain-study-pack topic keys: see config/topics.json (study-pack-maintainer namespace)" >&2
     echo "  master topic keys: see config/topics.json (master namespace, default: senior-backend-master-playbook)" >&2
     exit 1
     ;;

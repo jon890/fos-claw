@@ -125,9 +125,7 @@ career-os/
 │   │   ├── run_topic_replenishment.sh
 │   │   ├── replenish_topic_reservoir.py  ADR-011 보충 엔진
 │   │   └── promote_candidate_topics.py
-│   ├── study-pack-batch/run_bootcamp_batch.sh
-│   ├── study-pack-writer/{run_study_pack.sh, extract_and_validate_study_pack.py, ...}
-│   ├── study-pack-maintainer/{run_maintainer.sh, resolve_maintainer_topic.py}
+│   ├── study-pack-writer/                  (plan013 phase-03에서 폐기 — native skill로 흡수)
 │   ├── experience-question-bank-writer/{run_question_bank.sh, run_question_bank_auto.sh,
 │   │                                    render_question_bank.py, resolve_question_bank_topic.py}
 │   ├── interview-master-writer/{run_master.sh, resolve_master_topic.py}
@@ -144,9 +142,7 @@ career-os/
 │   ├── topic-pool-replenisher/
 │   │   ├── SKILL.md
 │   │   └── references/topic-replenishment-prompt.md
-│   ├── study-pack-batch/SKILL.md
-│   ├── study-pack-writer/{SKILL.md, references/}   (자연어 요청 라우팅 흡수 — 옛 fos-study-pack, plan012)
-│   ├── study-pack-maintainer/{SKILL.md, references/}
+│   ├── study-pack-writer/{SKILL.md, references/}   (plan013-2에서 native skill 명세로 재작성. plan014에서 옛 maintain-study-pack + bootcamp-batch 기능 흡수)
 │   ├── experience-question-bank-writer/
 │   │   ├── SKILL.md
 │   │   └── references/question-bank-schema.json
