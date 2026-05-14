@@ -31,7 +31,7 @@ if (( collect_code != 0 )); then
 fi
 
 # Resolve {{primary.company}} placeholders from mvp-target.json
-bun "$TASK_ROOT/_shared/lib/build_prompt.ts" "$PROMPT_FILE" > "$OUTDIR/resolved-prompt.md"
+bun "$HOME/ai-nodes/career-os/scripts/_lib/build_prompt.ts" "$PROMPT_FILE" > "$OUTDIR/resolved-prompt.md"
 
 cat > "$INPUT_NOTE" <<EOF2
 $(cat "$OUTDIR/resolved-prompt.md")
