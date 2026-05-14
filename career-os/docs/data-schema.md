@@ -371,4 +371,4 @@ study-pack 등 중복 실행 방지용 flock 파일. 토픽별 `<task>-<topic>.l
 
 career-os가 손대지 말아야 할 영역: `.claude/**` (별도 스킬 정의), `.git/**`.
 
-`sources/fos-study/.claude/skills/docs-audit/SKILL.md`는 docs-audit 스킬의 진실 출처이며 `career-os/skills/docs-audit/SKILL.md`가 심볼릭 링크로 연결됨.
+`sources/fos-study/.claude/skills/docs-audit/SKILL.md`는 docs-audit 스킬의 진실 출처이며 `career-os/.claude/skills/docs-audit/`이 실체 디렉터리로 위치함 (내부 SKILL.md만 심링크 유지).

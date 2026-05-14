@@ -135,7 +135,7 @@ career-os/
 │   │                          collect_live_postings.py (deferred), publish_job_analysis.sh (deferred)}
 │   └── cj-foodville-coffeechat-prep/{run_foodville_coffeechat_prep.sh, collect_foodville_sites.py}
 │
-├── skills/                               ← Claude 컨텍스트 자산만 (plan006 후, ADR-019)
+├── .claude/skills/                       ← Claude 컨텍스트 자산만 (plan006 후, ADR-019, ADR-002)
 │   ├── command-router/SKILL.md
 │   ├── knowledge-gap-analyzer/
 │   │   ├── SKILL.md
