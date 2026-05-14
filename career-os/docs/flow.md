@@ -158,10 +158,6 @@ sources/fos-study/interview/experience-based/<topic>.md
 commit + push (ADR-007)
 ```
 
-### `master [topic]`
-
-study-pack과 유사한 흐름이지만 extractor는 `extract_and_validate_study_pack.py`를 공유. 출력은 시니어 백엔드 마스터 플레이북 (자기소개·커리어 narrative·기술 결정 스타일·역질문·최종 체크리스트).
-
 ### `foodville-coffeechat`
 
 ```
@@ -226,7 +222,7 @@ Discord [완료]/[실패] 알림 (cost summary는 run_tracked 경유로 부착)
 ## 의도적 비대칭
 
 - baseline / daily / smoke: 외부 publish 안 함. 내부 학습용.
-- study-pack / question-bank / master: fos-study에 commit + push 강제.
+- study-pack / question-bank: fos-study에 commit + push 강제.
 - recommend-positions / foodville-coffeechat: data/runtime 또는 data/reports에만, 외부 publish X.
 - recommend-topics / replenish-topics: 산출물이 사람이 읽고 다음 단계로 가는 입력.
 

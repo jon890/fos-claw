@@ -1080,21 +1080,5 @@
       ],
       "promptAppend": "카카오헬스케어 케어챗 AI Agent 개발자 포지션 보조 트랙으로 슬롯팀 경험을 구성한다. 도메인 모델링, 엔진 추상화, 성능 최적화, 동시성, 테스트 인프라, AI-assisted development를 AI Agent workflow 설계/검증/운영 안정성 관점으로 연결한다."
     }
-  },
-  "master": {
-    "_comment": "Interview master playbook topics. Use when mapping a topic key to output path inside fos-study, selected input files, and topic-specific prompt additions.",
-    "senior-backend-master-playbook": {
-      "outputPath": "interview/master/senior-backend-master-playbook.md",
-      "inputFiles": [
-        "resume/2603_김병태_이력서_v4.md",
-        "task/ai-service-team/README.md",
-        "task/ai-service-team/rag-vector-search-batch.md",
-        "task/ai-service-team/webtoon-maker-ai-pipeline.md",
-        "task/nsc-slot/README.md",
-        "task/nsc-slot/slot-engine-abstraction.md",
-        "interview/kakao-healthcare-carechat-ai-agent.md"
-      ],
-      "promptAppend": "AI Agent/헬스케어 서비스 백엔드 역할을 위한 마스터 플레이북을 작성한다. 현재 타깃은 카카오헬스케어 케어챗 AI Agent 개발자 포지션이다. 이력서와 task 문서의 실제 근거만 사용하고 일반론은 피한다. 다음 경험 축이 전반에 드러나야 한다: (a) Spring Batch 기반 Confluence→OpenSearch RAG 파이프라인(AI 서비스팀), (b) 12일 단독 풀스택으로 만든 AI 웹툰 제작 도구 MVP — 199 plan / 760 커밋 / Gemini + Claude Code 하네스 에이전트 팀 조율 · Rate Limit Tracking · Context Caching · Promise.allSettled 부분 성공 생성 · Grounding 재주입, (c) AI 에이전트 기반 슬롯 개발 — Cursor Rules 20종 이상과 에이전트 단독 구현 3종, (d) Kafka Transactional Outbox · StampedLock 기반 다중 서버 캐시 정합성 같은 운영형 백엔드 안정성. '왜 이 회사/역할인가' 섹션은 케어챗의 병원 여정 연결, 의료 마이데이터, AI Agent 실서비스화와 후보자 경험을 연결한다. Python 주력 경험과 의료 도메인 직접 경험 부족은 정직하게 인정하되, AI 서비스 아키텍처와 운영형 백엔드 강점으로 보완 전략을 제시한다."
-    }
   }
 }

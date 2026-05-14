@@ -128,7 +128,6 @@ career-os/
 │   ├── study-pack-writer/                  (plan013 phase-03에서 폐기 — native skill로 흡수)
 │   ├── experience-question-bank-writer/{run_question_bank.sh, run_question_bank_auto.sh,
 │   │                                    render_question_bank.py, resolve_question_bank_topic.py}
-│   ├── interview-master-writer/{run_master.sh, resolve_master_topic.py}
 │   ├── position-recommender/{run_position_recommendation.sh, extract_position_report.py,
 │   │                          collect_live_postings.py (deferred), publish_job_analysis.sh (deferred)}
 │   └── cj-foodville-coffeechat-prep/{run_foodville_coffeechat_prep.sh, collect_foodville_sites.py}
@@ -146,7 +145,6 @@ career-os/
 │   ├── experience-question-bank-writer/
 │   │   ├── SKILL.md
 │   │   └── references/question-bank-schema.json
-│   ├── interview-master-writer/{SKILL.md, references/}
 │   ├── position-recommender/
 │   │   ├── SKILL.md
 │   │   └── references/   company-upside-reference.md, position-context-index.md,

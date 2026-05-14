@@ -93,25 +93,14 @@ case "$MODE" in
     run_tracked "career-os:replenish-topics" "topic reservoir 보충" \
       "$TASK_ROOT/scripts/topic-pool-replenisher/run_topic_replenishment.sh"
     ;;
-  master)
-    TOPIC="${2:-senior-backend-master-playbook}"
-
-    RESOLVER="$TASK_ROOT/scripts/interview-master-writer/resolve_master_topic.ts"
-    TOPIC_CONFIG="$TASK_ROOT/config/topics.json"
-    eval "$("$RESOLVER" "$TOPIC_CONFIG" "$TOPIC")"
-
-    run_tracked "career-os:master:$TOPIC" "${TOPIC} master playbook" \
-      "$TASK_ROOT/scripts/interview-master-writer/run_master.sh"
-    ;;
   smoke)
     run_tracked "career-os:smoke" "smoke test" \
       "$TASK_ROOT/scripts/knowledge-gap-analyzer/run_smoke_test.sh"
     ;;
   *)
-    echo "usage: run_now.sh [baseline | daily [topic] | question-bank <topic> | auto-question-bank | recommend-topics | live-coding-dispatch | recommend-positions | foodville-coffeechat | replenish-topics | master [topic] | smoke]" >&2
+    echo "usage: run_now.sh [baseline | daily [topic] | question-bank <topic> | auto-question-bank | recommend-topics | live-coding-dispatch | recommend-positions | foodville-coffeechat | replenish-topics | smoke]" >&2
     echo "  daily topic keys: see config/topic-file-map.json" >&2
     echo "  question-bank topic keys: see config/topics.json (question-bank namespace)" >&2
-    echo "  master topic keys: see config/topics.json (master namespace, default: senior-backend-master-playbook)" >&2
     exit 1
     ;;
 esac
