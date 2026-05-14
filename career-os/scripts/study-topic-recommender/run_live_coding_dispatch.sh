@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
-NOTIFY_SCRIPT="$TASK_ROOT/scripts/command-router/notify_discord.sh"
+NOTIFY_SCRIPT="bun --env-file=$TASK_ROOT/.env run $HOME/ai-nodes/_shared/lib/notify_discord.ts"
 SEED_CONFIG="$TASK_ROOT/config/live-coding-seed-pool.json"
 CANDIDATE_CONFIG="$TASK_ROOT/config/live-coding-seed-candidates.json"
 TEMP_CONFIG="$TASK_ROOT/data/runtime/live-coding-generated-topic.json"

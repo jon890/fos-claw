@@ -10,7 +10,7 @@ Usage:
 
 규약:
   task-dir 은 `<workspace>/tasks/<task-name>/` 형태. workspace는 task-dir의 grandparent.
-  workspace의 config/.env 가 있으면 자동으로 로드한다 (DISCORD_WEBHOOK_URL 등).
+  workspace의 .env 가 있으면 자동으로 로드한다 (DISCORD_CHANNEL_ID 등).
   workspace/.env 가 있으면 _shared/lib/notify_discord.ts 로 진행/완료/실패 알림을 보낸다.
   .env 부재 시 알림 스킵.
 
@@ -40,8 +40,8 @@ def resolve_workspace(task_dir: Path) -> Path:
 
 
 def load_dotenv(workspace: Path) -> None:
-    """<workspace>/config/.env 가 있으면 env로 로드. 이미 설정된 변수는 덮어쓰지 않음."""
-    env_path = workspace / "config" / ".env"
+    """<workspace>/.env 가 있으면 env로 로드. 이미 설정된 변수는 덮어쓰지 않음."""
+    env_path = workspace / ".env"
     if not env_path.exists():
         return
     with open(env_path, encoding="utf-8") as f:
