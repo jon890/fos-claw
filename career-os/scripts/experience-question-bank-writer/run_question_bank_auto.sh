@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
-NOTIFY_SCRIPT="bun run $HOME/ai-nodes/_shared/lib/notify_discord.ts"
+NOTIFY_SCRIPT="bun --env-file=$HOME/ai-nodes/career-os/.env run $HOME/ai-nodes/_shared/lib/notify_discord.ts"
 TOPIC="${QUESTION_BANK_TOPIC_OVERRIDE:-experience-qbank-ai-service-team}"
 OUTPUT_PATH="$(python3 - <<"PY" "$TASK_ROOT/config/topics.json" "$TOPIC"
 import json, sys

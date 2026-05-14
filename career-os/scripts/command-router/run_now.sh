@@ -5,7 +5,7 @@ set -euo pipefail
 
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
 TRACKER="${TRACKER:-$HOME/ai-nodes/_shared/bin/track_task.sh}"
-NOTIFY_SCRIPT="bun run $HOME/ai-nodes/_shared/lib/notify_discord.ts"
+NOTIFY_SCRIPT="bun --env-file=$HOME/ai-nodes/career-os/.env run $HOME/ai-nodes/_shared/lib/notify_discord.ts"
 FORMAT_COST="$HOME/ai-nodes/_shared/lib/format_cost_summary.ts"
 LOCK_DIR="$TASK_ROOT/data/runtime/locks"
 MODE="${1:-baseline}"
