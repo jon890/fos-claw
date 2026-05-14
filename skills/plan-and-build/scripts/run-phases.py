@@ -11,8 +11,8 @@ Usage:
 규약:
   task-dir 은 `<workspace>/tasks/<task-name>/` 형태. workspace는 task-dir의 grandparent.
   workspace의 config/.env 가 있으면 자동으로 로드한다 (DISCORD_WEBHOOK_URL 등).
-  workspace에 `skills/cj-oliveyoung-java-backend-prep/scripts/notify_discord.sh`가 있으면
-  진행/완료/실패 알림을 그쪽으로 보낸다. 없으면 알림 스킵.
+  workspace/.env 가 있으면 _shared/lib/notify_discord.ts 로 진행/완료/실패 알림을 보낸다.
+  .env 부재 시 알림 스킵.
 
 Exit codes:
   0  — 모든 phase 완료
@@ -27,6 +27,9 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+
+AI_NODES_ROOT = Path(__file__).resolve().parent.parent.parent.parent  # skills/plan-and-build/scripts/ → ai-nodes
+NOTIFY_TS = AI_NODES_ROOT / "_shared" / "lib" / "notify_discord.ts"
 
 
 # ── 워크스페이스 컨텍스트 ─────────────────────────────────────────────────────
@@ -55,25 +58,18 @@ def load_dotenv(workspace: Path) -> None:
 
 # ── 알림 ─────────────────────────────────────────────────────────────────────
 
-def find_notify_script(workspace: Path) -> Path | None:
-    """워크스페이스 안에서 notify_discord.sh 위치 자동 탐색.
+def notify(message: str, workspace: Path) -> None:
+    """ADR-021. _shared/lib/notify_discord.ts를 bun --env-file=<ws>/.env로 호출.
 
-    현재 ai-nodes 컨벤션: notify는 dispatcher 스킬 디렉터리에 있다.
-    예: career-os/skills/cj-oliveyoung-java-backend-prep/scripts/notify_discord.sh
-    못 찾으면 None — 알림 스킵.
+    .env 부재 시 silent skip — caller 깨뜨리지 않음.
     """
-    candidates = list(workspace.glob("skills/*/scripts/notify_discord.sh"))
-    return candidates[0] if candidates else None
-
-
-def notify(message: str, notify_script: Path | None) -> None:
-    """notify_discord.sh 가 있을 때만 호출. 실패해도 phase 진행은 막지 않는다."""
-    if notify_script is None:
+    env_file = workspace / ".env"
+    if not env_file.exists():
         return
     try:
         subprocess.run(
-            [str(notify_script), message],
-            timeout=10,
+            ["bun", f"--env-file={env_file}", "run", str(NOTIFY_TS), message],
+            timeout=15,
             check=False,
             capture_output=True,
         )
@@ -258,7 +254,6 @@ def main() -> None:
 
     workspace = resolve_workspace(task_dir)
     load_dotenv(workspace)
-    notify_script = find_notify_script(workspace)
 
     from_phase = 1
     if "--from-phase" in args:
@@ -295,7 +290,7 @@ def main() -> None:
             task["status"] = "failed"
             task["error_message"] = msg
             save_task(task, index_path)
-            notify(f"[실패] {workspace.name} task {task_name} phase {phase_num}: {msg}", notify_script)
+            notify(f"[실패] {workspace.name} task {task_name} phase {phase_num}: {msg}", workspace)
             print(f"  ✗  {msg}", file=sys.stderr)
             sys.exit(1)
 
@@ -312,7 +307,7 @@ def main() -> None:
         task["status"] = "running"
         task["current_phase"] = phase_num
         save_task(task, index_path)
-        notify(f"[진행] {workspace.name} task {task_name} phase {phase_num}/{total}: {phase_title}{model_label}", notify_script)
+        notify(f"[진행] {workspace.name} task {task_name} phase {phase_num}/{total}: {phase_title}{model_label}", workspace)
 
         start_time = time.monotonic()
         returncode, stdout, stderr = run_phase(phase_file, allowed_tools, model, timeout)
@@ -328,7 +323,7 @@ def main() -> None:
             save_task(task, index_path)
             msg = f"[보류] {workspace.name} task {task_name} phase {phase_num}: {blocked}"
             print(f"\n  ⚠  {msg}", file=sys.stderr)
-            notify(msg, notify_script)
+            notify(msg, workspace)
             sys.exit(2)
 
         if returncode != 0:
@@ -344,7 +339,7 @@ def main() -> None:
             save_task(task, index_path)
             msg = f"[실패] {workspace.name} task {task_name} phase {phase_num}: {error}"
             print(f"\n  ✗  {msg}", file=sys.stderr)
-            notify(msg, notify_script)
+            notify(msg, workspace)
             sys.exit(1)
 
         phase["status"] = "completed"
@@ -360,7 +355,7 @@ def main() -> None:
         except Exception:
             pass
         save_task(task, index_path)
-        notify(f"[완료] {workspace.name} task {task_name} phase {phase_num}/{total}: {phase_title} [{fmt_elapsed(elapsed)}]", notify_script)
+        notify(f"[완료] {workspace.name} task {task_name} phase {phase_num}/{total}: {phase_title} [{fmt_elapsed(elapsed)}]", workspace)
         print(f"  ✓  Phase {phase_num}/{total}: {phase_title}  완료  [{fmt_elapsed(elapsed)}]\n")
 
     task["status"] = "completed"
@@ -368,7 +363,7 @@ def main() -> None:
 
     msg = f"[완료] {workspace.name} task {task_name} 전체 완료 ({total} phases)"
     print(f"\n{msg}\n")
-    notify(msg, notify_script)
+    notify(msg, workspace)
     sys.exit(0)
 
 
