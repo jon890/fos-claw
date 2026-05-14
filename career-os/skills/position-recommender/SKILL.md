@@ -1,6 +1,6 @@
 ---
 name: position-recommender
-description: Recommend suitable job positions and positioning strategy from the candidate profile, resume/task docs, and optional job-market context. Use for career-os requests like "내가 갈만한 포지션 추천", "지원 포지션 후보 뽑아줘", or periodic role-fit recommendations.
+description: "후보자 프로필·이력서·태스크 문서·선택적 채용 시장 컨텍스트를 바탕으로 적합한 포지션과 포지셔닝 전략을 추천한다. '내가 갈만한 포지션 추천', '지원 포지션 후보 뽑아줘', 주기적 role-fit 추천 요청 시 사용."
 ---
 
 # position-recommender

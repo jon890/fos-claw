@@ -1,6 +1,6 @@
 ---
 name: experience-question-bank-writer
-description: Generate and publish experience-based interview question bank markdown documents into the local fos-study repository using the candidate's actual resume and selected task history. Use when the output should focus on likely interview questions, follow-up questions, answer points, one-minute answer structure, and pressure-question defense rather than a general technical article.
+description: "후보자 실제 이력서·태스크 히스토리를 바탕으로 경험 기반 면접 question bank 마크다운을 fos-study에 생성·게시한다. 예상 질문·팔로업·답변 포인트·1분 답변 구조·압박 질문 방어에 집중한 문서가 필요할 때 사용. 일반 기술 아티클이 아닌 면접 Q&A bank 형식."
 ---
 
 # Experience Question Bank Writer

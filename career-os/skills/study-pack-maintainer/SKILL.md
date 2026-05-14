@@ -1,6 +1,6 @@
 ---
 name: study-pack-maintainer
-description: Decide whether a requested backend study topic should update an existing fos-study markdown file or create a new one, then generate the final markdown body via Claude based on existing related documents. Use when the user asks for a study pack but wants overlap checked first, wants duplicate files avoided, wants existing documents reviewed before writing, or wants Claude to own both the update-vs-new-file judgment and the final content draft.
+description: "요청된 백엔드 학습 토픽이 기존 fos-study 파일을 갱신해야 하는지 새로 생성해야 하는지 판단하고, 기존 관련 문서를 바탕으로 최종 마크다운 본문을 Claude가 직접 생성한다. 스터디팩 작성 전 overlap 여부를 확인하고 싶을 때, 중복 파일을 피하고 싶을 때, update-vs-new 판단과 최종 콘텐츠 초안을 Claude가 담당하길 원할 때 사용."
 ---
 
 # Study Pack Maintainer
@@ -29,6 +29,12 @@ career-os/scripts/command-router/run_now.sh maintain-study-pack <topic>
 - `sources/fos-study/...` — `[초안]` 접두어로 게시 + git commit + push (단일 타깃)
 
 Claude 결과에 포함: chosen action (`update-existing` / `create-new`), 출력 경로, 짧은 근거, 전체 마크다운 본문.
+
+## fos-study 전체 점검 시
+
+fos-study 저장소 전체 상태(broken link / orphan doc / cross-link 누락 등)를 미리 파악하고 싶다면 `docs-audit` skill을 먼저 실행한다. maintainer는 docs-audit 결과를 자동으로 호출하지 않으므로, 대규모 업데이트 전에 사용자가 수동으로 실행 권장.
+
+docs-audit은 fos-study 측 진실 출처(`sources/fos-study/.claude/skills/docs-audit/SKILL.md`)의 심볼릭 링크다.
 
 ## 관련 ADR
 

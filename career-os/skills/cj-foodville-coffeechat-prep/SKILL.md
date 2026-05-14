@@ -1,11 +1,11 @@
 ---
 name: cj-foodville-coffeechat-prep
-description: Prepare private CJ Foodville coffee-chat strategy and backend service/site insight reports for the candidate. Use when the user asks for CJ푸드빌/Foodville 커피챗 preparation, conversation flow, company/service interest points, backend insights from VIPS/제일제면소/CJ Foodville sites, or Claude-backed review of coffee-chat positioning. Outputs private career-os reports, not public fos-study posts.
+description: "현 active 타깃 기업(config/mvp-target.json 참조)의 커피챗 전략 보고서와 백엔드 서비스·사이트 인사이트를 비공개 생성하는 커리어 준비 skill. CJ Foodville/coffeechat 준비·대화 흐름·회사 서비스 관심 포인트·백엔드 인사이트·커피챗 포지셔닝 검토 요청 시 사용. fos-study가 아닌 비공개 career-os 리포트 생성."
 ---
 
 # CJ Foodville Coffee Chat Prep
 
-CJ Foodville 커피챗 전략 보고서와 백엔드 서비스 인사이트를 생성하는 비공개 커리어 준비 skill.
+현 active 타깃 기업(`config/mvp-target.json`의 `primary` 항목)의 커피챗 전략 보고서와 백엔드 서비스 인사이트를 생성하는 비공개 커리어 준비 skill. 타깃 기업 전환 시 `mvp-target.json`만 수정하면 되며, 회사명을 SKILL.md 본문에 직접 박지 않는다.
 
 ## 호출 방법
 

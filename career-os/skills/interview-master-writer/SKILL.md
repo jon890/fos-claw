@@ -1,6 +1,6 @@
 ---
 name: interview-master-writer
-description: Generate and publish a common senior-backend interview master playbook markdown document into the local fos-study repository, combining the candidate's latest resume and selected task documents. Use when the output should be a reusable cross-team playbook (self-introduction, career narrative, technical decision style, reverse questions, final checklist) — not a team-specific question bank or a topic-specific study pack.
+description: "후보자 최신 이력서·태스크 문서를 조합하여 시니어 백엔드 면접 마스터 플레이북 마크다운을 fos-study에 생성·게시한다. 팀별 question bank·토픽별 study pack이 아닌, 어느 회사에서도 재사용 가능한 크로스트랙 플레이북(자기소개·커리어 내러티브·기술 의사결정 스타일·역질문·최종 체크리스트)을 원할 때 사용."
 ---
 
 # Interview Master Writer
