@@ -4,7 +4,12 @@
     "team": "Digital Channel Backend",
     "role": "Java Backend",
     "interview_date": "",
-    "notes": "현재 집중 중인 타깃. interview_date는 일정 확정 시 채워넣을 것."
+    "notes": "현재 집중 중인 타깃. interview_date는 일정 확정 시 채워넣을 것.",
+    "coffeechat_skill_dir": "cj-foodville-coffeechat-prep",
+    "coffeechat_report_slug": "cj-foodville-coffeechat",
+    "coffeechat_source_dir": "cj-foodville-sites",
+    "coffeechat_collector_script": "collect_foodville_sites.py",
+    "coffeechat_brand_snapshot": "cjfoodville-brand.txt"
   },
   "history": [
     {

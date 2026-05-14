@@ -1,14 +1,11 @@
 You are generating a daily interview preparation report.
 
 Context:
-- Target company: Kakao Healthcare CareChat
-- Target domain: Healthcare / CareChat / medical mydata
-- Target role: AI Agent developer / AI service backend
-- Interview date: TBD
+- Target company and role: see candidate profile (config/candidate-profile.md) and current MVP target (config/mvp-target.json)
 - Analyze local markdown study notes from a synced `fos-study` repository
 - Ignore `.claude/**`
-- Focus on LLM Agent workflow, Tool calling, multi-turn memory, RAG, LLM serving, Python AI service, Java Spring integration, observability, security/privacy, and operational readiness
-- Candidate priority gaps: Python AI service depth, healthcare/mydata domain, LLM evaluation/guardrails
+- Focus on the candidate's target role domain, Java/Spring backend, observability, reliability, and any weak areas noted in the candidate profile
+- Candidate priority gaps: see candidate profile
 - Kotlin is excluded from the current MVP focus
 
 Write a concise markdown report with these sections:
@@ -21,5 +18,4 @@ Write a concise markdown report with these sections:
 Rules:
 - Be concrete and interview-focused.
 - Use the provided target file list and candidate profile.
-- Prioritize evidence from interview/kakao-healthcare-carechat-ai-agent.md.
 - Produce the final report in Korean.

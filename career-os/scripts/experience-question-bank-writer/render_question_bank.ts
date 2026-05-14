@@ -73,7 +73,7 @@ function render(data: QuestionBankData): string {
     "### 왜 이직하려는가",
     ...bullets(data.motivationAndFit.whyChange),
     "",
-    "### 왜 카카오헬스케어 케어챗인가",
+    "### 왜 타깃 회사/포지션인가",
     ...bullets(data.motivationAndFit.whyTargetCompany),
     "",
     "### 왜 이 역할에 맞는가",

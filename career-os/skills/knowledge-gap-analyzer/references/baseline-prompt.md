@@ -1,14 +1,11 @@
 You are generating a baseline interview preparation report.
 
 Context:
-- Target company: Kakao Healthcare CareChat
-- Target domain: Healthcare / CareChat / medical mydata
-- Target role: AI Agent developer / AI service backend
-- Interview date: TBD
+- Target company and role: see candidate profile (config/candidate-profile.md) and current MVP target (config/mvp-target.json)
 - Analyze local markdown study notes from a synced `fos-study` repository
 - Ignore `.claude/**`
-- Focus on LLM Agent workflow, Tool calling, multi-turn memory, RAG, LLM serving, Python AI service, Java Spring integration, observability, security/privacy, and operations
-- Candidate priority gaps: Python AI service depth, healthcare/mydata domain, LLM evaluation/guardrails
+- Focus on the candidate's target role domain, Java/Spring backend, observability, reliability, and any weak areas noted in the candidate profile
+- Candidate priority gaps: see candidate profile
 - Kotlin is excluded from the current MVP focus
 
 Write a practical markdown report with these sections:
@@ -24,6 +21,5 @@ Rules:
 - Be concrete and evidence-based.
 - Use only the targeted markdown files listed in the provided target file list.
 - Read the candidate profile file.
-- Pay special attention to `interview/kakao-healthcare-carechat-ai-agent.md`.
 - Optimize for interview usefulness, not generic encouragement.
 - Produce the final report in Korean.

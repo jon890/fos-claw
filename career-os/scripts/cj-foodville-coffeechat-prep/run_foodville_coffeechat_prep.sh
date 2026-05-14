@@ -3,12 +3,19 @@ set -euo pipefail
 
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/career-os}"
 REPORT_DATE="${REPORT_DATE:-$(date +%F)}"
-SKILL_DIR="$TASK_ROOT/skills/cj-foodville-coffeechat-prep"
-OUTDIR="$TASK_ROOT/data/reports/daily/$REPORT_DATE/cj-foodville-coffeechat"
-RUNTIME_OUT="$TASK_ROOT/data/runtime/cj-foodville-coffeechat-prep.md"
-SOURCE_DIR="$TASK_ROOT/data/source/cj-foodville-sites"
+_MVP="$TASK_ROOT/config/mvp-target.json"
+PRIMARY_COMPANY=$(python3 -c "import json; d=json.load(open('$_MVP')); print(d['primary']['company'])")
+SKILL_SLUG=$(python3 -c "import json; d=json.load(open('$_MVP')); print(d['primary']['coffeechat_skill_dir'])")
+REPORT_SLUG=$(python3 -c "import json; d=json.load(open('$_MVP')); print(d['primary']['coffeechat_report_slug'])")
+SOURCE_SLUG=$(python3 -c "import json; d=json.load(open('$_MVP')); print(d['primary']['coffeechat_source_dir'])")
+COLLECTOR_SCRIPT=$(python3 -c "import json; d=json.load(open('$_MVP')); print(d['primary']['coffeechat_collector_script'])")
+BRAND_SNAPSHOT=$(python3 -c "import json; d=json.load(open('$_MVP')); print(d['primary']['coffeechat_brand_snapshot'])")
+SKILL_DIR="$TASK_ROOT/skills/$SKILL_SLUG"
+OUTDIR="$TASK_ROOT/data/reports/daily/$REPORT_DATE/$REPORT_SLUG"
+RUNTIME_OUT="$TASK_ROOT/data/runtime/$SKILL_SLUG.md"
+SOURCE_DIR="$TASK_ROOT/data/source/$SOURCE_SLUG"
 PROMPT_FILE="$SKILL_DIR/references/coffeechat-review-prompt.md"
-STRATEGY_NOTE="$TASK_ROOT/docs/prep/cj-foodville-coffeechat-strategy.md"
+STRATEGY_NOTE="$TASK_ROOT/docs/prep/$REPORT_SLUG-strategy.md"
 PROFILE="$TASK_ROOT/config/candidate-profile.md"
 RAW_RESULT_JSON="$OUTDIR/claude.result.json"
 INPUT_NOTE="$OUTDIR/input.md"
@@ -16,11 +23,11 @@ REPORT_MD="$OUTDIR/report.md"
 mkdir -p "$OUTDIR" "$TASK_ROOT/data/runtime" "$SOURCE_DIR"
 
 set +e
-python3 "$TASK_ROOT/scripts/cj-foodville-coffeechat-prep/collect_foodville_sites.py" "$SOURCE_DIR" > "$OUTDIR/site-collection.json"
+python3 "$TASK_ROOT/scripts/$SKILL_SLUG/$COLLECTOR_SCRIPT" "$SOURCE_DIR" > "$OUTDIR/site-collection.json"
 collect_code=$?
 set -e
 if (( collect_code != 0 )); then
-  echo "[foodville-coffeechat] site collection had partial failures; continuing with available snapshots" >&2
+  echo "[$REPORT_SLUG] site collection had partial failures; continuing with available snapshots" >&2
 fi
 
 cat > "$INPUT_NOTE" <<EOF2
@@ -44,8 +51,8 @@ $(cat "$SOURCE_DIR/vips.txt" 2>/dev/null || echo "수집 실패")
 제일제면소 메뉴 사이트 스냅샷:
 $(cat "$SOURCE_DIR/cheiljemyunso-menu.txt" 2>/dev/null || echo "수집 실패")
 
-CJ푸드빌 브랜드 소개 사이트 스냅샷:
-$(cat "$SOURCE_DIR/cjfoodville-brand.txt" 2>/dev/null || echo "수집 실패")
+${PRIMARY_COMPANY} 브랜드 소개 사이트 스냅샷:
+$(cat "$SOURCE_DIR/$BRAND_SNAPSHOT" 2>/dev/null || echo "수집 실패")
 
 공개 검색 스니펫 보강 자료:
 $(cat "$SOURCE_DIR/search-snippets.md" 2>/dev/null || echo "보강 자료 없음")
