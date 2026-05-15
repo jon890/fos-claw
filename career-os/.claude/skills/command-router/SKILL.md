@@ -19,7 +19,7 @@ career-os/scripts/command-router/run_now.sh <command> [args...]
 
 ## 입력
 
-- 각 명령별 runner가 자체 config를 참조 (`config/topics.json` 등)
+- 각 명령별 runner가 자체 config를 참조 (`config/study-pack-topics.json` / `config/question-bank-topics.json` 등)
 - `config/.env` — `DISCORD_CHANNEL_ID` 등 필수 환경 변수
 
 ## 산출물

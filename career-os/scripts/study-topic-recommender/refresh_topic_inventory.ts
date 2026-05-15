@@ -138,11 +138,6 @@ export interface Recommendation extends TopicItem, ReservoirItem {
   };
 }
 
-export interface TopicsConfig {
-  "study-pack": Record<string, StudyTopicEntry>;
-  "study-pack-candidates"?: { topics: TopicItem[] };
-}
-
 export interface SourcesConfig {
   techBlog?: { items: ReservoirItem[] };
   ai?: { items: ReservoirItem[] };
@@ -230,9 +225,13 @@ function countMap(items: string[]): Map<string, number> {
 
 // ── load config ───────────────────────────────────────────────────────────────
 
-const topicsCfg = readJson<TopicsConfig>(join(CONFIG, "topics.json"));
-const studyTopics = topicsCfg["study-pack"];
-const studyCandidates = topicsCfg["study-pack-candidates"]?.topics ?? [];
+const studyTopicsRaw = readJson<Record<string, StudyTopicEntry>>(join(CONFIG, "study-pack-topics.json"));
+const studyTopics: Record<string, StudyTopicEntry> = Object.fromEntries(
+  Object.entries(studyTopicsRaw).filter(([k]) => k !== "_meta")
+) as Record<string, StudyTopicEntry>;
+const studyCandidates = readJson<{ topics?: TopicItem[] }>(
+  join(CONFIG, "study-pack-candidates.json")
+).topics ?? [];
 
 const liveSeeds: LiveSeed[] = readJson<{ seeds: LiveSeed[] }>(
   join(CONFIG, "live-coding-seed-pool.json")

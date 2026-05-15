@@ -48,7 +48,7 @@ export interface TaskRunEntry {
 }
 
 /**
- * `config/topics.json` 의 단일 토픽 entry (plan002 이후 스키마).
+ * study-pack-topics.json / question-bank-topics.json 의 단일 토픽 entry (ADR-027 분리 후).
  * namespace 별로 같은 형태.
  */
 export interface TopicEntry {

@@ -22,12 +22,13 @@ backend 면접 준비용 morning 토픽 추천 통합 skill. replenish + recomme
 
 Claude는 다음을 `Read` 도구로 직접 로드:
 
-1. `career-os/config/topics.json` — `study-pack` + `study-pack-candidates` namespace
-2. `career-os/config/sources.json` — `techBlog / ai / geek` reservoir items (feedUrl, filterKeywords 포함)
-3. `career-os/config/live-coding-seed-pool.json` — primary live-coding seed pool
-4. `career-os/config/live-coding-seed-candidates.json` — candidate live-coding seeds
-5. `career-os/data/generated-artifacts.json` — 생성된 산출물 목록 (promote 판단 기준)
-6. `career-os/data/runtime/topic-inventory-history.jsonl` — 최근 추천 history (cooldown 계산, 없으면 skip)
+1. `career-os/config/study-pack-topics.json` — `study-pack` 항목
+2. `career-os/config/study-pack-candidates.json` — `study-pack-candidates` 항목
+3. `career-os/config/sources.json` — `techBlog / ai / geek` reservoir items (feedUrl, filterKeywords 포함)
+4. `career-os/config/live-coding-seed-pool.json` — primary live-coding seed pool
+5. `career-os/config/live-coding-seed-candidates.json` — candidate live-coding seeds
+6. `career-os/data/generated-artifacts.json` — 생성된 산출물 목록 (promote 판단 기준)
+7. `career-os/data/runtime/topic-inventory-history.jsonl` — 최근 추천 history (cooldown 계산, 없으면 skip)
 
 ## Workflow
 
@@ -35,7 +36,7 @@ Claude는 다음을 `Read` 도구로 직접 로드:
 
 `data/runtime/topic-inventory-history.jsonl`의 최근 history entry에서 `study-pack-candidates` namespace에 있는 key 중 `sources/fos-study/<item.promotionTarget.outputPath>.md`가 실제로 존재하면 candidate → study-pack namespace 자동 승격 대상으로 판단한다.
 
-승격 후보가 있으면 사용자에게 안내 후 `config/topics.json` 수정 권유. 자동 수정은 하지 않는다 (사람 확인 필요).
+승격 후보가 있으면 사용자에게 안내 후 `config/study-pack-topics.json` / `config/study-pack-candidates.json` 수정 권유. 자동 수정은 하지 않는다 (사람 확인 필요).
 
 승격 후보가 없으면 이 단계를 건너뛴다.
 

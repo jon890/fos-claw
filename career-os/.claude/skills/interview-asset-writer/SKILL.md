@@ -23,7 +23,7 @@ description: 후보자 이력 기반 면접 자산 마크다운을 생성하고 
 
 Claude는 다음을 `Read` 도구로 직접 로드:
 
-1. `career-os/config/topics.json` — `question-bank` namespace에서 `<topic-key>` 검색 → `outputPath` / `domain` / `title` / `inputFiles` / `promptAppend`
+1. `career-os/config/question-bank-topics.json` — `<topic-key>` 검색 → `outputPath` / `domain` / `title` / `inputFiles` / `promptAppend`
 2. `career-os/config/candidate-profile.md` — 11섹션 prose, 후보자 이력 (필수)
 3. `career-os/config/mvp-target.json` — `primary.company`, `primary.role` (현재 면접 타깃)
 4. `career-os/task/*` 또는 `career-os/resume/*` — `inputFiles` 명시되면 그 파일들, 아니면 candidate-profile에서 참조하는 경로
@@ -33,7 +33,7 @@ Claude는 다음을 `Read` 도구로 직접 로드:
 
 ### 1. Topic 해석 + 형식 판단
 
-인자가 topic-key (kebab-case)면 `topics.json["question-bank"]` 매칭. 자연어면 description/domain으로 유사 매칭. 매칭 실패 시 **freeform 모드**: outputPath 본인이 결정.
+인자가 topic-key (kebab-case)면 `question-bank-topics.json` 매칭. 자연어면 description/domain으로 유사 매칭. 매칭 실패 시 **freeform 모드**: outputPath 본인이 결정.
 
 산출물 형식 판단:
 - **Q&A 질문 은행**: topic-key에 `qbank` / `question-bank` / `experience-` 포함, 또는 자연어에 "질문 은행" / "Q&A" / "qbank" 언급
