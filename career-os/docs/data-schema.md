@@ -304,7 +304,7 @@ study-pack / interview-asset가 fos-study에 publish한 후 `_shared/bin/update_
 }
 ```
 
-`refresh_topic_inventory.py`가 실행 시 갱신.
+`refresh_topic_inventory.ts`가 실행 시 갱신 (ADR-026 Python → TypeScript 마이그).
 
 ### data/runtime/topic-inventory-history.jsonl (ADR-010/012)
 
@@ -341,7 +341,7 @@ replenish 실행 결과 요약. claudeInvoked 여부, 보충된 후보 수 등.
 
 ### data/runtime/morning-topic-recommendation.md
 
-`refresh_topic_inventory.py` 산출물. ADR-012의 10픽 + 오늘의 3선 마크다운. 사람이 직접 읽음.
+`refresh_topic_inventory.ts` 산출물 (ADR-026). ADR-012의 10픽 + 오늘의 3선 마크다운. 사람이 직접 읽음.
 
 ### data/runtime/feed-cache/<sha1>.json (ADR-013)
 

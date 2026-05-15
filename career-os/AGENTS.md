@@ -8,7 +8,7 @@
 
 | 문서 | 무엇이 들어 있는지 | 언제 보는지 |
 |---|---|---|
-| [`docs/prd.md`](docs/prd.md) | 제품 범위·MVP·11개 dispatch 명령·성공 기준·미연결 WIP | 새 기능 추가 / 우선순위 결정 |
+| [`docs/prd.md`](docs/prd.md) | 제품 범위·MVP·기능 목록·성공 기준·미연결 WIP | 새 기능 추가 / 우선순위 결정 |
 | [`docs/data-schema.md`](docs/data-schema.md) | config / logs / runtime / 산출물 JSON 스키마 | 데이터 파일 다룰 때 / 새 config 도입 |
 | [`docs/flow.md`](docs/flow.md) | 사용자·데이터 플로우 (명령별 입력→runner→산출물) | 새 흐름 추가 / 디버깅 |
 | [`docs/code-architecture.md`](docs/code-architecture.md) | 디렉터리 레이어·책임·외부 의존·Runner/Dispatcher 패턴 | 코드 구조 변경 / 새 스킬 추가 |
@@ -45,9 +45,9 @@
 
 옛 진입점 (plan006 후, ADR-019): `scripts/command-router/run_now.sh`. plan005 분해 직후~plan006 전: `skills/command-router/scripts/run_now.sh`(ADR-017). 그 전: `skills/cj-oliveyoung-java-backend-prep/scripts/run_now.sh`. 마이그 안 된 skill은 옛 진입점 여전히 사용.
 
-7개 dispatcher 명령 (plan014/015에서 study-pack/question-bank/master 진입점은 native skill로 흡수, replenish-topics는 plan015에서 폐기 — 자동 흐름은 plan016에서 study-topic-recommender로 흡수 예정): `baseline` · `daily [topic]` · `recommend-positions` · `recommend-topics` · `foodville-coffeechat` · `smoke` · `live-coding-dispatch`.
+5개 dispatcher 명령 (plan013~016에서 study-pack / question-bank / master / replenish-topics / recommend-topics / live-coding-dispatch 진입점은 native skill 또는 폐기 처리됨): `baseline` · `daily [topic]` · `recommend-positions` · `foodville-coffeechat` · `smoke`.
 
-native skill 진입점 (ai-nodes ADR-002, plan013/014/015): `claude -p "/study-pack <topic>"` (주제 중심 학습 문서) · `claude -p "/interview-asset <topic>"` (후보자 이력 중심 Q&A 질문 은행 + 마스터 플레이북).
+native skill 진입점 (ai-nodes ADR-002, plan013~016): `claude -p "/study-pack <topic>"` (주제 중심 학습 문서) · `claude -p "/interview-asset <topic>"` (후보자 이력 중심 Q&A 질문 은행 + 마스터 플레이북) · `claude -p "/study-topic-recommender"` (아침 토픽 추천 + replenish + live-coding seed 선택 통합).
 
 각 명령의 입력/산출물/git push 여부 상세는 `docs/prd.md` 기능 표, 데이터 흐름은 `docs/flow.md` 참조.
 

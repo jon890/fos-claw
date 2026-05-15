@@ -1,6 +1,6 @@
 ---
 name: command-router
-description: career-os의 14개 dispatch 명령 단일 진입점. 모든 runner를 track_task.sh로 래핑하고 Discord 알림 + cost summary를 자동 부착한다. 직접 호출하지 말 것 — 일상 운영은 run_now.sh <command> 경유.
+description: career-os의 5개 dispatcher 명령 단일 진입점. 모든 runner를 track_task.sh로 래핑하고 Discord 알림 + cost summary를 자동 부착한다. native skill 진입점 3개 (study-pack / interview-asset / study-topic-recommender)는 `claude -p` 직접 호출. 직접 호출하지 말 것 — 일상 운영은 run_now.sh <command> 경유.
 ---
 
 # command-router
@@ -13,7 +13,7 @@ career-os 워크스페이스의 단일 dispatch 진입점.
 career-os/scripts/command-router/run_now.sh <command> [args...]
 ```
 
-7개 dispatcher 명령 (study-pack / question-bank / master / auto-question-bank는 native skill로 흡수, replenish-topics는 plan015에서 폐기 — plan016에서 study-topic-recommender 자동 흐름으로 통합 예정): `baseline` · `daily [topic]` · `recommend-topics` · `recommend-positions` · `foodville-coffeechat` · `smoke` · `live-coding-dispatch`.
+5개 dispatcher 명령 (plan013~016에서 study-pack / question-bank / master / replenish-topics / recommend-topics / live-coding-dispatch 진입점은 native skill 또는 폐기 처리됨): `baseline` · `daily [topic]` · `recommend-positions` · `foodville-coffeechat` · `smoke`.
 
 실행 파일: `career-os/scripts/command-router/`(ADR-019).
 
