@@ -8,7 +8,7 @@ TRACKER="${TRACKER:-$HOME/ai-nodes/_shared/bin/track_task.sh}"
 NOTIFY_SCRIPT="bun --env-file=$HOME/ai-nodes/career-os/.env run $HOME/ai-nodes/_shared/lib/notify_discord.ts"
 FORMAT_COST="$HOME/ai-nodes/_shared/lib/format_cost_summary.ts"
 LOCK_DIR="$TASK_ROOT/data/runtime/locks"
-MODE="${1:-baseline}"
+MODE="${1:-recommend-positions}"
 
 mkdir -p "$LOCK_DIR"
 
@@ -42,18 +42,6 @@ run_tracked() {
 }
 
 case "$MODE" in
-  baseline)
-    run_tracked "career-os:baseline" "baseline gap analysis" \
-      "$TASK_ROOT/scripts/knowledge-gap-analyzer/run_baseline.sh"
-    ;;
-  daily)
-    # Optional second arg: topic key from config/topic-file-map.json
-    # e.g.  run_now.sh daily jpa-n+1
-    # Omit to auto-select the most overdue weak spot from data/study-progress.json
-    export DAILY_TOPIC="${2:-}"
-    run_tracked "career-os:daily" "daily focus report" \
-      "$TASK_ROOT/scripts/knowledge-gap-analyzer/run_daily.sh"
-    ;;
   recommend-positions)
     run_tracked "career-os:position-recommendation" "position 추천" \
       "$TASK_ROOT/scripts/position-recommender/run_position_recommendation.sh"
@@ -62,14 +50,11 @@ case "$MODE" in
     run_tracked "career-os:foodville-coffeechat" "Foodville coffeechat 준비" \
       "$TASK_ROOT/scripts/cj-foodville-coffeechat-prep/run_foodville_coffeechat_prep.sh"
     ;;
-  smoke)
-    run_tracked "career-os:smoke" "smoke test" \
-      "$TASK_ROOT/scripts/knowledge-gap-analyzer/run_smoke_test.sh"
-    ;;
   *)
-    echo "usage: run_now.sh [baseline | daily [topic] | recommend-positions | foodville-coffeechat | smoke]" >&2
-    echo "  daily topic keys: see config/topic-file-map.json" >&2
+    echo "usage: run_now.sh [recommend-positions | foodville-coffeechat]" >&2
+    echo "  interview-prep-analyzer (baseline + daily): claude -p '/interview-prep-analyzer [args]' — ai-nodes ADR-002, plan017" >&2
     echo "  study-pack / interview-asset (Q&A + master playbook): native skill 진입점 (claude -p '/<skill> <topic>') 사용 — ai-nodes ADR-002" >&2
+    echo "  study-topic-recommender: claude -p '/study-topic-recommender' — ai-nodes ADR-002, plan016" >&2
     exit 1
     ;;
 esac
