@@ -1,6 +1,6 @@
 ---
 name: study-pack-writer
-description: backend 면접 준비용 study pack 마크다운을 생성하고 sources/fos-study 저장소에 자동 발행. /study-pack <topic-key-or-자연어> 슬래시 명령 또는 "<주제> study pack 만들어줘" / "<주제> 학습 정리해줘" / "<주제>에 대한 스터디팩" 같은 자연어 요청 시 무조건 사용. backend·db·infrastructure·언어·아키텍처 주제로 fos-study에 즉시 commit/push해야 하는 작업이면 이 skill을 호출.
+description: backend 면접 준비용 study pack 마크다운을 생성하고 sources/fos-study 저장소에 자동 발행. /study-pack-writer <topic-key-or-자연어> 슬래시 명령 또는 "<주제> study pack 만들어줘" / "<주제> 학습 정리해줘" / "<주제>에 대한 스터디팩" 같은 자연어 요청 시 무조건 사용. backend·db·infrastructure·언어·아키텍처 주제로 fos-study에 즉시 commit/push해야 하는 작업이면 이 skill을 호출.
 ---
 
 # Study Pack Writer
@@ -9,7 +9,7 @@ backend 면접 준비용 학습 마크다운(study pack) 생성·검증·발행 
 
 ## When to use
 
-- 사용자가 `/study-pack <topic>` 슬래시 호출
+- 사용자가 `/study-pack-writer <topic>` 슬래시 호출
 - 자연어 요청: "MySQL 인덱스 study pack 만들어줘", "Redis 캐시 전략 학습 자료 정리해줘"
 - fos-study repo에 즉시 publish할 study pack이 필요한 모든 경우
 
@@ -76,11 +76,19 @@ git push origin main
 
 `<domain>`은 topic에서 추출(database/redis/kafka/java/infra/architecture). add vs update는 `git status --porcelain`으로 자동 판단. push 실패 시 stderr + exit 1 (silent 실패 금지).
 
-### 7. Discord 알림 (Bash)
+### 7. Discord 알림
+
+권장 실행 경로는 OpenClaw wrapper가 호출하는 `scripts/study-pack-writer/run_with_discord_notify.sh "<topic>"` 이다. 이 wrapper가 다음 알림을 보장한다.
+
+- `[시작] study-pack-writer: <topic>` — Claude 실행 직전
+- `[완료] study-pack-writer: <topic> (fos-study <sha>)` — exit 0 후
+- `[에러] study-pack-writer 실패: <topic>` — non-zero exit 후 최근 로그 포함
+
+native skill 내부에서 직접 알림을 보낼 때는 다음 도구를 사용한다.
 
 ```bash
-bun --env-file=career-os/.env _shared/lib/notify_discord.ts \
-  "[완료] study-pack <topic-key>: sources/fos-study/<outputPath>.md"
+bun --env-file=career-os/.env ../_shared/lib/notify_discord.ts \
+  "[완료] study-pack-writer <topic-key>: sources/fos-study/<outputPath>.md"
 ```
 
 알림 실패는 비치명적 — stderr warn만, skill 자체는 success 종료.
@@ -99,7 +107,7 @@ bun --env-file=career-os/.env _shared/lib/notify_discord.ts \
 
 - **Self-check 본 skill 안에 박는 이유**: 옛 외부 validator를 Claude 자체 검증으로. SKILL.md 단일 진실 출처.
 - **재작성 ≤3회**: 무한 루프 차단. 3회로도 통과 못 하면 본질 문제 (topic 모호, 입력 부족) — 사용자 개입 필요.
-- **Publish + notify 통합**: 옛 외부 publish/notify shell을 Bash 도구로 직접. 의존 줄임.
+- **Publish + notify 통합**: 기본은 `scripts/study-pack-writer/run_with_discord_notify.sh` wrapper가 시작/완료/에러 알림을 담당한다. native skill의 완료 알림은 보조 경로로 유지한다.
 
 ## References
 
