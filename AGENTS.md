@@ -56,24 +56,24 @@ apartment/skills/apartment-daily-report/scripts/run_report.sh
 
 ### 3-2. career-os
 
+현재 표준은 **Claude native skill 직접 호출**이다 (ai-nodes ADR-002, plan013~017). OpenClaw wrapper는 아래 명령으로 라우팅만 한다.
+
 ```bash
-career-os/scripts/command-router/run_now.sh baseline
-career-os/scripts/command-router/run_now.sh daily [topic]
-career-os/scripts/command-router/run_now.sh study-pack <topic>
-career-os/scripts/command-router/run_now.sh question-bank <topic>
-career-os/scripts/command-router/run_now.sh master [topic]
-career-os/scripts/command-router/run_now.sh recommend-topics
-career-os/scripts/command-router/run_now.sh recommend-positions
-career-os/scripts/command-router/run_now.sh replenish-topics
-career-os/scripts/command-router/run_now.sh maintain-study-pack <topic>
-career-os/scripts/command-router/run_now.sh bootcamp-batch
-career-os/scripts/command-router/run_now.sh live-coding-dispatch
-career-os/scripts/command-router/run_now.sh auto-question-bank
-career-os/scripts/command-router/run_now.sh foodville-coffeechat
-career-os/scripts/command-router/run_now.sh smoke
+cd career-os
+claude -p "/study-pack-writer <topic>"
+claude -p "/interview-asset-writer <topic>"
+claude -p "/study-topic-recommender [context]"
+claude -p "/interview-prep-analyzer [baseline|daily|topic]"
 ```
 
-14개 dispatch 명령. `run_now.sh`가 유일한 진입점이며 토픽 리졸버(`scripts/<skill>/resolve_*_topic.ts`)가 config(`config/topics.json` 등)에서 변수를 `export KEY=value`로 출력 → dispatcher가 `eval`로 받음. 산출물 중 study-pack / question-bank / master / maintain-study-pack은 `career-os/sources/fos-study`에 commit + push. push 실패는 silent 금지.
+남은 dispatcher 명령은 2개뿐이다:
+
+```bash
+career-os/scripts/command-router/run_now.sh recommend-positions
+career-os/scripts/command-router/run_now.sh foodville-coffeechat
+```
+
+`run_now.sh study-pack`, `question-bank`, `master`, `recommend-topics`, `replenish-topics`, `live-coding-dispatch`, `baseline`, `daily`, `smoke` 등 옛 dispatcher case는 native skill 또는 폐기 흐름으로 정리됐다.
 
 상세 컨벤션·결정 이력은 `career-os/docs/{prd,data-schema,flow,code-architecture,adr}.md` 5문서.
 
