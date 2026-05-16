@@ -47,7 +47,7 @@
 
 2개 dispatcher 명령 (plan013~017에서 study-pack / question-bank / master / replenish-topics / recommend-topics / live-coding-dispatch / baseline / daily / smoke 진입점은 native skill 또는 폐기 처리됨): `recommend-positions` · `foodville-coffeechat`.
 
-native skill 진입점 (ai-nodes ADR-002, plan013~017): `claude -p "/study-pack <topic>"` (주제 중심 학습 문서) · `claude -p "/interview-asset <topic>"` (후보자 이력 중심 Q&A 질문 은행 + 마스터 플레이북) · `claude -p "/study-topic-recommender"` (아침 토픽 추천 + replenish + live-coding seed 선택 통합) · `claude -p "/interview-prep-analyzer [args]"` (면접 준비 갭 분석 — baseline 전체 진단 + daily 집중 점검 자연어 분기, ADR-027, plan017).
+native skill 진입점 (ai-nodes ADR-002, plan013~020): `claude -p "/study-pack-writer <topic>"` (주제 중심 학습 문서) · `claude -p "/interview-asset-writer <topic>"` (후보자 이력 중심 Q&A 질문 은행 + 마스터 플레이북) · `claude -p "/study-topic-recommender"` (아침 토픽 추천 + replenish + live-coding seed 선택 통합) · `claude -p "/interview-prep-analyzer [args]"` (면접 준비 갭 분석 — baseline 전체 진단 + daily 집중 점검 자연어 분기, ADR-027, plan017) · `claude --permission-mode acceptEdits -p "/candidate-baseline-suggester"` (fos-study 학습 이력 기반 후보자 자산 Append 갱신 — candidate-profile · baseline-core-files · weak_spots, ADR-028, plan020).
 
 각 명령의 입력/산출물/git push 여부 상세는 `docs/prd.md` 기능 표, 데이터 흐름은 `docs/flow.md` 참조.
 

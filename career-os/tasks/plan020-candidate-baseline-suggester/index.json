@@ -2,9 +2,9 @@
   "name": "plan020-candidate-baseline-suggester",
   "description": "candidate-baseline-suggester skill 도입 (ADR-028). career-os/.claude/skills/ 한정. fos-study 전체 commit history + study-progress + interview-prep-analyzer baseline 산출물에서 자동 추론 → candidate-profile.md / baseline-core-files.json / prd.md '약점·강점' / data/study-progress.json weak_spots Append + 주석 마킹 패턴으로 갱신. audit trail 필수: data/runtime/profile-refresh-suggestions/YYYY-MM-DD/ 안 before/after/diff/changes. common-pitfalls 6-6 회피: SKILL.md draft 별도 파일.",
   "created_at": "2026-05-15T00:00:00+00:00",
-  "updated_at": "2026-05-15T00:00:00+00:00",
-  "status": "pending",
-  "current_phase": 1,
+  "updated_at": "2026-05-16T01:56:06.669490+00:00",
+  "status": "completed",
+  "current_phase": 3,
   "total_phases": 3,
   "error_message": null,
   "blocked_reason": null,
@@ -18,26 +18,44 @@
       "number": 1,
       "title": "SKILL.md draft 작성 (~180줄, Append + 주석 마킹 + audit trail 명세)",
       "file": "phase-01.md",
-      "status": "pending",
-      "allowedTools": ["Read", "Write", "Bash", "Grep"],
+      "status": "completed",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Bash",
+        "Grep"
+      ],
       "model": "sonnet",
-      "timeout": 1800
+      "timeout": 1800,
+      "commitSha": "e9a523fc143a"
     },
     {
       "number": 2,
       "title": "career-os/.claude/skills/candidate-baseline-suggester/ 생성 + SKILL.md Write 적용",
       "file": "phase-02.md",
-      "status": "pending",
-      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "status": "completed",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash",
+        "Grep"
+      ],
       "model": "sonnet",
-      "timeout": 1200
+      "timeout": 1200,
+      "commitSha": "e9a523fc143a"
     },
     {
       "number": 3,
       "title": "5문서 + AGENTS.md 갱신 + 정적 검증 + push + trailing + index.json completed",
       "file": "phase-03.md",
-      "status": "pending",
-      "allowedTools": ["Read", "Edit", "Bash", "Grep"],
+      "status": "completed",
+      "allowedTools": [
+        "Read",
+        "Edit",
+        "Bash",
+        "Grep"
+      ],
       "model": "sonnet",
       "timeout": 900
     }

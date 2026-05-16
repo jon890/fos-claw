@@ -138,6 +138,8 @@ career-os/
 │   │                     position-decision-criteria.md, verified-company-research-targets.json
 │   │                     (plan002 이후 config/에서 이동)
 │   ├── cj-foodville-coffeechat-prep/{SKILL.md, references/}
+│   ├── candidate-baseline-suggester/
+│   │   └── SKILL.md   (plan020에서 native skill 명세 작성. Append + 주석 마킹 + audit trail. ADR-028)
 │   └── docs-audit/
 │       └── SKILL.md → sources/fos-study/.claude/skills/docs-audit/SKILL.md (심링크)
 │

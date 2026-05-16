@@ -444,6 +444,46 @@ RSS/Atom feed 디스크 캐시. 6시간 TTL.
 
 `run_from_request.sh` / `run_morning_live_coding.sh`가 쓰는 임시 토픽 컨테이너. 두 runner 모두 dispatcher 미연결 — deferred.
 
+### data/runtime/profile-refresh-suggestions/YYYY-MM-DD/ (plan020, ADR-028)
+
+`candidate-baseline-suggester` 실행마다 생성되는 audit trail. 날짜별 디렉터리로 멱등.
+
+```
+data/runtime/profile-refresh-suggestions/
+└── YYYY-MM-DD/
+    ├── before/
+    │   ├── candidate-profile.md          갱신 전 프로필 사본
+    │   ├── baseline-core-files.json      갱신 전 baseline 파일 목록 사본
+    │   ├── prd-weak-strong-section.md    갱신 전 prd.md "약점·강점" 섹션 추출본
+    │   └── study-progress.json           갱신 전 학습 진도 사본
+    ├── after/
+    │   ├── candidate-profile.md          갱신 후 사본
+    │   ├── baseline-core-files.json      갱신 후 사본
+    │   ├── prd-weak-strong-section.md    갱신 후 사본
+    │   └── study-progress.json           갱신 후 사본
+    ├── diff/
+    │   ├── candidate-profile.md.diff     unified diff (before vs after)
+    │   ├── baseline-core-files.json.diff
+    │   ├── prd-weak-strong-section.md.diff
+    │   └── study-progress.json.diff
+    └── changes.md                        변경 사유 + fos-study path 출처 요약
+```
+
+`changes.md` 구조:
+
+```markdown
+# Profile Refresh — YYYY-MM-DD
+
+## 강점 추가 (N건)
+## 약점 outdated 마킹 (N건)
+## baseline-core-files 추가 (N건)
+## weak_spots 상태 갱신 (N건)
+## 미반영 / skip
+```
+
+`before/` 생성 실패 시 skill이 즉시 중단 — audit trail 없이 자산 갱신 금지 (ADR-028).
+git 추적 여부: `data/runtime/` 아래이므로 대부분 gitignore. 보존이 필요한 경우 사용자가 git add 수동 처리.
+
 ### data/runtime/locks/
 
 study-pack 등 중복 실행 방지용 flock 파일. 토픽별 `<task>-<topic>.lock`.
