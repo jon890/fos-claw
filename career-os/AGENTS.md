@@ -36,6 +36,10 @@
 ## 진실 출처
 
 - 로컬 동기 저장소: `~/ai-nodes/career-os/sources/fos-study`
+- 사용자가 “fos-study에 블로그 글로 게시해줘”, “블로그 글로 게시해줘”라고 하면 이 저장소 아래 적절한 카테고리에 markdown 글을 작성한다.
+- 공개 블로그 글에는 민감한 개인 정보, 정확한 주소/동호수, 비공개 내부 정보는 사용자가 명시하지 않는 한 제외한다.
+- fos-study 게시 글은 블로그 파서 호환을 우선한다. 예: bold-wrapped quote, bare `~` 범위 표기처럼 깨지기 쉬운 markdown 패턴을 피한다.
+- 게시 목적 글은 작성 후 필요한 README/index를 갱신하고, 검증 후 commit/push한다.
 - 마크다운만 분석. `.claude/**` 무시.
 - 후보자 프로필: `config/candidate-profile.md` — 11개 섹션 prose, 모든 주장은 `task/**` 또는 `resume/**` 경로 태깅. 프로필 수정은 이 파일 한 곳에 집중.
 
