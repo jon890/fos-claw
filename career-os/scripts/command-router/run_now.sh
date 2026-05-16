@@ -46,12 +46,8 @@ case "$MODE" in
     run_tracked "career-os:position-recommendation" "position 추천" \
       "$TASK_ROOT/scripts/position-recommender/run_position_recommendation.sh"
     ;;
-  foodville-coffeechat)
-    run_tracked "career-os:foodville-coffeechat" "Foodville coffeechat 준비" \
-      "$TASK_ROOT/scripts/cj-foodville-coffeechat-prep/run_foodville_coffeechat_prep.sh"
-    ;;
   *)
-    echo "usage: run_now.sh [recommend-positions | foodville-coffeechat]" >&2
+    echo "usage: run_now.sh [recommend-positions]" >&2
     echo "  interview-prep-analyzer (baseline + daily): claude -p '/interview-prep-analyzer [args]' — ai-nodes ADR-002, plan017" >&2
     echo "  study-pack / interview-asset (Q&A + master playbook): native skill 진입점 (claude -p '/<skill> <topic>') 사용 — ai-nodes ADR-002" >&2
     echo "  study-topic-recommender: claude -p '/study-topic-recommender' — ai-nodes ADR-002, plan016" >&2
