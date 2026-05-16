@@ -46,21 +46,30 @@ audit trail 디렉터리 생성 실패 시 즉시 중단 — audit trail 없이 
 
 다음을 수행해 갱신 근거를 수집:
 
-**A. 최근 학습 토픽 매핑**
-- `git -C career-os/sources/fos-study log --all --pretty=format:'%h %ad %s' --date=short` 전체 출력 파싱
-- commit message의 `docs(<domain>): add|update <topic>` 패턴에서 domain · topic 추출
-- `data/study-progress.json sessions[]`의 topics 배열과 교차 확인
-- 최근 90일 이내 commit에 대응하는 fos-study path → 강점 근거 목록 작성
+**A. 최근 학습 토픽 매핑 + 실측 path 추출**
+- `git -C career-os/sources/fos-study log --all --pretty=format:'%h %ad %s' --date=short` 전체 출력 + 후보 commit의 `git show <sha> --name-only --pretty=format:""`로 **실제 변경 path** 추출.
+- commit message의 `docs(<domain>): ...` 패턴은 분류 힌트로만. **path 추정은 절대 금지** — commit message domain이 fos-study sub-dir과 1:1 대응 안 함 (예: `docs(database): ...`이 `database/...` 평면 또는 `database/mysql/...` 둘 다 가능). 실측 path만 사용.
+- `data/study-progress.json sessions[]`의 topics 배열과 교차 확인.
+- 최근 90일 이내 commit의 실측 path → 강점 근거 목록 작성.
 
-**B. baseline-core-files.json 미포함 핵심 파일 식별**
-- fos-study 최근 commit 중 `interview/`, `task/`, `architecture/` 경로 신규 추가 파일 파악
-- 현재 `baseline-core-files.json files[].path` 목록과 diff → 미포함 후보 추출
-- 후보 파일이 면접 고위험 영역(DB·JPA·Redis·Kafka·K8s·트랜잭션)에 해당하면 추가 대상
+**B. baseline-core-files.json 미포함·부재 점검 (사전 `test -f` 검증)**
+- A의 `git show --name-only` 실측 path를 그대로 후보로 사용.
+- **추가 후보 사전 검증**: 각 후보 path에 `test -f career-os/sources/fos-study/<path>` 검증 — 부재면 후보에서 제외 (후속 commit rename / git rm 가능성).
+- 현재 `baseline-core-files.json files[].path` 목록과 diff → 미포함 + 실재 path만 추가 후보.
+- 후보 파일이 면접 고위험 영역(DB · JPA · Redis · Kafka · K8s · 트랜잭션 · MyBatis · Spring · Observability)에 해당하면 추가 대상.
+- **기존 entry 부재 점검**: 현재 `files[]`의 모든 path를 `test -f`로 점검. 부재 entry 목록을 4-3 baseline-core-files Append 단계로 전달 (제거 X, `_missing_note` 마킹).
 
 **C. weak_spots 평가**
 - `study-progress.json weak_spots` 각 항목의 `last_studied` · `study_count` 확인
 - fos-study commit 중 해당 topic 학습 근거(outputPath path) 매핑
 - study_count ≥ 2 이거나 최근 30일 내 학습 완료된 약점 → outdated 후보로 분류
+
+**D. 이력서 자동 탐지 + 매핑 후보 제시**
+- `find career-os/sources/fos-study/resume -maxdepth 3 -type f` 로 resume/ 전체 자산 스캔. 마크다운(`*.md`) / HTML / PDF 종류별 후보 + mtime + version pattern(`*_v[0-9]+\.md`, `*_yyyymm_*.md`).
+- candidate-profile.md `Source provenance` 표 + baseline-core-files.json `files[]`가 가리키는 resume path 중 부재(4-2.B 결과)인 항목 식별.
+- 발견된 후보 중 가장 적합한 1건(최신 mtime + 마크다운 우선)을 changes.md `## 이력서 매핑 후보`에 기록 (**자동 교체 X — 사용자 결정**).
+- 마크다운 0건 + HTML/PDF만 발견되면 `_missing_note`에 "현재 active 후보 = HTML/PDF만, 마크다운 재생성은 resume-writer skill 권장" 명시.
+- 마크다운/HTML/PDF 모두 부재면 changes.md에 "이력서 자산 전무 — resume-writer skill로 신규 생성 필요" 명시.
 
 ### 4-3. 자산 갱신 — Append + 주석 마킹
 
@@ -90,11 +99,24 @@ audit trail 디렉터리 생성 실패 시 즉시 중단 — audit trail 없이 
 
 #### baseline-core-files.json `files` 배열
 
+**Append 전 사전 검증 (필수)**: 추가하려는 모든 path에 대해 `test -f career-os/sources/fos-study/<path>` 검증. 통과한 path만 append. 미통과 path는 후보에서 제외 + changes.md `## 추가 skip` 섹션에 사유 기록 (예: "추정 path `database/mysql/foo.md` 부재 → similar 발견 `database/foo.md` 사용").
+
 신규 핵심 파일 후보를 배열 끝에 append:
 
 ```json
-{"path": "<fos-study 상대 path>", "note": "suggester: added YYYY-MM-DD, 근거 <commit subject>"}
+{"path": "<fos-study 상대 path, test -f 통과>", "note": "suggester: added YYYY-MM-DD, 근거 <commit sha + 한 줄 사유>"}
 ```
+
+**기존 부재 entry 마킹 (4-2.B 결과 활용)**: 기존 `files[]` 중 `test -f` 실패 entry는 **제거 절대 금지**. 대신 `_missing_note` 필드 부착:
+
+```json
+{
+  "path": "<기존 path 그대로>",
+  "_missing_note": "suggester: missing since YYYY-MM-DD — <부재 사유 + 대체 후보 path 또는 resume-writer skill 권장>"
+}
+```
+
+이미 `_missing_note`가 있으면 덮어쓰지 않고 skip. resume 관련 부재면 4-2.D 결과(이력서 매핑 후보)를 `_missing_note`에 포함.
 
 JSON 파싱 실패 시 이 자산만 skip + stderr warn.
 
@@ -161,6 +183,8 @@ done
 3. **files 배열 길이 보존**: 갱신 후 `files` 배열 길이 ≥ 갱신 전
 4. **audit trail 완결**: `before/`, `after/`, `diff/`, `changes.md` 모두 존재
 5. **주석 마킹 형식**: `<!-- suggester: outdated since` 패턴이 기존 본문 줄 *아래*에만 존재 (기존 줄 대체 없음)
+6. **`files[].path` 전수 실재 검증**: 모든 path가 `test -f career-os/sources/fos-study/<path>` 통과 또는 `_missing_note` 부착. 부재 path에 `_missing_note` 없으면 즉시 stderr + changes.md 미반영 기록 (자동 롤백 X — 기존 부재는 본 skill 책임 아님, 마킹만 보장).
+7. **resume entry 매핑 보장**: `^resume/` 시작 path 중 부재 entry는 `_missing_note`에 대체 후보 path 또는 "resume-writer skill 권장" 문구 포함. 미포함 시 stderr warn.
 
 ## Error handling
 

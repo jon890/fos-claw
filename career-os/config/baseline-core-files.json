@@ -4,11 +4,15 @@
     "schema_version": "1"
   },
   "files": [
-    {"path": "interview/kakao-healthcare-carechat-ai-agent.md"},
-    {"path": "resume/2603_김병태_이력서_v4.md"},
+    {"path": "interview/kakao-healthcare-carechat-ai-agent.md", "_missing_note": "suggester: missing since 2026-05-16 — fos-study에 부재. mvp-target.json은 CJ Foodville이라 카카오헬스케어 interview 문서는 active 타깃 아님. 사용자 검토 후 제거 또는 mvp-target 동기화."},
+    {"path": "resume/2603_김병태_이력서_v4.md", "_missing_note": "suggester: missing since 2026-05-16 — commit 119fe4e에서 의도적 삭제(`drop 2603 resume drafts, add CJ푸드빌 백엔드 v1`). 현재 fos-study/resume 안 active 후보: cj-foodville-resume-backend.html + .pdf(마크다운 부재). 마크다운 재생성은 resume-writer skill 권장."},
     {"path": "task/ai-service-team/README.md"},
     {"path": "task/ai-service-team/rag-vector-search-batch.md"},
     {"path": "task/ai-service-team/webtoon-maker-ai-pipeline.md"},
-    {"path": "task/nsc-slot/ai-tool-adoption.md"}
+    {"path": "task/nsc-slot/ai-tool-adoption.md"},
+    {"path": "database/connection-pool-saturation-thread-pool-isolation.md", "note": "suggester: added 2026-05-16 (path 정정 from connection-pool-saturation.md), 근거 1858a53 — DB 약점 보강 (saturation + thread pool isolation)"},
+    {"path": "database/mybatis-dynamic-sql-resultmap-basics.md", "note": "suggester: added 2026-05-16 (path 정정 from database/mysql/...), 근거 94e5171 — CJ Foodville JD MyBatis 매칭"},
+    {"path": "architecture/clean-architecture-pragmatic-spring-commerce.md", "note": "suggester: added 2026-05-16, 근거 1652e23 clean architecture pragmatic Spring commerce"},
+    {"path": "devops/commerce-observability-first-five-minutes.md", "note": "suggester: added 2026-05-16, 근거 30486d6 commerce observability first 5min"}
   ]
 }
