@@ -83,7 +83,7 @@ native skill 패턴: `claude --permission-mode acceptEdits -p "/candidate-baseli
 ```
 호출: claude --permission-mode acceptEdits -p "/candidate-baseline-suggester"
   ↓
-Read: candidate-profile.md + baseline-core-files.json + prd.md "약점·강점"
+Read: candidate-profile.md + baseline-core-files.json
       + data/study-progress.json + (선택) data/reports/baseline/<latest>/
       + fos-study git log (전체 history)
   ↓

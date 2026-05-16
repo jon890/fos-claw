@@ -1,6 +1,6 @@
 ---
 name: candidate-baseline-suggester
-description: career-os/config/ hand-crafted 자산 (candidate-profile.md, baseline-core-files.json, prd.md '약점·강점', data/study-progress.json weak_spots)을 fos-study 전체 commit history + study-progress + interview-prep-analyzer baseline 산출물 기반으로 자동 갱신. Append + 주석 마킹 패턴 — 기존 본문 보존 + 새 항목 추가 + outdated 항목 주석 마킹. audit trail (data/runtime/profile-refresh-suggestions/YYYY-MM-DD/ 안 before/after/diff/changes) 필수. 자연어 호출 — "후보자 프로필 갱신", "baseline 약점·강점 평가 업데이트", "/candidate-baseline-suggester" 슬래시.
+description: career-os/config/ hand-crafted 자산 (candidate-profile.md, baseline-core-files.json, data/study-progress.json weak_spots)을 fos-study 전체 commit history + study-progress + interview-prep-analyzer baseline 산출물 기반으로 자동 갱신. Append + 주석 마킹 패턴 — 기존 본문 보존 + 새 항목 추가 + outdated 항목 주석 마킹. audit trail (data/runtime/profile-refresh-suggestions/YYYY-MM-DD/ 안 before/after/diff/changes) 필수. 자연어 호출 — "후보자 프로필 갱신", "baseline 약점·강점 평가 업데이트", "/candidate-baseline-suggester" 슬래시.
 ---
 
 # Candidate Baseline Suggester
@@ -21,10 +21,9 @@ Claude는 다음을 `Read` 도구로 직접 로드:
 
 1. `career-os/config/candidate-profile.md` — 현재 본문 전체
 2. `career-os/config/baseline-core-files.json` — 현재 `files` 배열 전체
-3. `career-os/docs/prd.md` — "알려진 후보 약점·강점 (현재)" 섹션
-4. `career-os/data/study-progress.json` — `sessions` 배열 + `weak_spots` 맵 전체
-5. (선택) `career-os/data/reports/baseline/<latest>/report.md` — 존재 시 Read, 없으면 skip
-6. fos-study 전체 commit history — `git -C career-os/sources/fos-study log --all --pretty=format:'%h %ad %s' --date=short` + 최근 30개 commit path
+3. `career-os/data/study-progress.json` — `sessions` 배열 + `weak_spots` 맵 전체
+4. (선택) `career-os/data/reports/baseline/<latest>/report.md` — 존재 시 Read, 없으면 skip
+5. fos-study 전체 commit history — `git -C career-os/sources/fos-study log --all --pretty=format:'%h %ad %s' --date=short` + 최근 30개 commit path
 
 ## Workflow
 
@@ -38,11 +37,6 @@ mkdir -p "$AUDIT_DIR/before" "$AUDIT_DIR/after" "$AUDIT_DIR/diff"
 # 현재 자산 snapshot
 cp career-os/config/candidate-profile.md "$AUDIT_DIR/before/candidate-profile.md"
 cp career-os/config/baseline-core-files.json "$AUDIT_DIR/before/baseline-core-files.json"
-
-# prd.md "약점·강점" 섹션만 추출해 별도 저장
-grep -A 10 "알려진 후보 약점·강점" career-os/docs/prd.md \
-  > "$AUDIT_DIR/before/prd-weak-strong-section.md"
-
 cp career-os/data/study-progress.json "$AUDIT_DIR/before/study-progress.json"
 ```
 
@@ -104,12 +98,6 @@ audit trail 디렉터리 생성 실패 시 즉시 중단 — audit trail 없이 
 
 JSON 파싱 실패 시 이 자산만 skip + stderr warn.
 
-#### prd.md "알려진 후보 약점·강점 (현재)" 섹션
-
-`보강 필요한 영역` / `이미 갖춘 강점` 두 줄 텍스트는 갱신이 유의미한 경우에만 직접 대체 가능.
-변경 기준: 신규 강점 3개 이상 추가되거나 학습 완료 약점이 2개 이상일 때.
-그 외에는 prd.md를 건드리지 않음.
-
 #### data/study-progress.json `weak_spots`
 
 각 weak_spot 항목의 `last_evaluated` 필드(없으면 추가)와 `status` 필드 갱신:
@@ -134,13 +122,10 @@ JSON 파싱 실패 시 이 자산만 skip + stderr warn.
 # after/ 스냅샷
 cp career-os/config/candidate-profile.md "$AUDIT_DIR/after/candidate-profile.md"
 cp career-os/config/baseline-core-files.json "$AUDIT_DIR/after/baseline-core-files.json"
-grep -A 10 "알려진 후보 약점·강점" career-os/docs/prd.md \
-  > "$AUDIT_DIR/after/prd-weak-strong-section.md"
 cp career-os/data/study-progress.json "$AUDIT_DIR/after/study-progress.json"
 
 # diff/ 파일별
-for f in candidate-profile.md baseline-core-files.json \
-          prd-weak-strong-section.md study-progress.json; do
+for f in candidate-profile.md baseline-core-files.json study-progress.json; do
   diff -u "$AUDIT_DIR/before/$f" "$AUDIT_DIR/after/$f" \
     > "$AUDIT_DIR/diff/$f.diff" 2>/dev/null || true
 done
@@ -186,7 +171,6 @@ done
 | baseline-core-files.json JSON 파싱 실패 | 해당 자산 skip + stderr warn. 나머지 자산 정상 진행 |
 | study-progress.json 파싱 실패 | 해당 자산 skip + stderr warn |
 | self-check 라인 수 감소 감지 | 갱신 파일 before/ 복원 + stderr "candidate-profile 라인 감소 — 롤백" + exit 1 |
-| prd.md 섹션 패턴 미발견 | prd.md 갱신 skip + changes.md에 미반영 기록 |
 | audit trail Write 실패 (disk full 등) | exit 1. 자산은 이미 갱신된 경우 경고만 — after/ 없으면 수동 복원 안내 |
 
 ## Why this design

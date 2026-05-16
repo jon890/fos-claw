@@ -454,17 +454,14 @@ data/runtime/profile-refresh-suggestions/
     ├── before/
     │   ├── candidate-profile.md          갱신 전 프로필 사본
     │   ├── baseline-core-files.json      갱신 전 baseline 파일 목록 사본
-    │   ├── prd-weak-strong-section.md    갱신 전 prd.md "약점·강점" 섹션 추출본
     │   └── study-progress.json           갱신 전 학습 진도 사본
     ├── after/
     │   ├── candidate-profile.md          갱신 후 사본
     │   ├── baseline-core-files.json      갱신 후 사본
-    │   ├── prd-weak-strong-section.md    갱신 후 사본
     │   └── study-progress.json           갱신 후 사본
     ├── diff/
     │   ├── candidate-profile.md.diff     unified diff (before vs after)
     │   ├── baseline-core-files.json.diff
-    │   ├── prd-weak-strong-section.md.diff
     │   └── study-progress.json.diff
     └── changes.md                        변경 사유 + fos-study path 출처 요약
 ```
