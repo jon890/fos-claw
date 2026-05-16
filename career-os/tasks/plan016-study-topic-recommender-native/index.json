@@ -2,7 +2,7 @@
   "name": "plan016-study-topic-recommender-native",
   "description": "study-topic-recommender native 마이그 + Python → TypeScript (ADR-026). 622줄 점수 알고리즘(refresh_topic_inventory.py) + RSS feed_discovery.py를 ts로 결정론 동등 마이그. SKILL.md를 native 명세로 재작성 (Bash로 ts 호출 + Claude 자연어 추론 hybrid). replenish + promote + live-coding seed 흡수. dispatcher 3 case (recommend-topics + live-coding-dispatch + 이미 plan015 폐기된 replenish-topics) 모두 폐기. 진입점 `claude -p \"/study-topic-recommender\"` 단일. common-pitfalls 6-6 회피: draft 별도 파일 + commit 개수 self-check.",
   "created_at": "2026-05-15T00:00:00+00:00",
-  "updated_at": "2026-05-15T03:16:11.374781+00:00",
+  "updated_at": "2026-05-15T03:24:15.996076+00:00",
   "status": "completed",
   "current_phase": 4,
   "total_phases": 4,
@@ -79,7 +79,8 @@
         "Grep"
       ],
       "model": "sonnet",
-      "timeout": 1200
+      "timeout": 1200,
+      "commitSha": "a9007759cc6a"
     }
   ]
 }
