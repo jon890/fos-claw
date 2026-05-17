@@ -2,7 +2,7 @@
   "name": "plan023-command-router-and-ts-lib-cleanup",
   "description": "command-router 디렉터리 일괄 폐기 (dispatcher case 0 도달) + _shared/lib 2개 폐기 (invoke_claude_skills.ts + format_cost_summary.ts) + career-os/scripts/_lib 5 파일 일괄 폐기 (build_prompt + extract_and_validate_study_pack + fos_study_git + resolve_study_pack_topic + study_pack_publish — plan013/021/022 cleanup 잔재) + _shared/types/index.ts 관련 타입 정리 + 5문서 갱신 (ADR-031). track_task.sh는 apartment 사용 중이라 유지 (워크스페이스 격리). depends_on: plan021 + plan022 (caller 폐기 선행).",
   "created_at": "2026-05-16T00:00:00+00:00",
-  "updated_at": "2026-05-17T10:25:20.646060+00:00",
+  "updated_at": "2026-05-17T10:27:08.141982+00:00",
   "status": "completed",
   "current_phase": 4,
   "total_phases": 4,
@@ -75,7 +75,8 @@
         "Grep"
       ],
       "model": "sonnet",
-      "timeout": 600
+      "timeout": 600,
+      "commitSha": "d6ba030abfd2"
     }
   ]
 }
