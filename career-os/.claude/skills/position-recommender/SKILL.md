@@ -37,9 +37,10 @@ Claude는 다음을 `Read` 도구로 직접 로드:
 사용자 요청에 **"최신 채용"**, **"Wanted"**, **"Toss 자동 수집"** 키워드가 있을 때만 실행:
 
 ```bash
-bun career-os/scripts/position-recommender/collect_live_postings.ts \
-  --output career-os/data/runtime/live-position-postings.md
+bun career-os/scripts/position-recommender/collect_live_postings.ts
 ```
+
+(기본 출력 경로는 스크립트 자기 위치 기준으로 `career-os/data/runtime/live-position-postings.md`로 고정 — cwd 무관. 다른 위치로 redirect할 때만 `--output <path>` 추가.)
 
 - 수집 실패 (exit non-zero) 시 stderr warn 출력 후 계속 진행 (수동 컨텍스트만으로 분석)
 - 사용자가 직접 파일 경로를 지정한 경우: 이 단계 건너뛰고 해당 파일을 Read

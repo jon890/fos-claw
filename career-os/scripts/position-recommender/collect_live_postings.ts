@@ -13,7 +13,9 @@
  */
 
 import { mkdirSync, writeFileSync } from "fs";
-import { dirname } from "path";
+import { dirname, resolve } from "path";
+
+const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
 const UA = "Mozilla/5.0 (OpenClaw career-os position recommender)";
 
@@ -356,7 +358,7 @@ interface CliArgs {
 }
 
 function parseArgs(argv: string[]): CliArgs {
-  let out = "data/runtime/live-position-postings.md";
+  let out = resolve(REPO_ROOT, "career-os/data/runtime/live-position-postings.md");
   let source: "all" | "wanted" | "toss" = "all";
   let serverOnly = true;
   let wantedLimit = 120;
