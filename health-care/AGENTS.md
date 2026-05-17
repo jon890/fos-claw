@@ -2,6 +2,15 @@
 
 `~/ai-nodes/health-care`는 개인 건강 기록·진료 준비·재활 경과 추적을 위한 독립 워크스페이스다.
 
+
+## 문서 라우팅
+
+- `docs/prd.md` — 제품 범위, MVP 기능, 성공/비범위
+- `docs/data-schema.md` — 공개 config와 private data 스키마
+- `docs/workflow.md` — intake, tracking, clinic prep, skill flow
+- `docs/code-architecture.md` — 디렉터리/skill 경계/cron 책임
+- `docs/adr.md` — 의사결정의 왜
+
 ## 목적
 
 - 병력/증상/복약/진료 기록을 일관된 문맥으로 유지한다.

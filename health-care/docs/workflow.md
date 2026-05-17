@@ -28,3 +28,9 @@
 - `config/`에는 공개되어도 괜찮은 일반화된 정책과 플랜만 둔다.
 - 원본 진료기록과 상세 증상 컨텍스트는 `data/`에만 보관한다.
 - 경계가 애매하면 커밋/푸시 전에 사용자와 논의한다.
+
+## 5. Skill flow plan
+
+- `daily-knee-rehab-checkin`: `current-context.md` + `config/knee-running-recovery-plan.md` → 짧은 아침 체크인. 중단 기준과 재진 기준을 항상 포함한다.
+- `knee-progress-intake`: 사용자 보고 → `progress-log.jsonl` append + 필요 시 `current-context.md` 업데이트 제안. 추론은 `확인 필요`로 분리한다.
+- `weekly-knee-clinic-summary`: 최근 경과 + OCR 요약 + 현재 컨텍스트 → 병원 제출용 요약과 질문 리스트 초안. Claude 사용 가능하나 진단/처방은 금지한다.
