@@ -2,9 +2,9 @@
   "name": "plan001-docs-and-workspace-standard",
   "description": "apartment 워크스페이스 5문서 신설 (prd/data-schema/flow/code-architecture/adr) + AGENTS slim + CLAUDE 심링크 + .env 워크스페이스 root 이동 + 기존 docs 정리 + ai-nodes 메타 표준화 (workspace-structure.md 신설 + AGENTS /init 보강 + ADR-004 격상 + career-os ADR-018/021 Status 격상). 향후 새 워크스페이스 청사진 정식화.",
   "created_at": "2026-05-18T00:00:00+00:00",
-  "updated_at": "2026-05-18T06:26:13.670833+00:00",
+  "updated_at": "2026-05-18T06:40:00.000000+00:00",
   "status": "running",
-  "current_phase": 2,
+  "current_phase": 5,
   "total_phases": 5,
   "error_message": null,
   "blocked_reason": null,
@@ -37,7 +37,7 @@
       "number": 2,
       "title": "AGENTS slim + CLAUDE 심링크 + .env 이동 + 기존 docs 정리",
       "file": "phase-02.md",
-      "status": "running",
+      "status": "completed",
       "allowedTools": [
         "Read",
         "Write",
@@ -46,13 +46,14 @@
         "Grep"
       ],
       "model": "sonnet",
-      "timeout": 900
+      "timeout": 900,
+      "commitSha": "0f5a287dba35"
     },
     {
       "number": 3,
       "title": "ai-nodes 메타 (workspace-structure + AGENTS /init 보강 + ADR-004 + career-os Status 격상)",
       "file": "phase-03.md",
-      "status": "pending",
+      "status": "completed",
       "allowedTools": [
         "Read",
         "Write",
@@ -61,13 +62,14 @@
         "Grep"
       ],
       "model": "sonnet",
-      "timeout": 1200
+      "timeout": 1200,
+      "commitSha": "e57d1278478d"
     },
     {
       "number": 4,
       "title": "잔여 참조 갱신 + grep 검증",
       "file": "phase-04.md",
-      "status": "pending",
+      "status": "completed",
       "allowedTools": [
         "Read",
         "Edit",
