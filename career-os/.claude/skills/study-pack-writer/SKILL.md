@@ -23,7 +23,7 @@ Claude는 다음을 `Read` 도구로 직접 로드:
 4. `career-os/config/topic-profiles.json` — 토픽 family별 (mysql/redis/kafka/spring-jpa) emphasis + output path 패턴. topic-key가 어느 family에 속하는지 `topicHints` 매칭으로 파악
 5. `references/study-pack-prompt.md` — prompt 구조 가이드
 6. `references/study-pack-writing-rules.md` — 작성 규칙 상세
-7. (선택) `sources/fos-study/<유사 outputPath>.md` — overlap 회피
+7. **필수**: `sources/fos-study/**/*.md` 트리 스캔 결과 — `career-os/scripts/study-topic-recommender/duplicate_detection.ts` helper로 결정. exclude `.git/**`, `.claude/**`. `git pull` 호출 금지.
 
 ## Workflow
 
@@ -35,14 +35,41 @@ Claude는 다음을 `Read` 도구로 직접 로드:
 
 위 Inputs 1~6 모두 Read. topic-profiles.json에서 `<topic-key>`가 어느 family의 `topicHints`에 속하는지 매칭 → 해당 family의 `emphasis` 적용.
 
-### 3. Overlap 점검 (선택)
+### 3. Duplicate guard (ADR-033)
 
-`sources/fos-study/<outputPath 디렉터리>`에 유사 파일 있으면 기존 본문을 Read하고 다음 원칙으로 결정한다.
+new markdown Write 직전 fos-study 진실원과의 중복을 강제 검사한다. 이 게이트는 *사용자가 직접 호출한 주제*에도 동일하게 적용된다 — recommender만이 아닌 모든 writer 호출 경로의 최종 gate.
 
-- 기존 문서가 같은 핵심 주제를 이미 다루면 update 모드로 진행한다.
-- 기존 문서와 인접하지만 SLI/SLO/incident 등 별도 축이면 새 문서를 만들고 관련 문서 링크를 단다.
-- `claude -p` non-interactive 실행에서는 `AskUserQuestion`을 사용하지 않는다. 결정이 정말 불가능하면 stderr에 이유를 쓰고 exit 1 한다.
-- 확실한 안전 기본값은 “기존 문서 보존 + 새 문서 생성” 또는 “작은 보강 update”다.
+#### 3-1. Scan
+
+`career-os/sources/fos-study/**/*.md` (exclude `.git/**`, `.claude/**`) 트리를 스캔. `git pull` 호출 금지 — 로컬 clone 기준.
+
+import 및 호출 (Bash):
+
+```bash
+bun career-os/scripts/study-topic-recommender/duplicate_detection.ts ...
+# 또는 native skill 내부에서 직접 Read + 동등 로직 적용
+```
+
+deterministic dedupe 결과는 ADR-033 duplicate decision schema 형태 (key / candidatePath / matchedPath / decision / reason / confidence).
+
+#### 3-2. (가능하면) Claude 의미 판정
+
+deterministic이 `possibleDuplicates`로 분류한 후보가 있으면 Claude(현재 native skill 컨텍스트)가 의미 판정을 추가. 새 호출 X — 같은 Claude 컨텍스트 안에서 matched 파일을 Read해 판정.
+
+판정 입력 최소화: candidatePath + matched 파일의 첫 30줄.
+
+#### 3-3. 분기
+
+| decision | 동작 |
+|---|---|
+| `new` | Step 4로 진행 — 새 markdown 작성. |
+| `update-existing` | 새 파일 생성 금지. `matchedPath`의 기존 문서를 Read하고 누락/약한 항목만 patch. commit message는 `update`. |
+| `skip` | 작성 중단. stderr에 matched 문서 경로 + 사유 1줄 출력 + `exit 1`. |
+| `needs-user-confirmation` | non-interactive(`claude -p`)면 stderr + `exit 1`. interactive 환경에서도 `AskUserQuestion`은 `claude -p`에서 사용 금지(SKILL.md 기존 정책) — *사용자에게 다시 명시해 호출해 달라는 메시지* + `exit 1`. |
+
+#### 3-4. 안전 기본값
+
+deterministic dedupe도 Claude 의미 판정도 결정이 불가능하면 **`needs-user-confirmation`**으로 분류한다 — silent 새 파일 생성 금지가 핵심 안전 기본값.
 
 ### 4. 마크다운 작성 (Write)
 
@@ -107,12 +134,15 @@ bun --env-file=career-os/.env ../_shared/lib/notify_discord.ts \
 | self-check 3회 실패 | stderr + exit 1, 실패 항목 명시 |
 | git push 실패 (권한/충돌) | stderr + exit 1, git stderr 그대로 |
 | Discord notify 실패 | stderr warn, skill은 success |
+| duplicate guard skip / needs-user-confirmation | stderr + exit 1, matched 문서 경로 + 사유 명시 |
+| duplicate guard update-existing 진입 | 새 파일 생성 금지, 기존 matched 문서 patch 모드로 전환 |
 
 ## Why this design
 
 - **Self-check 본 skill 안에 박는 이유**: 옛 외부 validator를 Claude 자체 검증으로. SKILL.md 단일 진실 출처.
 - **재작성 ≤3회**: 무한 루프 차단. 3회로도 통과 못 하면 본질 문제 (topic 모호, 입력 부족) — 사용자 개입 필요.
 - **Publish + notify 통합**: 기본은 `scripts/study-pack-writer/run_with_discord_notify.ts` wrapper가 시작/완료/에러 알림을 담당한다. native skill의 완료 알림은 보조 경로로 유지한다.
+- **Duplicate guard (ADR-033)**: recommender·writer가 같은 4 decision schema를 공유. 사용자가 직접 호출한 주제에도 동일 게이트 — fos-study 진실원과 drift 없음.
 
 ## References
 
