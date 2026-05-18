@@ -18,11 +18,36 @@ if [[ -f "$ENV_FILE" ]]; then
   set +a
 fi
 
-TARGET_NAME="${TARGET_NAME:-엘지원앙아파트}"
-TARGET_ALIAS="${TARGET_ALIAS:-LG원앙}"
-TARGET_LOCATION="${TARGET_LOCATION:-경기 구리시 수택동 854-2 / 체육관로 54}"
-TARGET_UNIT_LABEL="${TARGET_UNIT_LABEL:-59A}"
-TARGET_UNIT_EXCLUSIVE_AREA_M2="${TARGET_UNIT_EXCLUSIVE_AREA_M2:-59}"
+# notify_safe / NOTIFIER를 ts 헬퍼 호출 전에 정의 (실패 시 알림 가능하도록).
+SKILL_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+NOTIFIER="$SKILL_ROOT/scripts/notify_discord.sh"
+
+notify_safe() {
+  local msg="$1"
+  if [[ -x "$NOTIFIER" ]]; then
+    "$NOTIFIER" "$msg" || true
+  fi
+}
+
+# 타깃 메타 — apartment/config/focus-unit.json 단일 출처 (ADR-002).
+# ts 헬퍼가 env override 우선순위 유지하며 5 변수 set (ADR-003).
+FOCUS_UNIT_JSON="${FOCUS_UNIT_JSON:-$HOME/ai-nodes/apartment/config/focus-unit.json}"
+if [[ ! -f "$FOCUS_UNIT_JSON" ]]; then
+  notify_safe "[실패] apartment-daily-report focus-unit.json 부재: $FOCUS_UNIT_JSON"
+  echo "FATAL: $FOCUS_UNIT_JSON not found" >&2
+  exit 1
+fi
+LOAD_META_TS="$HOME/ai-nodes/apartment/scripts/_lib/load_target_meta.ts"
+if [[ ! -f "$LOAD_META_TS" ]]; then
+  notify_safe "[실패] apartment-daily-report load_target_meta.ts 부재: $LOAD_META_TS"
+  echo "FATAL: $LOAD_META_TS not found" >&2
+  exit 1
+fi
+META_EVAL=$(bun run "$LOAD_META_TS" "$FOCUS_UNIT_JSON") || {
+  notify_safe "[실패] apartment-daily-report load_target_meta.ts 실행 실패"
+  exit 1
+}
+eval "$META_EVAL"
 TASK_ROOT="${TASK_ROOT:-$HOME/ai-nodes/apartment}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-$TASK_ROOT/data}"
 REPORT_DATE="${REPORT_DATE:-$(date +%F)}"
@@ -31,22 +56,13 @@ RAW_JSON="$OUTDIR/raw-search.json"
 SUMMARY_JSON="$OUTDIR/summary.json"
 REPORT_MD="$OUTDIR/report.md"
 CLAUDE_JSON="$OUTDIR/claude.result.json"
-SKILL_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PROMPT_FILE="$SKILL_ROOT/references/claude-prompt.md"
 NORMALIZER="$SKILL_ROOT/scripts/normalize_results.py"
 COLLECTOR="$SKILL_ROOT/scripts/collect_sources.py"
-NOTIFIER="$SKILL_ROOT/scripts/notify_discord.sh"
 FALLBACK_MD="$OUTDIR/report.fallback.md"
 EXTRACT="$HOME/ai-nodes/_shared/bin/extract_claude_result.py"
 
 mkdir -p "$OUTDIR"
-
-notify_safe() {
-  local msg="$1"
-  if [[ -x "$NOTIFIER" ]]; then
-    "$NOTIFIER" "$msg" || true
-  fi
-}
 
 notify_safe "[시작] apartment-daily-report 데이터 수집 및 리포트 생성 시작 (${TARGET_NAME}, ${REPORT_DATE})"
 
