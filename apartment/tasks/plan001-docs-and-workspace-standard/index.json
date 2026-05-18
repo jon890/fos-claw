@@ -2,9 +2,9 @@
   "name": "plan001-docs-and-workspace-standard",
   "description": "apartment 워크스페이스 5문서 신설 (prd/data-schema/flow/code-architecture/adr) + AGENTS slim + CLAUDE 심링크 + .env 워크스페이스 root 이동 + 기존 docs 정리 + ai-nodes 메타 표준화 (workspace-structure.md 신설 + AGENTS /init 보강 + ADR-004 격상 + career-os ADR-018/021 Status 격상). 향후 새 워크스페이스 청사진 정식화.",
   "created_at": "2026-05-18T00:00:00+00:00",
-  "updated_at": "2026-05-18T00:00:00+00:00",
-  "status": "pending",
-  "current_phase": 1,
+  "updated_at": "2026-05-18T06:26:13.670833+00:00",
+  "status": "running",
+  "current_phase": 2,
   "total_phases": 5,
   "error_message": null,
   "blocked_reason": null,
@@ -22,17 +22,29 @@
       "number": 1,
       "title": "apartment 5문서 작성 (prd/data-schema/flow/code-architecture/adr)",
       "file": "phase-01.md",
-      "status": "pending",
-      "allowedTools": ["Read", "Write", "Bash", "Grep"],
+      "status": "completed",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Bash",
+        "Grep"
+      ],
       "model": "sonnet",
-      "timeout": 1500
+      "timeout": 1500,
+      "commitSha": "313c7bb37ced"
     },
     {
       "number": 2,
       "title": "AGENTS slim + CLAUDE 심링크 + .env 이동 + 기존 docs 정리",
       "file": "phase-02.md",
-      "status": "pending",
-      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "status": "running",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash",
+        "Grep"
+      ],
       "model": "sonnet",
       "timeout": 900
     },
@@ -41,7 +53,13 @@
       "title": "ai-nodes 메타 (workspace-structure + AGENTS /init 보강 + ADR-004 + career-os Status 격상)",
       "file": "phase-03.md",
       "status": "pending",
-      "allowedTools": ["Read", "Write", "Edit", "Bash", "Grep"],
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash",
+        "Grep"
+      ],
       "model": "sonnet",
       "timeout": 1200
     },
@@ -50,7 +68,12 @@
       "title": "잔여 참조 갱신 + grep 검증",
       "file": "phase-04.md",
       "status": "pending",
-      "allowedTools": ["Read", "Edit", "Bash", "Grep"],
+      "allowedTools": [
+        "Read",
+        "Edit",
+        "Bash",
+        "Grep"
+      ],
       "model": "sonnet",
       "timeout": 600
     },
@@ -59,7 +82,12 @@
       "title": "통합 정적 검증 + status=completed + push",
       "file": "phase-05.md",
       "status": "pending",
-      "allowedTools": ["Read", "Edit", "Bash", "Grep"],
+      "allowedTools": [
+        "Read",
+        "Edit",
+        "Bash",
+        "Grep"
+      ],
       "model": "haiku",
       "timeout": 600
     }

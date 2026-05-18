@@ -153,7 +153,7 @@ def main():
         counts = naver.get("numericSignals", {}).get("listingCounts", {})
         notes.append(f"Naver API 매물 수집 성공: 매매 {counts.get('매매', '?')}건 / 전세 {counts.get('전세', '?')}건")
     elif naver_status == "skipped-no-cookie":
-        notes.append("Naver API 수집은 NAVER_COOKIE 부재로 건너뛰었다 — apartment/config/.env에 쿠키를 설정하라.")
+        notes.append("Naver API 수집은 NAVER_COOKIE 부재로 건너뛰었다 — apartment/.env에 쿠키를 설정하라.")
     elif naver_status in ("auth-failed", "rate-limited"):
         notes.append(f"Naver API 수집 실패 ({naver_status}) — 쿠키/토큰 갱신이 필요하다.")
     elif naver_status:

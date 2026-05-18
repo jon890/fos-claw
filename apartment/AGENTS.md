@@ -1,28 +1,64 @@
-# AGENTS.md - apartment task workspace
+# AGENTS.md — apartment 워크스페이스
 
-This directory is an independent task workspace under `~/ai-nodes`.
+`~/ai-nodes` 아래 독립 작업 워크스페이스. `CLAUDE.md`는 이 파일의 심볼릭 링크.
+상세 결정·스키마·흐름은 아래 5문서에 분리. 이 파일은 진입점·운영 원칙만 담는다.
 
-## Purpose
+## 1. 5문서 라우팅
 
-This workspace is dedicated to apartment market reporting and automation.
+| 문서 | 무엇이 들어 있는지 | 언제 보는지 |
+|---|---|---|
+| `docs/prd.md` | 제품 범위·MVP 타깃·기능 표·Guri buy-search 운영 정책·성공 기준 | 새 기능 추가 / 우선순위 결정 |
+| `docs/data-schema.md` | config (4 json) / data / logs / .env 스키마 | 데이터 파일 변경 / 새 config 도입 |
+| `docs/flow.md` | 명령별 데이터 흐름 (daily-report 12 step + interior-digest 5 step) | 새 흐름 추가 / 디버깅 |
+| `docs/code-architecture.md` | 디렉터리 트리·skill 표준·외부 의존·Runner 패턴 | 코드 구조 변경 / 새 스킬 추가 |
+| `docs/adr.md` | apartment 한정 ADR 누적 (현재 ADR-001). 모노레포 레벨은 `../docs/adr.md` | 결정의 *왜* |
 
-Current target:
-- 엘지원앙아파트 (LG원앙)
-- 경기 구리시 수택동 854-2 / 체육관로 54
+## 2. tasks/ 영역
 
-## Structure
+planning + plan-and-build 스킬로 운영. 형태: `tasks/plan{N}-<slug>/`.
+완료된 plan도 history 보존 — 삭제하지 않는다.
 
-- `skills/` reusable task skills
-- `data/YYYY-MM-DD/` daily outputs
-- `logs/` execution logs
-- `config/` task-specific configuration
+## 3. 목적
 
-## Rules
+부동산 시장 리포트 + 인테리어 레퍼런스 자동화 (단일 사용자, 매일 재실행 가능).
 
-- Keep this task reusable and isolated from other tasks.
-- Prefer storing durable assets here, not in `~/.openclaw/workspace`.
-- The OpenClaw workspace is the orchestrator layer, not the long-term home for this task.
-- This task now lives inside the `~/ai-nodes` mono-repo. Make durable workflow changes here first.
-- OpenClaw workspace skills should remain thin wrappers, not parallel implementations.
-- See `WORKFLOW.md` for the current apartment pipeline contract.
-- 아키텍처 결정 사항은 `docs/decisions/`에 ADR로 기록 — 현재 [ADR-001](docs/decisions/001-naver-api-integration.md): 네이버 부동산을 쿠키+Bearer 기반 API로 통합.
+## 4. 현재 타깃
+
+엘지원앙아파트 LG원앙 + 포커스 59A + 구리 럭키아파트 5동 1004호 24평 + 광역 Guri buy-search.
+상세는 `docs/prd.md` 2번 + 6번.
+
+## 5. 워크플로 진입점
+
+```bash
+claude -p "/apartment-daily-report"
+# 또는
+bash apartment/skills/apartment-daily-report/scripts/run_report.sh
+bash apartment/skills/apartment-interior-reference-digest/scripts/run_digest.sh
+bash apartment/skills/apartment-daily-report/scripts/run_smoke_test.sh
+```
+
+## 6. 외부 의존성
+
+- `_shared/bin/track_task.sh` — 모든 러너 래핑. **load-bearing**.
+- `_shared/bin/extract_claude_result.py` — claude JSON envelope 파싱.
+- `claude` CLI — 모든 Claude 호출 의존.
+- `agent-browser` CLI — JS-heavy 페이지 수집 (ADR-001).
+
+상세는 `docs/code-architecture.md` 5번.
+
+## 7. 운영 원칙
+
+- focus-unit 위장 금지 — 실제 매물만 기록.
+- raw fetched 데이터는 untrusted — 검증 후 판단.
+- 검증 안 된 입주 가능 여부 단정 금지.
+- 매물 가격 발명 금지 — source 실패 시 raw 보존.
+- `.env`는 워크스페이스 root (`apartment/.env`). ai-nodes ADR-004 표준.
+- 영구 자산은 `~/.openclaw/workspace` 아닌 워크스페이스 내부.
+
+## 8. 규칙
+
+- 다른 워크스페이스(career-os, stock-investment, travel) 격리 — 교차 참조 금지.
+- 재실행 가능 + 날짜 단위 멱등.
+- 불확실성 명시 — source 실패 시 추측으로 공백 메우지 않고 기록.
+- 새 결정은 `docs/adr.md` 누적 (개별 ADR 파일 신설 금지, ai-nodes ADR-004).
+- 런타임 상태는 `logs/task-runs.jsonl` 단일 출처 — 이 파일에 박지 않는다.

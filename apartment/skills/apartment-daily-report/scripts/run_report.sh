@@ -9,8 +9,8 @@ if [[ "${TRACK_TASK_WRAPPED:-0}" != "1" ]]; then
 fi
 
 # Load workspace env if present (NAVER_COOKIE 등 선택적 인증 정보)
-# ADR-001 참조: apartment/docs/decisions/001-naver-api-integration.md
-ENV_FILE="${APARTMENT_ENV_FILE:-$HOME/ai-nodes/apartment/config/.env}"
+# ADR-001 참조: apartment/docs/adr.md
+ENV_FILE="${APARTMENT_ENV_FILE:-$HOME/ai-nodes/apartment/.env}"
 if [[ -f "$ENV_FILE" ]]; then
   set -a
   # shellcheck disable=SC1090
