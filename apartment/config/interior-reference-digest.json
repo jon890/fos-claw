@@ -91,6 +91,7 @@
     "maxRecommendations": 5,
     "preferredRecommendations": 3,
     "includeTodayDecisionQuestion": true,
+    "todayDecisionQuestionCount": 3,
     "discordSafe": true,
     "autoAppendReferenceCandidates": true,
     "autoAppendDecisions": false,

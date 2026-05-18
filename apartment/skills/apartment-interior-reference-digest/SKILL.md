@@ -42,7 +42,13 @@ Keep the morning report short:
   - 업체/글 신뢰도 1차 판단
   - 예산/하자 리스크
   - 샷시/확장/단열/욕실/주방/바닥재/수납/작업공간 관련 힌트
-- 오늘 결정해볼 질문 1개
+- 오늘 결정해볼 질문 3개
+  - 먼저 `docs/interior/lucky-5-1004-interior-decisions.md`, `docs/interior/lucky-5-1004-decision-summary.md`, `docs/interior/lucky-5-1004-field-checklist.md`, `docs/interior/lucky-5-1004-contractor-brief.md`를 훑어 새 미결정/완료 항목이 있으면 `docs/interior/lucky-5-1004-decision-queue.md`를 갱신한다.
+  - 갱신된 `docs/interior/lucky-5-1004-decision-queue.md`의 `다음 남은 질문`에서 우선순위가 높은 항목 3개를 고른다.
+  - 최근 7일 `data/interior-reference-digest/*/report.md`에 이미 나온 질문과 같은 주제는 반복하지 않는다.
+  - 이미 `클리어 완료`에 있거나 `결정`, `방향 결정`, `현장 확인 후 최종 결정`으로 정리된 항목은 새 근거가 없으면 질문으로 다시 올리지 않는다.
+  - 각 질문은 A/B/C 선택지와 짧은 추천을 포함한다.
+  - 답변을 받으면 `lucky-5-1004-interior-decisions.md`와 `lucky-5-1004-decision-queue.md`에 기록하고, 필요한 경우 `decision-summary`, `field-checklist`, `contractor-brief`도 같이 갱신한다.
 - 레퍼런스 누적 여부
 - 의사결정 문서 반영 후보
 

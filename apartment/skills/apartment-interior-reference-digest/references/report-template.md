@@ -26,7 +26,9 @@
   - 주방:
   - 욕실:
 
-## 오늘의 판단 포인트
+## 오늘의 의사결정 3개
+
+### 1. 질문 제목
 
 - 질문:
 - 선택지:
@@ -34,6 +36,27 @@
   - B.
   - C.
 - 추천:
+- 답변을 받으면 기록할 위치: `lucky-5-1004-decision-queue.md` / `lucky-5-1004-interior-decisions.md`
+
+### 2. 질문 제목
+
+- 질문:
+- 선택지:
+  - A.
+  - B.
+  - C.
+- 추천:
+- 답변을 받으면 기록할 위치: `lucky-5-1004-decision-queue.md` / `lucky-5-1004-interior-decisions.md`
+
+### 3. 질문 제목
+
+- 질문:
+- 선택지:
+  - A.
+  - B.
+  - C.
+- 추천:
+- 답변을 받으면 기록할 위치: `lucky-5-1004-decision-queue.md` / `lucky-5-1004-interior-decisions.md`
 
 ## 의사결정 문서 반영 후보
 
