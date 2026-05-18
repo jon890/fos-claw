@@ -25,7 +25,13 @@ plan024 산출물 통합 정적 검증 + index.json `status="completed"` 마킹 
 
 ### 1. 통합 정적 검증
 
+run-phases.py는 cwd=career-os로 phase 시작. 본 phase는 ai-nodes 루트 path 인용이라 첫 bash 블록에서 cwd=ai-nodes 루트로 변경 (Claude Code Bash 도구 cwd 보존 → 후속 자동 유지).
+
 ```bash
+# cwd를 ai-nodes 루트로 변경 (모든 후속 bash 명령 ai-nodes 루트 기준)
+cd "$(git rev-parse --show-toplevel)"
+pwd  # 기대: /home/bifos/ai-nodes
+
 SIGIL_CHAR=$(printf '\xc2\xa7')
 
 # 1-A. career-os/AGENTS.md 핵심 보강 영역 검증

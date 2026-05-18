@@ -23,15 +23,22 @@ career-os/AGENTS.md (= CLAUDE.md 심링크, 현재 132줄)에 4 영역 보강:
 - 반드시 Edit 도구로 career-os/AGENTS.md를 갱신해야 한다. prose 응답만으로는 PHASE_FAILED (common-pitfalls 6-6).
 - 작성·수정하는 모든 문서에 section sigil (section mark, U+00A7) 특수문자 사용 금지. 섹션 헤더는 `## 1. 제목` 형태.
 - 본 phase 종료 시 commit 개수 self-check = 1.
-- 사전 조건: `ai-nodes/docs/workspace-structure.md` 존재 (apartment plan001 phase-03 완료 후). 부재 시 PHASE_BLOCKED + exit 2.
+- 사전 조건: `docs/workspace-structure.md` 존재 (cwd=ai-nodes 루트 기준, apartment plan001 phase-03 완료 후). 부재 시 PHASE_BLOCKED + exit 2.
 
 ---
 
 ## 사전 조건 검증
 
+run-phases.py는 cwd=career-os로 phase 시작 (run-phases.py line 355). 본 phase는 ai-nodes 루트 path를 다수 인용하므로 첫 bash 블록에서 cwd=ai-nodes 루트로 변경. Claude Code Bash 도구는 동일 phase 안 cwd 보존이라 첫 호출에만 cd 명시 + 후속 자동 ai-nodes 루트.
+
 ```bash
-test -f ai-nodes/docs/workspace-structure.md || { echo "PHASE_BLOCKED: ai-nodes/docs/workspace-structure.md 부재. apartment plan001 phase-03 완료 후 재시도"; exit 2; }
-echo "[사전 조건] OK — workspace-structure.md 존재"
+# cwd를 ai-nodes 루트로 변경 (run-phases.py cwd=career-os 우회). 이후 모든 bash 명령은 ai-nodes 루트 기준.
+cd "$(git rev-parse --show-toplevel)"
+pwd  # 기대: /home/bifos/ai-nodes
+
+# 사전 조건: apartment plan001 phase-03 산출 (docs/workspace-structure.md, cwd=ai-nodes 루트 기준)
+test -f docs/workspace-structure.md || { echo "PHASE_BLOCKED: docs/workspace-structure.md 부재. apartment plan001 phase-03 완료 후 재시도"; exit 2; }
+echo "[사전 조건] OK — docs/workspace-structure.md 존재"
 ```
 
 ---
@@ -40,8 +47,8 @@ echo "[사전 조건] OK — workspace-structure.md 존재"
 
 - 갱신 대상: `career-os/AGENTS.md` (현재 132줄, 5문서 라우팅 + 목적 + MVP 타깃 + 후보자 포커스 + 진실 출처 + 워크플로 진입점 + 외부 의존성 + 운영 원칙 + 규칙 + 본 섹션 다수)
 - 참조: `apartment/AGENTS.md` (apartment plan001 phase-02 slim, 모범 사례)
-- 참조: `ai-nodes/docs/workspace-structure.md` (워크스페이스 표준 청사진)
-- 참조: `ai-nodes/docs/adr.md` ADR-004 (워크스페이스 표준 정식화)
+- 참조: `docs/workspace-structure.md` (워크스페이스 표준 청사진)
+- 참조: `docs/adr.md` ADR-004 (워크스페이스 표준 정식화)
 
 ---
 
