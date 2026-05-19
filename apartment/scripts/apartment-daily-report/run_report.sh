@@ -59,7 +59,7 @@ REPORT_MD="$OUTDIR/report.md"
 CLAUDE_JSON="$OUTDIR/claude.result.json"
 PROMPT_FILE="$SKILL_ROOT/references/claude-prompt.md"
 NORMALIZER="$(dirname "$0")/normalize_results.py"
-COLLECTOR="$(dirname "$0")/collect_sources.py"
+COLLECTOR="$(dirname "$0")/collect_sources.ts"
 FALLBACK_MD="$OUTDIR/report.fallback.md"
 EXTRACT="$HOME/ai-nodes/_shared/bin/extract_claude_result.py"
 
@@ -73,7 +73,7 @@ if [[ -f "$COLLECTOR" ]]; then
   TARGET_LOCATION="$TARGET_LOCATION" \
   TARGET_UNIT_LABEL="$TARGET_UNIT_LABEL" \
   TARGET_UNIT_EXCLUSIVE_AREA_M2="$TARGET_UNIT_EXCLUSIVE_AREA_M2" \
-  python3 "$COLLECTOR" "$RAW_JSON"
+  bun run "$(dirname "$0")/collect_sources.ts" "$RAW_JSON"
 else
   cat > "$RAW_JSON" <<JSON
 {
