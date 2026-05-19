@@ -1,6 +1,6 @@
 # 워크스페이스 표준 구조
 
-ai-nodes 모노레포의 모든 워크스페이스가 따르는 표준 디렉터리 청사진. 결정 근거는 `ai-nodes/docs/adr.md` ADR-004.
+ai-nodes 모노레포의 모든 워크스페이스가 따르는 표준 디렉터리 청사진. 결정 근거는 `ai-nodes/docs/adr.md` ADR-004, ADR-006.
 
 새 워크스페이스를 추가할 때 이 문서가 단일 진입점이다.
 
@@ -17,7 +17,7 @@ ai-nodes 모노레포의 모든 워크스페이스가 따르는 표준 디렉터
 | 워크스페이스 | 가이드 | 특이사항 |
 |---|---|---|
 | `apartment/` | `apartment/AGENTS.md` | 네이버 부동산 API + agent-browser |
-| `career-os/` | `career-os/AGENTS.md` | scripts/ + skills/ 분리 (ADR-019, 의도된 비대칭) |
+| `career-os/` | `career-os/AGENTS.md` | scripts/ + .claude/skills/ 분리 (ADR-019 → ADR-006 표준 격상) |
 | `stock-investment/` | `stock-investment/AGENTS.md` | 일일 모닝 브리핑 |
 | `travel/` | `travel/AGENTS.md` | trips/<trip-id>/ 단위 |
 
@@ -39,15 +39,13 @@ ai-nodes 모노레포의 모든 워크스페이스가 따르는 표준 디렉터
 │   ├── flow.md
 │   ├── code-architecture.md
 │   └── adr.md
-├── skills/                       # 워크스페이스 스킬 (기본: 통합 구조)
-│   └── <skill-name>/
-│       ├── SKILL.md
-│       ├── references/
-│       └── scripts/              # runner / 헬퍼 (career-os 제외, 5번 참조)
+├── scripts/                      # 실행 파일 분리 (ADR-006: 분리 표준)
+│   └── <skill-name>/             # skill별 runner / 헬퍼
 ├── .claude/
 │   └── skills/
 │       └── <skill-name>/
-│           └── SKILL.md          # Claude Code 자동 로드 진입점 (심링크 또는 실체)
+│           ├── SKILL.md          # Claude Code 자동 로드 진입점 (본체)
+│           └── references/       # 참조 문서 (컨텍스트 자산)
 ├── tasks/                        # plan 영구 저장소
 │   └── plan{N}-<kebab-slug>/
 │       ├── index.json
@@ -111,20 +109,21 @@ ln -s AGENTS.md CLAUDE.md
 
 ## 6. skills/ 컨벤션
 
-기본 구조 (career-os 제외):
+분리 구조 표준 (ADR-006):
 
 ```
-skills/<skill-name>/
-├── SKILL.md          # 스킬 명세 (Claude Code native skill 본체)
-├── references/       # 참조 문서
-└── scripts/          # runner / 헬퍼 실행 파일
+scripts/<skill-name>/             # 실행 파일 — runner / 헬퍼
+.claude/skills/<skill-name>/
+├── SKILL.md          # 스킬 명세 본체 (Claude Code native skill 자동 로드)
+└── references/       # 참조 문서 (컨텍스트 자산)
 ```
 
-`.claude/skills/<skill-name>/SKILL.md`를 Claude Code가 자동으로 로드한다 (ai-nodes ADR-002). 실체 파일을 `.claude/skills/`에 두거나 심링크로 연결.
+`.claude/skills/<skill-name>/SKILL.md`를 Claude Code가 자동으로 로드한다 (ai-nodes ADR-002). 실행 파일(`scripts/`)과 컨텍스트 자산(`.claude/skills/`)을 분리해 불필요한 코드 로드를 방지한다.
 
 신규 skill 추가 시:
-1. `skills/<name>/SKILL.md` 작성
-2. `.claude/skills/<name>/` 심링크 또는 파일 등록
+1. `scripts/<name>/` 실행 파일 배치
+2. `.claude/skills/<name>/SKILL.md` 작성 (본체)
+3. `.claude/skills/<name>/references/` 참조 문서 배치 (있는 경우)
 
 native skill 진입점: `claude -p "/<skill-name> <args>"`
 
@@ -151,10 +150,12 @@ GITHUB_REPO_NAME=
 
 모든 워크스페이스가 표준 구조를 따르되, 워크스페이스별 ADR로 결정된 예외가 있다. 예외는 "표준 이탈"이 아니라 "결정된 비대칭"이다.
 
+career-os ADR-019의 scripts/ 분리 패턴은 ADR-006으로 표준 격상되어 현재 의도된 비대칭 없음.
+
 | 워크스페이스 | 비대칭 내용 | 근거 |
 |---|---|---|
-| career-os | `scripts/<skill-name>/` 별도 디렉터리 + `.claude/skills/<name>/` 분리. skills/는 SKILL.md + references/ 만. | career-os ADR-019 (scripts/ 분리, 컨텍스트 로드 효율) |
-| apartment | 없음 (표준 따름) | — |
+| apartment | 없음 (ADR-006 분리 표준 적용, plan007) | — |
+| career-os | 없음 (ADR-019 → ADR-006 격상) | — |
 | stock-investment | TODO — 별도 audit 필요 | — |
 | travel | TODO — 별도 audit 필요 | — |
 
@@ -164,7 +165,7 @@ GITHUB_REPO_NAME=
 
 ## 9. 현재 워크스페이스 준수도 매트릭스
 
-2026-05-18 기준. O = 준수, X = 미준수, ? = 미확인.
+2026-05-19 기준. O = 준수, X = 미준수, ? = 미확인.
 
 | 항목 | apartment | career-os | stock-investment | travel |
 |---|---|---|---|---|
@@ -172,7 +173,7 @@ GITHUB_REPO_NAME=
 | CLAUDE.md 심링크 | O | O | ? | ? |
 | docs/ 5문서 | O | O | ? | ? |
 | tasks/plan{N}/ 영역 | O | O | ? | ? |
-| skills/ 통합 구조 (비대칭 포함) | O | O (ADR-019 비대칭) | ? | ? |
+| skills/ 분리 표준 (ADR-006) | 적용 (plan007) | 적용 (ADR-019 → ADR-006 격상) | ? | ? |
 | .claude/skills/ native 등록 | O | O | ? | ? |
 | .env (workspace root) | O | O | ? | ? |
 | data/ vs docs/ 분리 | O | O | ? | ? |

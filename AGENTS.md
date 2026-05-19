@@ -15,7 +15,7 @@
 | 워크스페이스 | 자체 가이드 | 특이사항 |
 |---|---|---|
 | `apartment/` | [`apartment/AGENTS.md`](apartment/AGENTS.md), `apartment/TOOLS.md` | 네이버 부동산 API + agent-browser 결합 |
-| `career-os/` | [`career-os/AGENTS.md`](career-os/AGENTS.md) (= CLAUDE.md 심링크), `docs/` 5문서 | 자체 컨벤션 채택(아래 1-1 참조) |
+| `career-os/` | [`career-os/AGENTS.md`](career-os/AGENTS.md) (= CLAUDE.md 심링크), `docs/` 5문서 | 분리 표준 최초 도입 (ADR-019 → ADR-006 격상) |
 | `stock-investment/` | [`stock-investment/AGENTS.md`](stock-investment/AGENTS.md) | 일일 모닝 브리핑 |
 | `travel/` | [`travel/AGENTS.md`](travel/AGENTS.md) | `trips/<trip-id>/` 단위 |
 
@@ -33,12 +33,13 @@
   - `docs/docs-style.md` — docs / ADR 형식 정책 (ADR-005). 6 패턴 + 한자어 회피 + 거울 구조. 워크스페이스 docs · CLAUDE.md · SKILL.md 모두 본 문서를 따른다.
   - 워크스페이스 한정 결정은 `<workspace>/docs/adr.md`.
 
-### 1-1. career-os 한정 컨벤션 (ADR-019)
+### 1-1. 분리 표준 (ADR-006)
 
-career-os만 `scripts/<skill-name>/`(실행 파일) + `skills/<skill-name>/`(SKILL.md + references) 분리 구조.
-다른 워크스페이스는 `<workspace>/skills/<name>/scripts/` 표준 구조 유지.
+`<workspace>/scripts/<name>/` 실행 파일 + `<workspace>/.claude/skills/<name>/{SKILL.md, references/}` 컨텍스트 자산 본체.
 
-워크스페이스 격리 원칙상 이 비대칭은 의도된 것 — 다른 워크스페이스로 컨벤션 확산은 별도 결정 필요.
+career-os ADR-019 비대칭이 ADR-006으로 표준 격상 (2026-05-19). apartment plan007 첫 적용. stock-investment / travel은 audit 시 본 표준 따름.
+
+상세 청사진: `docs/workspace-structure.md` 2번·6번.
 
 ## 2. 실행 모델
 
@@ -59,8 +60,18 @@ career-os는 plan023 이후 native skill 직접 호출로 전환 — `logs/task-
 
 ### 3-1. apartment
 
+native skill 2개:
+
 ```bash
-apartment/skills/apartment-daily-report/scripts/run_report.sh
+claude -p "/apartment-daily-report"
+claude -p "/apartment-interior-reference-digest"
+```
+
+직접 호출:
+
+```bash
+bash apartment/scripts/apartment-daily-report/run_report.sh
+bash apartment/scripts/apartment-interior-reference-digest/run_digest.sh
 ```
 
 산출물: `apartment/data/YYYY-MM-DD/{report.md, raw-search.json, summary.json, claude.result.json}`.
