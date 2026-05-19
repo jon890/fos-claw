@@ -30,19 +30,21 @@ CRCL (Circle) + BTC + GOOGL/GOOG + QQQ + AI 반도체/인프라.
 
 ## 5. 워크플로 진입점
 
-3 skill — 현재는 기존 통합 패턴 (`skills/<name>/scripts/*.sh`). plan002 후 분리 패턴 (`scripts/<name>/` + `.claude/skills/<name>/`) + native skill 진입점:
+3 skill — ADR-006 분리 패턴 (`scripts/<name>/` + `.claude/skills/<name>/`, plan002 적용).
 
 ```bash
-# 현재 (plan001 시점)
-bash stock-investment/skills/stock-investing-morning-brief/scripts/run_report.sh
-bash stock-investment/skills/current-issue-analysis/scripts/run_issue_report.sh
-bash stock-investment/skills/daily-stock-analysis-note/scripts/run_daily_note.sh
-
-# plan002 후 (계획)
+# native skill 진입점 (.claude/skills/ 자동 로드)
 claude -p "/stock-investing-morning-brief"
 claude -p "/current-issue-analysis"
 claude -p "/daily-stock-analysis-note"
+
+# 또는 직접 호출
+bash stock-investment/scripts/stock-investing-morning-brief/run_report.sh
+bash stock-investment/scripts/current-issue-analysis/run_issue_report.sh
+bash stock-investment/scripts/daily-stock-analysis-note/run_daily_note.sh
 ```
+
+cron payload 안 absolute path는 plan002 완료 후 수동 갱신 필요 — `~/.openclaw/cron/jobs.json`의 `stock-investing-morning-brief-0800` + `daily-ai-tech-stock-blog-note` 두 job의 payload.message path를 `skills/<name>/scripts/` → `scripts/<name>/`로 직접 수정.
 
 ## 6. 외부 의존성
 
