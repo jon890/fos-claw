@@ -5,12 +5,12 @@ OUTDIR="${1:-$(mktemp -d)}"
 RAW_JSON="$OUTDIR/raw-search.json"
 SUMMARY_JSON="$OUTDIR/summary.json"
 COLLECTOR="$(dirname "$0")/collect_sources.ts"
-NORMALIZER="$(dirname "$0")/normalize_results.py"
+NORMALIZER="$(dirname "$0")/normalize_results.ts"
 
 mkdir -p "$OUTDIR"
 
 bun "$COLLECTOR" "$RAW_JSON"
-python3 "$NORMALIZER" "$RAW_JSON" "$SUMMARY_JSON"
+bun run "$NORMALIZER" "$RAW_JSON" "$SUMMARY_JSON"
 
 python3 - "$RAW_JSON" "$SUMMARY_JSON" <<'PY'
 import json

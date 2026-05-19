@@ -58,7 +58,7 @@ SUMMARY_JSON="$OUTDIR/summary.json"
 REPORT_MD="$OUTDIR/report.md"
 CLAUDE_JSON="$OUTDIR/claude.result.json"
 PROMPT_FILE="$SKILL_ROOT/references/claude-prompt.md"
-NORMALIZER="$(dirname "$0")/normalize_results.py"
+NORMALIZER="$(dirname "$0")/normalize_results.ts"
 COLLECTOR="$(dirname "$0")/collect_sources.ts"
 FALLBACK_MD="$OUTDIR/report.fallback.md"
 EXTRACT="$HOME/ai-nodes/_shared/bin/extract_claude_result.py"
@@ -99,7 +99,7 @@ else
 JSON
 fi
 
-if ! python3 "$NORMALIZER" "$RAW_JSON" "$SUMMARY_JSON"; then
+if ! bun run "$NORMALIZER" "$RAW_JSON" "$SUMMARY_JSON"; then
   notify_safe "[실패] apartment-daily-report 정규화 실패 (${TARGET_NAME}, ${REPORT_DATE})"
   exit 1
 fi
