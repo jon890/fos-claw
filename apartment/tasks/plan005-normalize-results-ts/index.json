@@ -2,9 +2,9 @@
   "name": "plan005-normalize-results-ts",
   "description": "apartment normalize_results.py → TypeScript 마이그. 입력 (collect_sources.ts 출력 raw-search.json) + 출력 (summary.json) zod 스키마 자기방어 (ADR-007 후속 적용). 59A alias 매칭 + focus_area_matches + matchStatus 추론 로직 1:1 보존. run_report.sh + run_smoke_test.sh의 python3 호출을 bun run으로 변경.",
   "created_at": "2026-05-19T00:00:00+00:00",
-  "updated_at": "2026-05-19T00:00:00+00:00",
-  "status": "planned",
-  "current_phase": 1,
+  "updated_at": "2026-05-19T06:36:55.101Z",
+  "status": "completed",
+  "current_phase": 3,
   "total_phases": 3,
   "error_message": null,
   "blocked_reason": null,
@@ -24,7 +24,7 @@
       "number": 1,
       "title": "normalize_results.ts 신설 + zod 입력/출력 스키마",
       "file": "phase-01.md",
-      "status": "pending",
+      "status": "completed",
       "allowedTools": [
         "Read",
         "Write",
@@ -33,13 +33,14 @@
         "Grep"
       ],
       "model": "sonnet",
-      "timeout": 1200
+      "timeout": 1200,
+      "commitSha": "5d6448a5ff2c"
     },
     {
       "number": 2,
       "title": "run_report.sh + run_smoke_test.sh 호출 변경 + Python git rm",
       "file": "phase-02.md",
-      "status": "pending",
+      "status": "completed",
       "allowedTools": [
         "Read",
         "Write",
@@ -48,13 +49,14 @@
         "Grep"
       ],
       "model": "sonnet",
-      "timeout": 600
+      "timeout": 600,
+      "commitSha": "48c0af8e96c8"
     },
     {
       "number": 3,
       "title": "통합 검증 + status=completed + push",
       "file": "phase-03.md",
-      "status": "pending",
+      "status": "completed",
       "allowedTools": [
         "Read",
         "Edit",
