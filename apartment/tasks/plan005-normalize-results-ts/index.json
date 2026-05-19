@@ -2,7 +2,7 @@
   "name": "plan005-normalize-results-ts",
   "description": "apartment normalize_results.py → TypeScript 마이그. 입력 (collect_sources.ts 출력 raw-search.json) + 출력 (summary.json) zod 스키마 자기방어 (ADR-007 후속 적용). 59A alias 매칭 + focus_area_matches + matchStatus 추론 로직 1:1 보존. run_report.sh + run_smoke_test.sh의 python3 호출을 bun run으로 변경.",
   "created_at": "2026-05-19T00:00:00+00:00",
-  "updated_at": "2026-05-19T06:36:55.101Z",
+  "updated_at": "2026-05-19T06:37:28.429098+00:00",
   "status": "completed",
   "current_phase": 3,
   "total_phases": 3,
@@ -64,7 +64,8 @@
         "Grep"
       ],
       "model": "haiku",
-      "timeout": 600
+      "timeout": 600,
+      "commitSha": "09199a05da73"
     }
   ]
 }
