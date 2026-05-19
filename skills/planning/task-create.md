@@ -209,6 +209,7 @@ bash <workspace>/skills/.../scripts/run_now.sh <command> [args]
 - [ ] **6-7 references 파일 audit** — SKILL.md 재작성 시 references/ 안 본문 옛 컨벤션 잔재 grep.
 - [ ] **6-8 cwd 정책** — phase 본문 첫 bash 블록에 `cd "$(git rev-parse --show-toplevel)"` 박혀 있는가?
 - [ ] **6-9 sigil escape** — phase 본문에 검증 대상 sigil 문자 (section mark U+00A7, tilde) 직접 사용 회피 + 검증 bash는 `printf '\xc2\xa7'` escape 사용.
+- [ ] **1-5 ADR 단일 책임** — 본 plan에서 신설한 ADR이 *각각 단일 trade-off 축*인가? "결정" 섹션에 항목 2개 이상이면 trade-off 축 동일성 self-check. 두 결정이 *독립적으로 supersede 가능*하면 분리 ADR. (SKILL.md "한 ADR = 한 의사결정" 섹션 참조)
 
 ## ai-nodes 작업 유형별 phase 가이드
 

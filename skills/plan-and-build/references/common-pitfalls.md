@@ -56,6 +56,20 @@ git ls-files <pattern> | xargs wc -l
 - 각 phase-NN.md 첫 줄부터 읽어서 다른 phase 안 보고 실행 가능한가?
 - 이전 phase의 출력 파일을 사용한다면 정확한 경로를 phase 본문에 명시했나?
 
+### 1-5. ADR 단일 책임 위반 — 한 plan 결정 묶음을 한 ADR에 통합
+
+**증상**: 한 plan에서 발생한 *여러 독립 결정*을 *한 ADR*에 묶어 작성. "결정" 섹션에 4-5 항목이 *서로 다른 trade-off 축* (예: 외부 HTTP fetch 인터페이스 + 응답 schema 검증 + 오케스트레이션 패턴) — 후속에서 "ADR-N의 어느 부분을 supersede하나" 모호.
+**왜**: planning skill SKILL.md "한 ADR = 한 의사결정" 섹션 위반. 같은 plan 사이클에 ADR 둘 이상이 나오는 게 정상 — plan = 실행 단위, ADR = 결정 단위, 일대일 아님. 통합은 *같은 trade-off 축*일 때만 (예: 캐시 정책 + 캐시 위치).
+
+**실제 발생**:
+- apartment plan003 ADR-005 (1차 작성): "Bun.fetch + zod + import 통합 + Bun.spawn agent-browser" 4 결정 통합. 사용자 점검 후 ADR-005/006/007로 3분할 (agent-browser CLI는 ADR-001 적용 detail이라 ADR 안 만듦).
+
+**Self-check**:
+- 방금 작성한 ADR의 "결정" 섹션 항목이 *몇 개*인가? 2개 이상이면 *각 항목이 같은 trade-off 축인가* 자문.
+- 두 결정이 *독립적으로 supersede 가능*한가? 가능하면 분리.
+- 한 결정을 다른 ADR로 빼면 *나머지 ADR이 여전히 자립*하는가? 자립하면 분리 후보.
+- *분리할지 모호하면 분리*가 default (SKILL.md 명시).
+
 ### 1-4. 검증 기준이 다른 phase의 "범위 외" 명시와 충돌
 
 **증상**: phase-01에 "ADR-007/ADR-023 리넘버링은 범위 외"라고 적어두고, phase-02 검증식은 `ADR 헤더 == 15`를 강제 → 충돌이라 검증 항상 실패. 또는 phase-01이 "줄 수 ≤250까지 욕심내지 않는다"라고 했는데 phase-02 검증이 ≤250 강제.
@@ -310,3 +324,4 @@ git ls-files <pattern> | xargs wc -l
 - 2026-05-14: plan013-study-pack-writer-native 1차 실행 회고 — 6-6 신설 (phase의 Write/Edit 작업 자체를 prose 응답으로 위장 + commitSha false 기록). phase-02가 SKILL.md ~130줄 재작성 지시를 받고 Write 도구를 호출하지 않은 채 prose-only 응답으로 종료. 결과 SKILL.md는 옛 사람용 문서 그대로 (42줄). phase-04 정적 검증도 6-4 위장으로 통과. plan 전체가 거짓 success 마킹. commitSha 자동 기록이 직전 plan011 폐기 commit을 phase-02에 박아 audit이 거꾸로 어려워짐. 방어선: draft를 별도 파일로 분리 + phase 끝에 commit 개수 self-check.
 - 2026-05-15: plan015 단계 2 회고 — 6-7 신설 (SKILL.md 재작성 시 references/ 안 파일 본문 audit 누락). interview-asset-writer SKILL.md를 native 패턴으로 재작성하면서 references/question-bank-prompt.md를 *Inputs 5번째로 그대로 박음*. 그런데 그 파일 본문은 옛 외부 subprocess 시대 지시문 ("Output must satisfy the provided JSON schema exactly", "Do not output markdown", "Output only valid JSON that matches the schema") 그대로였음. SKILL.md가 그 파일을 Read해서 따르면 native 패턴 완전 충돌 — JSON 출력하고 markdown 안 만듦. 사용자가 발견하기 전까지 critical bug가 commit/push됨. 방어선: native 패턴으로 SKILL.md 재작성·rename 시 references/ 안 *모든 파일 본문도 동시에 audit*. 옛 subprocess 패턴 키워드 grep: `Output only valid JSON`, `Do not output markdown`, `claude --json-schema`, `--output-format json`, `valid JSON that matches the schema`. 잔재 발견 시 references 폐기 또는 SKILL.md에 흡수. 같은 시점에 처리하지 않으면 잠재 위험이 남음.
 - 2026-05-19: plan024 / plan002 1차 실행 전 hotfix 회고 — 6-8 신설 (run-phases.py cwd=workspace 가정 vs phase 본문 ai-nodes 루트 path 컨벤션 불일치). 두 plan 모두 phase 본문 작성 시 *bash 명령 path*가 ai-nodes 루트 기준 (`career-os/AGENTS.md`, `apartment/config/...`)인데 run-phases.py가 cwd=workspace로 실행 → 첫 bash에서 부재 처리 위험. 별도 hotfix commit으로 첫 bash 블록에 `cd "$(git rev-parse --show-toplevel)"` 강제 추가. 방어선: task-create.md에 "사전 cwd 설정" 표준 섹션 신설 + path 컨벤션 명시. 동시에 6-9 신설 (검증 대상 sigil 문자 phase 본문 직접 사용 → self-positive 또는 사용자 directive 위반).
+- 2026-05-19: apartment plan003 ADR-005 1차 작성 회고 — 1-5 신설 (ADR 단일 책임 위반 — 한 plan 결정 묶음을 한 ADR에 통합). ADR-005 (1차)에 4 독립 결정 (Bun.fetch + zod + import 통합 + Bun.spawn agent-browser) 통합 → 사용자 점검 후 ADR-005/006/007로 3분할 (agent-browser CLI는 ADR-001 적용 detail이라 ADR 안 만듦). planning SKILL.md "한 ADR = 한 의사결정" 섹션이 이미 명시되어 있으나 작성자가 무시 → task-create.md self-check 항목에 명시적 추가로 강제.
