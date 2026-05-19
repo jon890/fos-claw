@@ -28,7 +28,7 @@ DRAFT_MD="$OUTDIR/report.md"
 PROMPT_FILE="$SKILL_ROOT/references/blog-note-prompt.md"
 COLLECTOR="$SKILL_ROOT/scripts/collect_daily_note_inputs.py"
 SANITIZER="$SKILL_ROOT/scripts/sanitize_fos_study_markdown.py"
-EXTRACT="$HOME/ai-nodes/_shared/bin/extract_claude_result.py"
+EXTRACT="$HOME/ai-nodes/_shared/lib/extract_claude_result.ts"
 NOTIFIER="$TASK_ROOT/skills/stock-investing-morning-brief/scripts/notify_discord.sh"
 
 mkdir -p "$OUTDIR"
@@ -81,7 +81,7 @@ PY
 } > "$ANALYSIS_INPUT"
 
 if timeout "${CLAUDE_TIMEOUT_SECONDS:-240}" claude --permission-mode bypassPermissions --print --output-format json "$(cat "$ANALYSIS_INPUT")" > "$CLAUDE_JSON"; then
-  python3 "$EXTRACT" "$CLAUDE_JSON" "$DRAFT_MD" "${TRACK_TASK_CLAUDE_USAGE_FILE:-}"
+  bun run "$EXTRACT" "$CLAUDE_JSON" "$DRAFT_MD" "${TRACK_TASK_CLAUDE_USAGE_FILE:-}"
 else
   cat > "$DRAFT_MD" <<EOF
 # [초안] $REPORT_DATE $NAME($TICKER) 관찰 노트

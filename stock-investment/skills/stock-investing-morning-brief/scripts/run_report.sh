@@ -23,7 +23,7 @@ REPORT_MD="$OUTDIR/report.md"
 PROMPT_FILE="$SKILL_ROOT/references/claude-prompt.md"
 COLLECTOR="$SKILL_ROOT/scripts/collect_sources.py"
 NOTIFIER="$SKILL_ROOT/scripts/notify_discord.sh"
-EXTRACT="$HOME/ai-nodes/_shared/bin/extract_claude_result.py"
+EXTRACT="$HOME/ai-nodes/_shared/lib/extract_claude_result.ts"
 
 mkdir -p "$OUTDIR"
 
@@ -40,7 +40,7 @@ python3 "$COLLECTOR" "$WATCHLIST" "$SOURCES" "$MARKET_JSON" "$NEWS_JSON"
 } > "$ANALYSIS_INPUT"
 
 if timeout "${CLAUDE_TIMEOUT_SECONDS:-120}" claude --permission-mode bypassPermissions --print --output-format json "$(cat "$ANALYSIS_INPUT")" > "$CLAUDE_JSON"; then
-  python3 "$EXTRACT" "$CLAUDE_JSON" "$REPORT_MD" "${TRACK_TASK_CLAUDE_USAGE_FILE:-}"
+  bun run "$EXTRACT" "$CLAUDE_JSON" "$REPORT_MD" "${TRACK_TASK_CLAUDE_USAGE_FILE:-}"
 else
   cat > "$REPORT_MD" <<FALLBACK
 [CRCL/BTC 모닝 체크] $REPORT_DATE

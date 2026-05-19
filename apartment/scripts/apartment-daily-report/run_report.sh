@@ -61,7 +61,7 @@ PROMPT_FILE="$SKILL_ROOT/references/claude-prompt.md"
 NORMALIZER="$(dirname "$0")/normalize_results.ts"
 COLLECTOR="$(dirname "$0")/collect_sources.ts"
 FALLBACK_MD="$OUTDIR/report.fallback.md"
-EXTRACT="$HOME/ai-nodes/_shared/bin/extract_claude_result.py"
+EXTRACT="$HOME/ai-nodes/_shared/lib/extract_claude_result.ts"
 
 mkdir -p "$OUTDIR"
 
@@ -109,7 +109,7 @@ CLAUDE_INPUT+=$'\n\n다음은 summary.json 입니다:\n'
 CLAUDE_INPUT+=$(cat "$SUMMARY_JSON")
 
 if timeout 90s claude --permission-mode bypassPermissions --print --output-format json "$CLAUDE_INPUT" > "$CLAUDE_JSON"; then
-  python3 "$EXTRACT" "$CLAUDE_JSON" "$REPORT_MD" "${TRACK_TASK_CLAUDE_USAGE_FILE:-}"
+  bun run "$EXTRACT" "$CLAUDE_JSON" "$REPORT_MD" "${TRACK_TASK_CLAUDE_USAGE_FILE:-}"
 else
   notify_safe "[실패] apartment-daily-report Claude 보고서 생성 실패 (${TARGET_NAME}, ${REPORT_DATE})"
   cat > "$FALLBACK_MD" <<EOF
