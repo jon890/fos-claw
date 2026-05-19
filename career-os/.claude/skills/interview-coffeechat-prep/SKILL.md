@@ -9,7 +9,7 @@ description: 면접 커피챗 준비 — 현 active 타깃 기업(mvp-target.jso
 
 **회사 불가지론**: 회사명·사이트 URL·슬러그는 `config/mvp-target.json`의 `primary.coffeechat` 객체에서만 읽는다. 이 SKILL.md 어디에도 특정 회사명을 박지 않는다.
 
-스키마 검증: `_shared/lib/mvp_target_schema.ts`의 `parseMvpTarget()` + zod로 진입 시점에 설정 오류를 조기 차단한다.
+스키마 검증: `career-os/scripts/interview-coffeechat-prep/mvp_target_schema.ts`의 `parseMvpTarget()` + zod로 진입 시점에 설정 오류를 조기 차단한다.
 
 ## When to use
 
@@ -21,7 +21,7 @@ description: 면접 커피챗 준비 — 현 active 타깃 기업(mvp-target.jso
 
 Claude는 다음을 `Read` 도구로 직접 로드:
 
-1. `career-os/config/mvp-target.json` → zod parse (`_shared/lib/mvp_target_schema.ts` `parseMvpTarget()`) → `primary.coffeechat` 객체 추출
+1. `career-os/config/mvp-target.json` → zod parse (`career-os/scripts/interview-coffeechat-prep/mvp_target_schema.ts` `parseMvpTarget()`) → `primary.coffeechat` 객체 추출
    - `coffeechat.sites` — fetch 대상 사이트 배열 (key, url, label)
    - `coffeechat.source_dir` — 수집 결과 저장 경로 (`data/source/<source_dir>/`)
    - `coffeechat.report_slug` — 리포트 경로 슬러그
@@ -127,5 +127,5 @@ bun --env-file=career-os/.env ../_shared/lib/notify_discord.ts \
 
 - `references/coffeechat-prompt.md` — 분석 프롬프트 가이드
 - `career-os/config/mvp-target.json` — 타깃 기업 + coffeechat 설정 단일 출처
-- `_shared/lib/mvp_target_schema.ts` — zod 스키마 + parseMvpTarget() 함수
+- `career-os/scripts/interview-coffeechat-prep/mvp_target_schema.ts` — zod 스키마 + parseMvpTarget() 함수
 - `career-os/docs/adr.md` ADR-029 — 본 설계 결정 근거

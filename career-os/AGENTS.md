@@ -80,8 +80,8 @@ claude -p "/position-recommender [컨텍스트] [채용공고 file]"            
 
 - `_shared/bin/track_task.sh` — 트래커. career-os 사용 0 (native skill 직접 실행). apartment 사용 중이라 `_shared/bin`에 유지.
 - `_shared/lib/notify_discord.ts` — Bun. `openclaw message send --channel discord` subprocess. `DISCORD_CHANNEL_ID` env 필수, `--media <path>` 옵션 지원. 옛 `notify_discord*.sh` 후속 (ADR-021).
-- `_shared/lib/mvp_target_schema.ts` — Bun/zod. `config/mvp-target.json` 스키마 검증 단일 출처. `parseMvpTarget()` + `CoffeechatSchema` 포함 (plan021 ADR-029 신규).
-- `_shared/bin/extract_claude_result.py` — career-os 사용 0. apartment + stock-investment caller 잔존 — 별도 워크스페이스 plan 대기.
+- `career-os/scripts/interview-coffeechat-prep/mvp_target_schema.ts` — Bun/zod. `config/mvp-target.json` 스키마 검증 단일 출처. `parseMvpTarget()` + `CoffeechatSchema` 포함 (plan021 ADR-029 신규, audit 후 _shared/lib → skill 내부로 이동 — ADR-001 엄격 준수).
+- `_shared/lib/extract_claude_result.ts` — Bun. claude JSON envelope 파싱. career-os + apartment + stock-investment 공용 (ai-nodes plan001 통합). 옛 `_shared/bin/extract_claude_result.py`는 plan001에서 git rm.
 - `_shared/bin/update_artifacts.py` — career-os 사용 0 (ADR-033 / plan025 이후. `sources/fos-study/` 직접 스캔으로 단일화). 파일 자체는 별도 plan에서 폐기 검토.
 - Bun runtime — TS 헬퍼 실행. 설치 후 ai-nodes 루트에서 `bun install` 1회 (zod, fast-xml-parser, dotenv).
 - `claude` CLI — native skill 호출 (`claude -p "/<skill>"`). 인증 + 로그인 필요. ai-nodes 모노레포 공통.

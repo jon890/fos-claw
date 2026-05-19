@@ -170,7 +170,7 @@ career-os는 `tasks/plan{N}-<slug>/` 영구 plan 영역을 운영.
 - `_shared/bin/track_task.sh` — 모든 워크스페이스 트래커. **load-bearing**.
 - `_shared/lib/notify_discord.ts` — Discord 알림(openclaw subprocess 경유, ADR-021).
 - `_shared/lib/extract_claude_result.ts` — `claude --output-format json` envelope 파싱. apartment + stock-investment + career-os 공용 (ai-nodes plan001 통합).
-- `_shared/lib/mvp_target_schema.ts` — career-os `config/mvp-target.json` zod 스키마 (ADR-029).
+- `career-os/scripts/interview-coffeechat-prep/mvp_target_schema.ts` — career-os `config/mvp-target.json` zod 스키마 (ADR-029). audit 후 _shared/lib → skill 내부로 이동 (ADR-001 엄격 준수, 호출자 1개 한정).
 - Bun runtime — TS 헬퍼 실행. 설치 후 ai-nodes 루트에서 `bun install` 1회 (root package.json: zod, fast-xml-parser, dotenv + @types/bun).
 - Python 3 — apartment Python collector는 plan003~005 TS 마이그 + plan006 폐기 (ADR-008)로 0개. `_shared/bin/extract_claude_result.py`는 ai-nodes plan001에서 git rm — `_shared/lib/extract_claude_result.ts`로 통합. 현재 `_shared/bin/`에는 `track_task.sh` + `update_artifacts.py`만 잔존.
 - `agent-browser` CLI — JS-heavy 페이지(Naver Land 등) 수집. 로컬 설치 필수 (apartment ADR-001).

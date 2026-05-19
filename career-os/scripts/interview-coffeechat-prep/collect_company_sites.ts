@@ -5,7 +5,7 @@
 // usage: bun collect_company_sites.ts [--outdir <dir>]
 //   default outdir: career-os/data/source/<coffeechat.source_dir>/
 
-import { parseMvpTarget, type CoffeechatSite } from '../../../_shared/lib/mvp_target_schema';
+import { parseMvpTarget, type CoffeechatSite } from './mvp_target_schema';
 import { mkdir, writeFile } from 'fs/promises';
 import { join, resolve } from 'path';
 
