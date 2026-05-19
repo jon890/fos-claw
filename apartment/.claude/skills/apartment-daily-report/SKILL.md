@@ -61,8 +61,7 @@ Default target for this workspace:
 
 - Main runner: `scripts/run_report.sh` (self-wraps through `_shared/bin/track_task.sh` via `TRACK_TASK_WRAPPED` guard)
 - Smoke test: `scripts/run_smoke_test.sh`
-- Normalizer: `scripts/normalize_results.py`
-- Naver browser fallback: `scripts/collect_naver_browser.py`
+- Normalizer: `scripts/normalize_results.ts` (plan005 TS 마이그)
 - Claude synthesis prompt: `references/claude-prompt.md`
 - Naver browser prompt: `references/naver-browser-prompt.md`
 
