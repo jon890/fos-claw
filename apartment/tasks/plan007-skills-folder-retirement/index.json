@@ -2,7 +2,7 @@
   "name": "plan007-skills-folder-retirement",
   "description": "apartment/skills/ 폐기 + .claude/skills/ 본체화 (career-os 분리 패턴 포팅). apartment-daily-report 마이그 + apartment-interior-reference-digest 동시 native 등록 + apartment/scripts/<name>/ 신설 + runner SKILL_ROOT 정정 + 5문서·AGENTS 갱신 + ai-nodes 메타 (workspace-structure + AGENTS 1-1 비대칭 표 제거). apartment ADR-004 + ai-nodes ADR-006 적용 (docs commit 5eb29a8).",
   "created_at": "2026-05-19T00:00:00+00:00",
-  "updated_at": "2026-05-19T03:09:35+00:00",
+  "updated_at": "2026-05-19T03:10:02.782297+00:00",
   "status": "completed",
   "current_phase": 5,
   "total_phases": 5,
@@ -82,7 +82,7 @@
       "number": 5,
       "title": "잔여 참조 grep + 정적 검증 + status=completed + push",
       "file": "phase-05.md",
-      "status": "running",
+      "status": "completed",
       "allowedTools": [
         "Read",
         "Edit",
@@ -90,7 +90,8 @@
         "Grep"
       ],
       "model": "haiku",
-      "timeout": 600
+      "timeout": 600,
+      "commitSha": "5ae719811857"
     }
   ]
 }
