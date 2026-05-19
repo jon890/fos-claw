@@ -12,10 +12,10 @@ apartment 워크스페이스의 **데이터 플로우 및 실행 흐름** 단일
                     ├─► openclaw status 캡처 (before)
                     ├─► 파일 메트릭 스냅샷 (before)
                     │
-                    ├─► collector (collect_sources.py)
-                    │     ├─► Naver API (overview + prices + articles)
-                    │     ├─► Hogangnono
-                    │     └─► KB Land
+                    ├─► collector (collect_sources.ts, ADR-006 import 통합)
+                    │     ├─► collect_naver_api.ts (API 3 endpoint + zod)
+                    │     ├─► collect_hogangnono.ts (HTML regex)
+                    │     └─► collect_kbland.ts (HTML regex)
                     │
                     ├─► normalizer (normalize_results.py)
                     │     └─► summary.json
@@ -53,13 +53,14 @@ Step 4  출력 디렉터리 생성
 Step 5  Discord 시작 알림
         notify_discord.sh "시작" 메시지
 
-Step 6  수집 (collect_sources.py)
-        Naver API 3 endpoint (overview / prices / articles)
-          — 쿠키 + Bearer JWT 인증
+Step 6  수집 (collect_sources.ts, ADR-006 import 통합)
+        collect_naver_api.ts — API 3 endpoint (overview / prices / articles)
+          — 쿠키 + Bearer JWT 인증 (ADR-001)
           — 요청 간 2초 sleep, 429 시 지수 백오프 (2→4→8s, 3회)
           — 실패 시 마지막 성공 스냅샷 fallback + Discord 알림
-        Hogangnono 수집
-        KB Land 수집
+          — zod 응답 스키마 검증 (ADR-007)
+        collect_hogangnono.ts — Bun.fetch HTML 수집 + regex 파싱 (plan004)
+        collect_kbland.ts — Bun.fetch HTML 수집 + regex 파싱 (plan004)
         산출물: raw-search.json
 
 Step 7  정규화 (normalize_results.py)

@@ -25,11 +25,12 @@ apartment/
 │   │   ├── run_smoke_test.sh           # 헬스 체크 진입점
 │   │   ├── run_guri_buy_search.sh
 │   │   ├── notify_discord.sh
-│   │   ├── collect_sources.py
-│   │   ├── collect_naver_api.py        # ADR-001 (Naver API 3 endpoint)
-│   │   ├── collect_hogangnono.py
-│   │   ├── collect_kb.py
-│   │   └── normalize_results.py
+│   │   ├── collect_sources.ts          # ADR-006 (import 통합 오케스트레이터, plan003)
+│   │   ├── collect_naver_api.ts        # ADR-001 (Naver API 3 endpoint), plan003 마이그
+│   │   ├── naver_api_schemas.ts        # ADR-007 (zod 응답 스키마), plan003
+│   │   ├── collect_hogangnono.ts       # plan004 마이그 (HTML regex 파서)
+│   │   ├── collect_kbland.ts           # plan004 마이그 (HTML regex 파서)
+│   │   └── normalize_results.py        # plan005 마이그 대기
 │   └── apartment-interior-reference-digest/  # skill 실행 파일 (plan007, ADR-004)
 │       └── run_digest.sh
 │
@@ -122,7 +123,7 @@ fi
 | 언어 | 파일 수 (추정) | 역할 |
 |---|---|---|
 | Shell | 5 | runner, notify_discord, smoke_test, guri_buy_search, env |
-| Python | 6 | collect_naver_api, collect_hogangnono, collect_kb, collect_sources, normalize_results, build_weekly_listing_trend |
-| TypeScript | 1 | `scripts/_lib/load_target_meta.ts` (ADR-003, plan002 — 첫 ts 파일) |
+| Python | 2 | normalize_results (plan005 대기), build_weekly_listing_trend (plan006 대기) |
+| TypeScript | 6 | `_lib/load_target_meta.ts` (plan002) + collect_sources / collect_naver_api / naver_api_schemas (plan003) + collect_hogangnono / collect_kbland (plan004) |
 
-apartment는 ADR-003으로 TypeScript 도입 시작 (plan002). 후속 plan003-006에서 `collect_*.py` / `normalize_results.py` / `build_weekly_listing_trend.py` 점진 마이그 계획 — 각 plan은 fetch 인터페이스(`fetch` / `Bun.fetch` / `axios`) 결정 등 새 ADR 동반.
+apartment는 ADR-003으로 TypeScript 도입 시작 (plan002). plan003 (Naver / sources) + plan004 (Hogangnono / KB) 마이그 완료. plan005 (normalize_results) + plan006 (build_weekly_listing_trend) 후속 — fetch 인터페이스는 ADR-005/006/007 표준 적용.
