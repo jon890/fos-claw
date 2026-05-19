@@ -251,6 +251,47 @@ git ls-files <pattern> | xargs wc -l
 - 검증 bash가 같은 phase 안에 있다면 **그 phase는 prose 위장 위험이 두 배** — Write 위장 + 검증 위장이 함께 일어나면 검증 자체가 무력화. 가능하면 검증을 다음 phase로 분리.
 - commitSha 기록을 신뢰하지 말 것 — `git log --format='%H %s'`로 실제 commit 메시지를 확인해서 phase가 의도한 변경을 만들었는지 audit. 같은 commit SHA가 두 phase에 박혀 있으면 즉시 의심.
 
+### 6-7. SKILL.md 재작성 시 references/ 안 파일 본문 audit 누락
+
+**증상**: SKILL.md를 native 패턴으로 재작성하면서 `references/<file>.md`를 Inputs로 그대로 박았는데, 그 references 파일 본문이 옛 외부 subprocess 시대 지시문 (`Output only valid JSON`, `Do not output markdown`, `--output-format json`) 그대로. SKILL.md가 references를 Read해서 따르면 native 패턴 완전 충돌.
+**왜**: SKILL.md 재작성 시 *본문만 보고 references는 path만 인용*. references 파일 본문이 *옛 컨벤션 잔재*인 경우 critical bug 잠재. 사용자가 발견하기 전까지 commit/push됨.
+
+**실제 발생**:
+- plan015 phase-02: interview-asset-writer SKILL.md 재작성하며 references/question-bank-prompt.md를 Inputs 5번째로 박았으나, references 본문은 옛 JSON 출력 지시 그대로. native markdown 패턴과 충돌.
+
+**Self-check**:
+- SKILL.md 재작성·rename 시 references/ 안 *모든 파일 본문도 동시에 audit*했나?
+- 옛 subprocess 패턴 키워드 grep 통과: `Output only valid JSON`, `Do not output markdown`, `claude --json-schema`, `--output-format json`, `valid JSON that matches the schema`. 잔재 발견 시 references 폐기 또는 SKILL.md에 흡수.
+- references 본문이 native 패턴 (markdown 직접 작성, Read/Write 도구 명령형) 정합인가?
+
+### 6-8. run-phases.py cwd=workspace 가정 — phase 본문 ai-nodes 루트 path 사용 시 PHASE_FAILED
+
+**증상**: phase 본문이 `apartment/config/...`, `career-os/AGENTS.md` 같은 *ai-nodes 루트 기준 path*를 bash 명령으로 사용했지만 run-phases.py가 cwd=workspace로 phase 실행 → bash 명령에서 `<workspace>/<workspace>/path` 형태로 부재 처리 → PHASE_FAILED 또는 잘못된 위치 작성.
+**왜**: run-phases.py line 355 `cwd=workspace` — task-dir의 grandparent가 cwd. 그런데 task-create.md 명세상 phase 본문 path 컨벤션은 *ai-nodes 루트 기준* (`<workspace>/...`). 두 사실이 정합 안 됨 + task-create.md에 *cwd 정책 명시 부재*라 작성자가 매번 새로 헤맴.
+
+**실제 발생**:
+- plan024-claude-md-enhancement 1차 실행 전 hotfix (`c0e6384`): phase-01/02 첫 bash 블록에 `cd "$(git rev-parse --show-toplevel)"` 강제 추가. 추가 안 했으면 phase-01 사전 조건 `test -f ai-nodes/docs/workspace-structure.md`가 cwd=career-os 기준 부재 → PHASE_BLOCKED.
+- plan002-target-meta-ts 1차 실행 전 hotfix (`38e6370`): 동일 패턴. 10 bash 블록 모두 `apartment/...` path 사용 — cd 강제 안 박으면 줄줄이 실패.
+
+**Self-check**:
+- phase 본문에 `<workspace>/...` path가 *bash 명령*에 등장하는가? → 첫 bash 블록 시작에 `cd "$(git rev-parse --show-toplevel)"` 박혀 있는가?
+- Edit 도구는 absolute path 받음 — cwd 무관 동작. *Bash 명령만* cwd 의존이라 cd 강제는 *bash 명령 중심*.
+- Claude Code Bash 도구는 *동일 phase 안 cwd 보존* — 첫 호출에 cd 박으면 후속 자동 유지.
+- task-create.md "사전 cwd 설정" 표준 섹션 박혀 있는가? (없으면 작성자가 다시 헤맴)
+
+### 6-9. 검증 대상 sigil 문자 phase 본문 직접 사용 → self-positive 또는 사용자 directive 위반
+
+**증상**: phase 본문 강제 주의문에 `§` 같은 *검증 대상 sigil 문자*를 *literal*로 박음. 검증 bash가 `grep -c "§"`로 *target 파일*만 검사하면 false positive 없지만, target에 phase 파일이 포함되면 phase 본문 자체가 잡혀 PHASE_FAILED. 또한 사용자 directive (CLAUDE.md "§ 미사용") 위반.
+**왜**: phase 작성자가 "§ 미사용 강제" 명령을 박을 때 자연히 `§` 문자 직접 인용 → phase 본문 자체에 sigil 박힘. 의도는 *검증 대상 강조*인데 결과는 *self-positive*.
+
+**실제 발생**:
+- plan024 / plan001 phase 본문에 `§ 특수문자 사용 금지` 강제 주의문 박음 → phase 본문 자체에 § 다수 (`grep -c "§" phase-01.md` = 5). PHASE_FAILED 직접 유발은 아니었지만 사용자 directive 위반 발견 후 수정. hotfix 패턴: `section mark (U+00A7)` 평문 표기 + 검증 bash는 `SIGIL_CHAR=$(printf '\xc2\xa7'); grep -c "$SIGIL_CHAR" target`.
+
+**Self-check**:
+- phase 본문에 sigil 문자 (`§`, `~`, etc.) 자체 인용이 있는가? → 평문 명시로 교체 (`section mark (U+00A7)`, `tilde (U+007E)`)
+- 검증 bash가 sigil 검사하는가? → escape 변수 사용 (`printf '\xc2\xa7'`) → phase 본문 자체에 sigil 박지 않고 검증 가능
+- 사용자 directive 위반 위험 zero (CLAUDE.md "§ 미사용" 같은 글로벌 규칙)
+
 ---
 
 ## 변경 이력
@@ -262,3 +303,4 @@ git ls-files <pattern> | xargs wc -l
 - 2026-05-13: plan004-shared-helpers-ts 1차 실행 회고 — 6-1 강화 (exit code 명시만으론 부족, BLOCKED 트리거 블록 위에 "Bash 도구로 직접 실행" 강제 주의문 필요). phase-02가 본문에 `exit 2` 명시했음에도 prose 응답으로 "PHASE_BLOCKED: Bun 미설치"만 출력하고 정상 종료 → success 잘못 처리 재발.
 - 2026-05-14: plan013-study-pack-writer-native 1차 실행 회고 — 6-6 신설 (phase의 Write/Edit 작업 자체를 prose 응답으로 위장 + commitSha false 기록). phase-02가 SKILL.md ~130줄 재작성 지시를 받고 Write 도구를 호출하지 않은 채 prose-only 응답으로 종료. 결과 SKILL.md는 옛 사람용 문서 그대로 (42줄). phase-04 정적 검증도 6-4 위장으로 통과. plan 전체가 거짓 success 마킹. commitSha 자동 기록이 직전 plan011 폐기 commit을 phase-02에 박아 audit이 거꾸로 어려워짐. 방어선: draft를 별도 파일로 분리 + phase 끝에 commit 개수 self-check.
 - 2026-05-15: plan015 단계 2 회고 — 6-7 신설 (SKILL.md 재작성 시 references/ 안 파일 본문 audit 누락). interview-asset-writer SKILL.md를 native 패턴으로 재작성하면서 references/question-bank-prompt.md를 *Inputs 5번째로 그대로 박음*. 그런데 그 파일 본문은 옛 외부 subprocess 시대 지시문 ("Output must satisfy the provided JSON schema exactly", "Do not output markdown", "Output only valid JSON that matches the schema") 그대로였음. SKILL.md가 그 파일을 Read해서 따르면 native 패턴 완전 충돌 — JSON 출력하고 markdown 안 만듦. 사용자가 발견하기 전까지 critical bug가 commit/push됨. 방어선: native 패턴으로 SKILL.md 재작성·rename 시 references/ 안 *모든 파일 본문도 동시에 audit*. 옛 subprocess 패턴 키워드 grep: `Output only valid JSON`, `Do not output markdown`, `claude --json-schema`, `--output-format json`, `valid JSON that matches the schema`. 잔재 발견 시 references 폐기 또는 SKILL.md에 흡수. 같은 시점에 처리하지 않으면 잠재 위험이 남음.
+- 2026-05-19: plan024 / plan002 1차 실행 전 hotfix 회고 — 6-8 신설 (run-phases.py cwd=workspace 가정 vs phase 본문 ai-nodes 루트 path 컨벤션 불일치). 두 plan 모두 phase 본문 작성 시 *bash 명령 path*가 ai-nodes 루트 기준 (`career-os/AGENTS.md`, `apartment/config/...`)인데 run-phases.py가 cwd=workspace로 실행 → 첫 bash에서 부재 처리 위험. 별도 hotfix commit으로 첫 bash 블록에 `cd "$(git rev-parse --show-toplevel)"` 강제 추가. 방어선: task-create.md에 "사전 cwd 설정" 표준 섹션 신설 + path 컨벤션 명시. 동시에 6-9 신설 (검증 대상 sigil 문자 phase 본문 직접 사용 → self-positive 또는 사용자 directive 위반).

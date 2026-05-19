@@ -85,6 +85,37 @@ ls -d <workspace>/tasks/plan*/ 2>/dev/null | head -5
 2. **단일 책임**: 한 phase는 명확히 하나의 작업 단위. 작업 항목 5개 이하.
 3. **검증 가능**: phase 마지막에 실행 가능한 성공 기준 명시 (`bash -n`, `python3 -m py_compile`, `grep`, `[ -f path ]` 등).
 
+### Path 컨벤션 + cwd 정책 (필수)
+
+**phase 본문의 모든 path는 *ai-nodes 루트 기준* (`<workspace>/...`)**. 하지만 `run-phases.py`는 cwd=workspace로 phase 실행 (line 355 `cwd=workspace`). 두 사실이 충돌 — phase 본문 bash 명령이 `apartment/config/...` 형태면 cwd=apartment에서 `apartment/apartment/config/...` 부재 처리 → PHASE_FAILED.
+
+**모든 phase는 첫 bash 블록에 cwd=ai-nodes 루트 강제 cd 박는다**:
+
+```bash
+cd "$(git rev-parse --show-toplevel)"
+pwd  # 기대: /home/bifos/ai-nodes
+```
+
+Claude Code Bash 도구는 *동일 phase 안 cwd 보존* — 첫 호출에 cd 박으면 후속 bash 명령 자동 유지. cd 강제는 *phase 본문 시작 강제 주의문 직후* 또는 *관련 docs 직전*에 새 섹션 "## 사전 cwd 설정"으로.
+
+**Edit 도구는 absolute path 받음 → cwd 무관 동작**. cd 강제는 *bash 명령 중심* (test / grep / wc / git 등). Edit / Write는 *프롬프트 path만 절대경로화*하면 cwd와 무관.
+
+이 패턴이 박혀있지 않으면 task 실행 첫 phase에서 hotfix commit이 별도로 필요 (common-pitfalls 6-8 참조 — plan024 / plan002 실측 사례).
+
+### Sigil 문자 escape 정책
+
+phase 본문 강제 주의문 + 검증 bash에서 *검증 대상 sigil 문자* (`§`, `~`, 등) 자체 인용 회피:
+
+- 강제 주의문: 평문 명시 (`section mark (U+00A7) 사용 금지`, `tilde (U+007E) 회피`)
+- 검증 bash: escape 변수 사용
+
+```bash
+SIGIL_CHAR=$(printf '\xc2\xa7')
+COUNT=$(grep -c "$SIGIL_CHAR" target.md)
+```
+
+phase 본문 자체에 sigil 박으면 *self-positive grep* + *사용자 directive 위반* (CLAUDE.md "§ 미사용"). common-pitfalls 6-9 참조.
+
 ### phase 파일 구조
 
 ```markdown
@@ -100,6 +131,17 @@ ls -d <workspace>/tasks/plan*/ 2>/dev/null | head -5
 이 phase에서 구현할 것을 명확히. 왜 필요한지 한 문장.
 
 **범위 외**: 다른 phase 또는 다른 plan의 책임 명시 (혼동 방지).
+
+---
+
+## 사전 cwd 설정 (run-phases.py hotfix 표준)
+
+run-phases.py는 cwd=workspace로 phase 실행. 본 phase는 ai-nodes 루트 기준 path 사용이므로 첫 bash에서 cwd=ai-nodes 루트로 변경. Claude Code Bash 도구 cwd 보존 → 후속 자동 유지.
+
+```bash
+cd "$(git rev-parse --show-toplevel)"
+pwd  # 기대: /home/bifos/ai-nodes
+```
 
 ---
 
@@ -154,15 +196,19 @@ bash <workspace>/skills/.../scripts/run_now.sh <command> [args]
 - 검증 통과 불가 → `PHASE_FAILED: {이유}` 출력 후 종료
 ```
 
-### phase 작성 시 self-check (`common-pitfalls.md` § 소진)
+### phase 작성 시 self-check (`common-pitfalls.md` 패턴 소진)
 
-- [ ] **§1-1 수치 추측 없음** — 모든 수치 옆에 실측 명령 명시.
-- [ ] **§1-2 성공 기준이 실행 가능 명령** — exit 0 / 그 외로 단정 가능.
-- [ ] **§1-3 phase 간 컨텍스트 격리** — 이전 phase 보지 않고 실행 가능.
-- [ ] **§2 워크스페이스 격리** — 다른 워크스페이스 경로 등장 없음.
-- [ ] **§3 docs/data 라우팅** — 데이터 파일이 docs/에, ADR이 개별 파일에 안 들어감.
-- [ ] **§4 dispatcher 경계** — runner는 `run_now.sh` 경유, `claude_persist_usage` 호출 보장.
-- [ ] **§5 git 운영** — `--no-verify`/`--force` 없음.
+- [ ] **1-1 수치 추측 없음** — 모든 수치 옆에 실측 명령 명시.
+- [ ] **1-2 성공 기준이 실행 가능 명령** — exit 0 / 그 외로 단정 가능.
+- [ ] **1-3 phase 간 컨텍스트 격리** — 이전 phase 보지 않고 실행 가능.
+- [ ] **2 워크스페이스 격리** — 다른 워크스페이스 경로 등장 없음.
+- [ ] **3 docs/data 라우팅** — 데이터 파일이 docs/에, ADR이 개별 파일에 안 들어감.
+- [ ] **4 dispatcher 경계** — runner는 `run_now.sh` 경유, `claude_persist_usage` 호출 보장.
+- [ ] **5 git 운영** — `--no-verify`/`--force` 없음.
+- [ ] **6-6 Write 위장 방어** — Write/Edit 강제 주의문 + commit 개수 self-check (`git rev-list HEAD ^<base> --count`).
+- [ ] **6-7 references 파일 audit** — SKILL.md 재작성 시 references/ 안 본문 옛 컨벤션 잔재 grep.
+- [ ] **6-8 cwd 정책** — phase 본문 첫 bash 블록에 `cd "$(git rev-parse --show-toplevel)"` 박혀 있는가?
+- [ ] **6-9 sigil escape** — phase 본문에 검증 대상 sigil 문자 (`§`, `~`) 직접 사용 회피 + 검증 bash는 `printf '\xc2\xa7'` escape 사용.
 
 ## ai-nodes 작업 유형별 phase 가이드
 
