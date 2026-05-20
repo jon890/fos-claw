@@ -14,6 +14,7 @@ travel 워크스페이스 아키텍처 결정 누적.
 | ADR | 제목 | Status | 한 줄 요약 |
 |---|---|---|---|
 | ADR-001 | 워크스페이스 ai-nodes 표준 적용 + scripts/.claude/skills/ 의도된 비대칭 | Accepted | 5문서 + AGENTS + CLAUDE 심링크 + tasks/ 적용. scripts/ + .claude/skills/는 자동화 0 + workspace-level skill 0이라 의도된 부재 |
+| ADR-002 | .env 도입 — DISCORD_CHANNEL_ID | Accepted | ADR-001 .env 부재 결정 부분 supersede. 5 비활성 trip 한정 cron이 평문 보관하던 채널 ID를 .env로 이전. scripts/.claude/skills/config 부재는 유지 |
 
 ---
 
@@ -77,3 +78,39 @@ ai-nodes 표준을 *부분 적용*한다 — *의도된 비대칭*.
 - trip-instance 영역 변경 없음 — `trips/<trip-id>/` 구조는 ADR-001 적용 영역 외.
 
 **적용**: plan001 phase-01 ~ phase-04.
+
+---
+
+## ADR-002 — .env 도입 (DISCORD_CHANNEL_ID)
+
+**Status**: Accepted (부분 supersedes ADR-001 .env 부재 결정)
+**Date**: 2026-05-20
+
+### 맥락
+
+ADR-001 (plan001 phase-01)에서 travel은 `.env` 부재를 *의도된 비대칭*으로 결정. 단 plan001 audit 시점에 발견된 사실:
+
+- `~/.openclaw/cron/jobs.json` 안 5 cron job (오사카 trip 한정, 모두 enabled=False) 의 `delivery.to`에 Discord 채널 ID `1498642302602580029` *평문 보관*.
+- 다른 4 워크스페이스 (apartment / career-os / stock-investment / health-care) 모두 `.env`에 DISCORD_CHANNEL_ID 보관 — 모노레포 일관성.
+- travel 자동화 0이지만 *trip 활성 시 cron 활성화 또는 수동 호출 시* 채널 ID 사용 가능성 존재.
+
+ADR-001은 *자동화 0 + 비밀 정보 0* 가정으로 `.env` 부재 결정. 실제로는 *cron payload 안 평문 채널 ID*가 *비밀 영역*에 해당. 결정 정합화 필요.
+
+### 결정
+
+`.env` 도입 — `DISCORD_CHANNEL_ID=1498642302602580029` + `TZ=Asia/Seoul`. `.env.example` template git tracked. `.env`는 gitignore 패턴 자동 무시.
+
+ADR-001의 *.env 부재* 결정 **부분 supersede** — `.env`는 도입. 단 `scripts/` / `.claude/skills/` / `config/` 부재는 *유지* (자동화 0 + workspace-level skill 0 가정 변경 없음).
+
+**거절한 대안**:
+
+- cron payload 안 channel ID 평문 유지 — 모노레포 4 워크스페이스와 일관성 미흡. trip 활성화 시 변경 비용.
+- 완전 ADR-001 supersede (scripts/.claude/skills/ 도입까지) — 자동화 운영 의도가 ADR-002 시점에 명확하지 않음. 도입 시점에 ADR-003 별도 결정.
+
+### 결과
+
+- 5 워크스페이스 `.env` (workspace root) 컬럼 모두 O — ai-nodes/docs/workspace-structure.md 매트릭스 정합화.
+- 향후 trip 활성 cron 활성화 시 channel ID env 참조 가능 (5 비활성 cron의 payload는 별개 — openclaw 측 자산이라 ai-nodes 측 수정 안 함).
+- `scripts/` / `.claude/skills/` / `config/` 부재 결정은 ADR-001 의도된 비대칭 그대로 유지.
+
+**적용**: travel plan002 phase-01. `.env` + `.env.example` 신설 + 문서 정합화.

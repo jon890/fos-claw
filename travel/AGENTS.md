@@ -53,13 +53,13 @@ mkdir -p travel/trips/<도시-slug>-<YYYY-MM>/{docs,data,memory,output}
 # travel/docs/index.md 안 trip 목록 추가
 ```
 
-특정 trip 자동화가 필요해지면 `scripts/` + `.claude/skills/` 도입 — ADR-002~로 별도 결정 (ADR-001 의도된 비대칭 supersede).
+특정 trip 자동화가 필요해지면 `scripts/` + `.claude/skills/` 도입 — ADR-003~로 별도 결정 (ADR-001 의도된 비대칭 supersede).
 
 ## 6. 외부 의존성
 
 - `claude` CLI — 대화 + 문서 작성 보조 (유일 의존성).
 - 다른 의존 0 — Python / Bun / agent-browser / `_shared/` 모두 미사용.
-- workspace root `.env` 부재 — 비밀 정보 0 (예약 정보는 *문서*로 보관, 환경 변수 아님).
+- `.env` (workspace root, gitignore) — `DISCORD_CHANNEL_ID` (trip 활성 cron 또는 수동 호출 시 사용, plan002 ADR-002 도입). 예약 정보 본문은 *문서*로 보관 (환경 변수 아님).
 
 상세는 `docs/code-architecture.md` 외부 의존성 섹션.
 

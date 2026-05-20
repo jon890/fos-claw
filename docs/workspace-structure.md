@@ -19,7 +19,7 @@ ai-nodes 모노레포의 모든 워크스페이스가 따르는 표준 디렉터
 | `apartment/` | `apartment/AGENTS.md` | 네이버 부동산 API + agent-browser |
 | `career-os/` | `career-os/AGENTS.md` | scripts/ + .claude/skills/ 분리 (ADR-019 → ADR-006 표준 격상) |
 | `stock-investment/` | `stock-investment/AGENTS.md` | 일일 모닝 브리핑 |
-| `travel/` | `travel/AGENTS.md` | trips/<trip-id>/ 단위, 의도된 비대칭 (ADR-001) — scripts/.claude/skills/.env/config 부재 |
+| `travel/` | `travel/AGENTS.md` | trips/<trip-id>/ 단위, 의도된 비대칭 (ADR-001) — scripts/.claude/skills/config 부재 (.env는 ADR-002로 도입) |
 | `health-care/` | `health-care/AGENTS.md` | 무릎 재활 daily 체크인 (knee-patellar-instability) |
 
 ---
@@ -158,7 +158,7 @@ career-os ADR-019의 scripts/ 분리 패턴은 ADR-006으로 표준 격상되어
 | apartment | 없음 (ADR-006 분리 표준 적용, plan007) | — |
 | career-os | 없음 (ADR-019 → ADR-006 격상) | — |
 | stock-investment | 적용 완료 (plan001~004) | 본 표준 적용 시리즈 마지막 plan004로 decisions/ 폐기 + 매트릭스 갱신 |
-| travel | scripts/.claude/skills/.env/config 부재 (의도된 비대칭, plan001) | travel/docs/adr.md ADR-001 |
+| travel | scripts/.claude/skills/config 부재 (의도된 비대칭, plan001 ADR-001) — .env는 plan002 ADR-002로 도입 | travel/docs/adr.md ADR-001 + ADR-002 |
 | health-care | 없음 (ADR-006 분리 표준 적용, plan002) | — |
 
 새 예외 추가 시: 워크스페이스 `docs/adr.md`에 결정 기록 → 본 표 갱신.
@@ -177,10 +177,10 @@ career-os ADR-019의 scripts/ 분리 패턴은 ADR-006으로 표준 격상되어
 | tasks/plan{N}/ 영역 | O | O | O (plan001~004) | O (plan001) | O (plan001~002) |
 | skills/ 분리 표준 (ADR-006) | 적용 (plan007) | 적용 (ADR-019 → ADR-006 격상) | 적용 (plan002) | N/A (ADR-001 비대칭) | 적용 (plan002) |
 | .claude/skills/ native 등록 | O | O | O (plan002) | N/A (ADR-001 비대칭) | O (plan002) |
-| .env (workspace root) | O | O | O | N/A (ADR-001 비대칭 — 비밀 정보 0) | O (plan002) |
+| .env (workspace root) | O | O | O | O (plan002 ADR-002) | O (plan002) |
 | data/ vs docs/ 분리 | O | O | O | O (trips/<trip-id>/data + docs) | O |
 
-stock-investment plan001~004 + health-care plan002 + travel plan001 시리즈로 5 워크스페이스 모두 표준 적용 완료. travel은 ADR-001 의도된 비대칭 — scripts/.claude/skills/.env/config 부재 (자동화 0 + workspace-level skill 0).
+stock-investment plan001~004 + health-care plan002 + travel plan001~002 시리즈로 5 워크스페이스 모두 표준 적용 완료. travel은 ADR-001 의도된 비대칭 — scripts/.claude/skills/config 부재 (자동화 0 + workspace-level skill 0). .env는 plan002 ADR-002로 도입.
 
 ---
 
