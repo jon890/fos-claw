@@ -28,23 +28,54 @@ planning + plan-and-build 스킬로 운영. 형태: `tasks/plan{N}-<slug>/`.
 CRCL (Circle) + BTC + GOOGL/GOOG + QQQ + AI 반도체/인프라.
 상세는 `docs/prd.md` 2번·4번.
 
+## 4-1. 진실 출처
+
+각 자산이 *어디서 정의되고 어디로 발행되는지* 단일 출처:
+
+- **종목·테마 정의**: `config/watchlist.json` (CRCL/BTC/GOOGL/QQQ 등 기본 watch) + `config/catalysts.json` (테마별 catalyst 이벤트) + `config/theme-reports.json` (Core+Theme 구조 메타데이터).
+- **현안 토픽 큐**: `config/current-issues.json` — issue-analysis skill이 토픽 단위로 분석.
+- **수집 소스**: `config/sources.json` — morning-brief가 뉴스·가격 fetch.
+- **daily-note 후보 풀**: `config/daily-stock-universe.json` — daily-stock-analysis-note skill이 매일 1 종목 선택.
+- **종목 선택 이력**: `data/daily-notes/history.json` — rotation 패널티 적용 (같은 종목 연속 선택 방지).
+- **투자 가설 누적**: `data/thesis-tracker/<ticker>.json` — 종목별 시계열 thesis 추적.
+- **외부 발행 대상**: `career-os/sources/fos-study/` — daily-stock-analysis-note만 git push (cross-workspace 단방향 쓰기, ADR-001 격리 원칙 의도된 예외).
+- **비밀 정보**: `.env` (워크스페이스 root, gitignore) — `DISCORD_CHANNEL_ID` 등.
+- **운영 상태 (cron)**: `~/.openclaw/cron/jobs.json` (openclaw 측 자산, 읽기 전용 참조).
+
+회사명·티커·테마를 어떤 markdown에도 박지 않는다 — config json 한 곳만 수정해서 전환.
+
+## 4-2. 투자 컨텍스트
+
+- **관찰·분석 한정**: 실시간 거래 자동화 / 매수·매도 의사결정 자동화 *금지*. 본 워크스페이스는 *시장 관찰 + 정보 정리 + 학습 자산 생성*만 책임.
+- **재무 자문 아님**: 모든 산출물은 *개인 학습용*. blog 발행물에도 명시.
+- **테마 단위 추적**: 종목 개별보다 *테마 (AI 반도체 / 인프라 / 금융 서비스 / 암호화폐 등)* 단위로 catalyst·뉴스 묶음.
+- **검증된 사실·해석 분리**: 가격·뉴스 timestamp는 *수집 raw* 보존 + Claude 해석은 *별도 섹션*.
+- **불확실성 명시**: 추측·예측은 *추측이라 명시*. 사실로 위장 금지.
+- **세션 격리**: 각 cron job은 `sessionTarget: isolated` — 다른 워크스페이스 컨텍스트 누수 회피.
+
 ## 5. 워크플로 진입점
 
 3 skill — ADR-006 분리 패턴 (`scripts/<name>/` + `.claude/skills/<name>/`, plan002 적용).
 
+| skill | 호출 시점 | 트리거 | 산출물 발행 |
+|---|---|---|---|
+| `stock-investing-morning-brief` | 매일 08:00 Asia/Seoul | cron `0 8 * * *` (openclaw, isolated session) | Discord 채널 announce (failureAlert) |
+| `daily-stock-analysis-note` | 매일 09:00 Asia/Seoul | cron `0 9 * * *` (openclaw, isolated session) | Discord delivery + `career-os/sources/fos-study/` git push |
+| `current-issue-analysis` | 사용자 수동 호출 | 자연어 또는 슬래시 | Discord 알림 (선택) |
+
 ```bash
 # native skill 진입점 (.claude/skills/ 자동 로드)
 claude -p "/stock-investing-morning-brief"
-claude -p "/current-issue-analysis"
+claude -p "/current-issue-analysis <issue-key>"
 claude -p "/daily-stock-analysis-note"
 
-# 또는 직접 호출
-bash stock-investment/scripts/stock-investing-morning-brief/run_report.sh
-bash stock-investment/scripts/current-issue-analysis/run_issue_report.sh
-bash stock-investment/scripts/daily-stock-analysis-note/run_daily_note.sh
+# 또는 직접 호출 (cron payload가 사용하는 absolute path)
+bash $HOME/ai-nodes/stock-investment/scripts/stock-investing-morning-brief/run_report.sh
+bash $HOME/ai-nodes/stock-investment/scripts/current-issue-analysis/run_issue_report.sh
+bash $HOME/ai-nodes/stock-investment/scripts/daily-stock-analysis-note/run_daily_note.sh
 ```
 
-cron payload 안 absolute path는 plan002 완료 후 수동 갱신 필요 — `~/.openclaw/cron/jobs.json`의 `stock-investing-morning-brief-0800` + `daily-ai-tech-stock-blog-note` 두 job의 payload.message path를 `skills/<name>/scripts/` → `scripts/<name>/`로 직접 수정.
+cron payload 갱신 이력: plan002 phase-01 (분리 마이그) 완료 후 `openclaw cron edit` 으로 `skills/<name>/scripts/` → `scripts/<name>/` 갱신 완료 (2026-05-20).
 
 ## 6. 외부 의존성
 
@@ -70,4 +101,4 @@ cron payload 안 absolute path는 plan002 완료 후 수동 갱신 필요 — `~
 - 재실행 가능 + 날짜 단위 멱등.
 - 불확실성 명시 — 검증된 사실과 해석 분리.
 - 새 결정은 `docs/adr.md` 누적 (개별 ADR 파일 신설 금지, ai-nodes ADR-018).
-- 비밀 정보 (`DISCORD_CHANNEL_ID`)는 `.env` (워크스페이스 root, ADR-021 예정 — plan003에서 실 .env 도입).
+- 비밀 정보 (`DISCORD_CHANNEL_ID`)는 `.env` (워크스페이스 root, gitignore). 출처: `~/.openclaw/cron/jobs.json` 추출. `.env.example` template 참고.
